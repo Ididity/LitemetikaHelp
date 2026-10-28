@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "dev.litextras.mixin.compat",
+  "plugin": "dev.litextras.mixin.compat.CompatMixinPlugin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "LitematicaOverlayTypeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

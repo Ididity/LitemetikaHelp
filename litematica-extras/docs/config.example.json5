@@ -1,0 +1,933 @@
+// Beispiel: so sieht config/litematica_extras/config.json5 nach dem ersten Start aus (alle Standardwerte).
+// Der Mod legt die Datei selbst an – du musst sie nicht kopieren.
+{
+  "configVersion": 1,
+
+  // Allgemeine Einstellungen
+  "general": {
+    // Sprache aller Texte des Mods (de oder en). Eigene Texte: config/litematica_extras/lang/<sprache>.json
+    // Erlaubt: de, en
+    "language": "de",
+    // Beim Betreten einer Welt kurz den Status des Mods im Chat (nur lokal) anzeigen.
+    "startupMessage": true,
+    // Ausführlichere Log-Ausgaben (nie mit API-Key).
+    "debugLog": false
+  },
+
+  // Befehle. Der erste Name ist der Hauptname, alle weiteren sind Aliase.
+  // Änderungen an Namen greifen nach erneutem Betreten der Welt / des Servers.
+  "commands": {
+    "root": {
+      // Präfix-Befehl, z. B. /lx reload. Erster Eintrag = Präfix.
+      "names": ["lx","litextras"],
+      // Präfix-Befehl aktiv.
+      "enabled": true
+    },
+    "missing": {
+      // Fehlliste ohne KI.
+      "names": ["missing","fehlt"],
+      // Befehl aktiv.
+      "enabled": true
+    },
+    "ai": {
+      // KI-Frage (Feature 6).
+      "names": ["ai","frag"],
+      // Befehl aktiv (KI selbst ist zusätzlich über ai.enabled geschaltet).
+      "enabled": true
+    },
+    // Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).
+    "subcommands": {
+      "reload": [
+        "reload",
+        "neuladen"
+      ],
+      "config": [
+        "config",
+        "einstellungen"
+      ],
+      "profile": [
+        "profile",
+        "profil"
+      ],
+      "export": [
+        "export"
+      ],
+      "import": [
+        "import"
+      ],
+      "status": [
+        "status"
+      ],
+      "similar": [
+        "similar",
+        "aehnlich"
+      ],
+      "seethrough": [
+        "xray",
+        "durchsicht"
+      ],
+      "layer": [
+        "layer",
+        "ebene"
+      ],
+      "aiconfirm": [
+        "ai-confirm",
+        "ki-bestaetigen"
+      ],
+      "help": [
+        "help",
+        "hilfe"
+      ]
+    },
+    // IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. ["import"].
+    "disabledSubcommands": [],
+    // Beim Betreten melden, wenn ein Befehlsname mit Vanilla/Server/anderen Mods kollidiert.
+    "warnOnConflicts": true
+  },
+
+  // Eigene Kurzbefehle. Sie lösen NUR interne Mod-Funktionen oder KI-Fragen aus.
+  // Server-Befehle, Chatnachrichten, Platzieren oder Bewegen sind fest verboten und nicht freischaltbar.
+  "presets": {
+    // Jeder Eintrag: name, aliases, und ENTWEDER action ODER aiPrompt.
+    // Erlaubte actions: missing_all, missing_layer, missing_near, status, toggle_similar, toggle_seethrough,
+    // toggle_hud, toggle_layerlist, reload, open_config, profile:<name>.
+    // Platzhalter in aiPrompt: {scope} (aktuelle Ebene oder Schematic), {args} (Text nach dem Befehl).
+    "list": [
+      {
+        "name": "ebenenliste",
+        "aliases": [
+          "el"
+        ],
+        "action": "missing_layer"
+      },
+      {
+        "name": "fortschritt",
+        "aliases": [],
+        "action": "status"
+      },
+      {
+        "name": "naechster",
+        "aliases": [],
+        "aiPrompt": "Wo ist der nächste Spieler?"
+      },
+      {
+        "name": "wasfehlt",
+        "aliases": [],
+        "aiPrompt": "Welche Items fehlen mir für die {scope}? Antworte als kurze Liste."
+      }
+    ]
+  },
+
+  // Hotkeys (nur aktiv, wenn kein Menü/Chat offen ist).
+  "hotkeys": {
+
+    // Feature 1: Ähnliche Blöcke akzeptieren an/aus
+    "toggleSimilar": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+J",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Feature 5: Fehler durch Blöcke sehen an/aus
+    "toggleSeeThrough": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+K",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Gesamtes HUD des Mods an/aus
+    "toggleHud": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+H",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Feature 4: Ebenen-Fehlliste an/aus
+    "toggleLayerList": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+L",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Nächstes Config-Profil
+    "cycleProfile": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+P",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Config neu laden
+    "reloadConfig": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+R",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Einstellungs-Fenster öffnen
+    "openConfig": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+O",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    },
+
+    // Fehlliste (Ebene oder Umgebung) im Chat anzeigen
+    "missingList": {
+      // Hotkey aktiv.
+      "enabled": true,
+      // Tastenkombination, mit + verbunden. Namen wie in GLFW: A-Z, 0-9, F1-F25, LEFT_ALT, RIGHT_ALT, LEFT_CONTROL, LEFT_SHIFT,
+      // LEFT_SUPER (Cmd/Windows), KP_1, TAB, GRAVE_ACCENT, MOUSE_4 ... Leer = kein Hotkey.
+      "keys": "LEFT_ALT+M",
+      // toggle = Drücken schaltet um, hold = nur aktiv solange gedrückt.
+      // Erlaubt: toggle, hold
+      "mode": "toggle"
+    }
+  },
+
+  // Farben im Format #RRGGBB oder #AARRGGBB
+  "colors": {
+    // Richtig
+    "correct": "#55FF55",
+    // Ähnlich (akzeptiert)
+    "similar": "#A8FFA8",
+    // Falsch
+    "wrong": "#FF5555",
+    // Fehlt
+    "missing": "#55AAFF",
+    // Zu viel (Block steht, wo Luft geplant ist)
+    "extra": "#FF55FF",
+    // Warnung
+    "warning": "#FFFF55",
+    // Normaler Text
+    "text": "#FFFFFF",
+    // Nebeninfo
+    "neutral": "#AAAAAA",
+    // Rahmen um passenden Hotbar-Slot
+    "hotbarHighlight": "#C055FF55",
+    // Hintergrund des passenden Hotbar-Slots
+    "hotbarHighlightFill": "#4055FF55"
+  },
+
+  // Textvorlagen. Platzhalter in geschweiften Klammern.
+  // Allgemein: {soll}, {ist}, {abweichungen}, {block}, {props}, {status}, {item}, {slot}, {need}, {have}, {fehl}, {layer}, {count}, {result}, {pos}
+  "templates": {
+    // Statuszeile, z. B. 'Typ ok, Richtung falsch'.
+    "status": "{status}",
+    // Soll-Zeile. {props} wird pro Property einzeln eingefärbt.
+    "soll": "Soll: {block}{props}",
+    // Ist-Zeile.
+    "ist": "Ist: {block}{props}",
+    // Zeile mit allen Abweichungen.
+    "diff": "Abweichungen: {abweichungen}",
+    // Kompakte Einzeile (Zeilen-ID 'compact').
+    "compact": "Soll: {soll} / Ist: {ist}",
+    // Text vor der ersten Property.
+    "propsPrefix": ", ",
+    // Format einer Property.
+    "propFormat": "{name}: {value}",
+    // Trenner zwischen Properties.
+    "propSeparator": ", ",
+    // Platzier-Vorschau (Feature 2).
+    "preview": "Vorschau: {result}",
+    // Feature 3: Item in der Hotbar.
+    "neededHotbar": "{item} (Hotbar {slot})",
+    // Feature 3: Item nur im Inventar.
+    "neededInventory": "{item} (Inventar, Slot {slot})",
+    // Feature 3: Item nicht vorhanden.
+    "neededMissing": "{item} fehlt",
+    // Feature 4: Kopfzeile.
+    "layerHeader": "{layer}: {count} Fehler",
+    // Feature 4: Zeile. {fehltext} wird nur bei Fehlbetrag gefüllt.
+    "layerLine": "{item} {have}/{need}{fehltext}",
+    // Feature 4: Text für Fehlbetrag.
+    "layerShortfall": " (-{fehl})",
+    // Fehlliste im Chat (/missing).
+    "chatMissingLine": "{need}x {item} (hast {have}){fehltext}"
+  },
+
+  // HUD-Grundeinstellungen
+  "hud": {
+    // Gesamtes HUD des Mods.
+    "enabled": true,
+    // Text mit Schatten.
+    "textShadow": true,
+    // Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.
+    // Bereich: 1 bis 40 (Standard: 2)
+    "updateIntervalTicks": 2,
+
+    // Feature 2: Soll/Ist des angeschauten Blocks
+    "lookedAt": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "bottom_left",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: 4)
+      "offsetX": 4,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: -4)
+      "offsetY": -4,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 8)
+      "maxLines": 8,
+      // Reihenfolge/Sichtbarkeit der Zeilen: status, soll, ist, diff, compact, pos
+      "lines": ["status","soll","ist","diff"],
+      // Nur anzeigen, wenn der Block zur Schematic gehört (oder dort stört).
+      "onlyInSchematic": true,
+      // Nur falsche Properties rot färben (sonst ganze Zeile).
+      "onlyWrongPropsRed": true,
+      // Auch ignorierte Properties anzeigen.
+      "showAllProps": false
+    },
+
+    // Feature 2: Platzier-Vorschau (vor dem Platzieren)
+    "preview": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "bottom_left",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: 4)
+      "offsetX": 4,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: -80)
+      "offsetY": -80,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 3)
+      "maxLines": 3,
+      // Nur anzeigen, wenn ein Block in der Hand ist.
+      "onlyWithBlockInHand": true
+    },
+
+    // Feature 3: Benötigtes Item
+    "neededItem": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "bottom_center",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: 0)
+      "offsetX": 0,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: -60)
+      "offsetY": -60,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 4)
+      "maxLines": 4,
+      // Passenden Hotbar-Slot einrahmen.
+      "highlightHotbar": true,
+      // Nur anzeigen, wenn der angeschaute Block fehlt oder falsch ist.
+      "onlyWhenIncorrect": true,
+      // Automatisch auf den passenden Hotbar-Slot wechseln.
+      "autoSwitch": false,
+      // Wartezeit, bevor automatisch gewechselt wird.
+      // Bereich: 0 bis 40 (Standard: 4)
+      "autoSwitchDelayTicks": 4
+    },
+
+    // Feature 4: Fehlliste der aktuellen Ebene
+    "layerList": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "top_left",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: 4)
+      "offsetX": 4,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: 40)
+      "offsetY": 40,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 12)
+      "maxLines": 12,
+      // Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.
+      "onlyInLayerMode": true,
+      // Sortierung: shortfall (Fehlbetrag), amount (Menge), name
+      // Erlaubt: shortfall, amount, name
+      "sort": "shortfall",
+      // Gedrosselte Neuberechnung in Millisekunden.
+      // Bereich: 250 bis 60000 (Standard: 1500)
+      "updateIntervalMs": 1500,
+      // Falsch gedrehte Blöcke mitzählen (müssen neu platziert werden).
+      "includeWrongState": true,
+      // Falsche Blöcke mitzählen.
+      "includeWrongType": true
+    },
+
+    // Kleine Statusanzeige (aktive Modi, Profil)
+    "status": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "top_right",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: -4)
+      "offsetX": -4,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: 4)
+      "offsetY": 4,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 4)
+      "maxLines": 4
+    },
+
+    // Feature 6: KI-Antwort im HUD
+    "aiAnswer": {
+      // Dieses HUD-Element anzeigen.
+      "enabled": true,
+      // Ecke: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      // Erlaubt: top_left, top_center, top_right, middle_left, center, middle_right, bottom_left, bottom_center, bottom_right
+      "anchor": "middle_right",
+      // Pixel-Versatz horizontal (positiv = nach rechts).
+      // Bereich: -4000 bis 4000 (Standard: -4)
+      "offsetX": -4,
+      // Pixel-Versatz vertikal (positiv = nach unten).
+      // Bereich: -4000 bis 4000 (Standard: 0)
+      "offsetY": 0,
+      // Größe/Schriftgröße (1.0 = normal).
+      // Bereich: 0.25 bis 4 (Standard: 1.0)
+      "scale": 1.0,
+      // Hintergrundkasten zeichnen.
+      "background": true,
+      // Hintergrundfarbe #AARRGGBB (AA = Transparenz).
+      "backgroundColor": "#90000000",
+      // Innenabstand in Pixeln.
+      // Bereich: 0 bis 20 (Standard: 3)
+      "padding": 3,
+      // Maximale Anzahl Zeilen.
+      // Bereich: 1 bis 100 (Standard: 14)
+      "maxLines": 14,
+      // Wie lange die Antwort sichtbar bleibt.
+      // Bereich: 3 bis 600 (Standard: 30)
+      "showSeconds": 30,
+      // Zeilenumbruch-Breite in Pixeln.
+      // Bereich: 80 bis 600 (Standard: 220)
+      "wrapWidth": 220
+    }
+  },
+
+  // Vergleichslogik Soll (Schematic) gegen Ist (Welt) – gilt für ALLE Anzeigen.
+  "compare": {
+    "similar": {
+      // Feature 1: Ähnliche Blöcke akzeptieren (Typ wird gelockert, Properties bleiben streng).
+      "enabled": false,
+      // Alle soliden Vollblöcke ohne Redstone-Eigenschaften gelten untereinander als gleichwertig.
+      "solidBlocks": true,
+      // Diese Blöcke/Tags zählen NIE als 'solider Block' (zusätzlich zur automatischen Redstone-/BlockEntity-Prüfung).
+      "solidBlacklist": [
+        "minecraft:observer",
+        "minecraft:piston",
+        "minecraft:sticky_piston",
+        "minecraft:redstone_block",
+        "minecraft:target",
+        "minecraft:dispenser",
+        "minecraft:dropper",
+        "minecraft:note_block",
+        "minecraft:tnt",
+        "minecraft:redstone_lamp",
+        "minecraft:slime_block",
+        "minecraft:honey_block",
+        "minecraft:crafter",
+        "minecraft:spawner",
+        "#minecraft:leaves",
+        "#minecraft:shulker_boxes",
+        "minecraft:budding_amethyst"
+      ],
+      // Properties, die beim Tausch zweier solider Blöcke fehlen dürfen (z. B. "axis" für Stamm -> Stein).
+      "solidAllowMissingProperties": []
+    },
+    // Diese Properties werden NIE verglichen. waterlogged ist absichtlich NICHT drin, kann aber ergänzt werden.
+    "ignoredProperties": ["powered","lit","age","distance","persistent","snowy"],
+    // Die Ignorierliste auch dann anwenden, wenn 'Ähnliche Blöcke' aus ist.
+    "ignoredPropertiesAlsoWhenExact": true,
+    // Was als 'Ausrichtung' gilt (für propertyMode orientation_only).
+    "orientationProperties": [
+      "facing",
+      "axis",
+      "rotation",
+      "orientation",
+      "half",
+      "type",
+      "shape",
+      "face",
+      "hinge",
+      "attachment",
+      "horizontal_facing",
+      "vertical_direction"
+    ],
+    // Blöcke, wo die Schematic Luft hat, als Fehler ('zu viel') melden.
+    "reportExtra": true,
+    // Äquivalenzgruppen für Feature 1. members: Block-IDs oder Tags (#minecraft:stairs).
+    // propertyMode: strict (alle Properties außer Ignorierliste), orientation_only (nur Ausrichtung/Position), ignore (keine).
+    // Optional: allowMissingProperties: ["axis"] = diese dürfen beim Ist-Block fehlen. Optional: enabled: false.
+    "groups": [
+      {
+        "name": "Treppen",
+        "members": [
+          "#minecraft:stairs"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Stufen",
+        "members": [
+          "#minecraft:slabs"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Zäune",
+        "members": [
+          "#minecraft:fences"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Zauntore",
+        "members": [
+          "#minecraft:fence_gates"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Mauern",
+        "members": [
+          "#minecraft:walls"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Holztüren",
+        "members": [
+          "#minecraft:wooden_doors"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Holzfalltüren",
+        "members": [
+          "#minecraft:wooden_trapdoors"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Stämme",
+        "members": [
+          "#minecraft:logs"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Bretter",
+        "members": [
+          "#minecraft:planks"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Wolle",
+        "members": [
+          "#minecraft:wool"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Teppiche",
+        "members": [
+          "#minecraft:wool_carpets"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Terrakotta",
+        "members": [
+          "#minecraft:terracotta"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Glas",
+        "members": [
+          "#minecraft:impermeable"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Glasscheiben",
+        "members": [
+          "minecraft:glass_pane",
+          "minecraft:white_stained_glass_pane",
+          "minecraft:orange_stained_glass_pane",
+          "minecraft:magenta_stained_glass_pane",
+          "minecraft:light_blue_stained_glass_pane",
+          "minecraft:yellow_stained_glass_pane",
+          "minecraft:lime_stained_glass_pane",
+          "minecraft:pink_stained_glass_pane",
+          "minecraft:gray_stained_glass_pane",
+          "minecraft:light_gray_stained_glass_pane",
+          "minecraft:cyan_stained_glass_pane",
+          "minecraft:purple_stained_glass_pane",
+          "minecraft:blue_stained_glass_pane",
+          "minecraft:brown_stained_glass_pane",
+          "minecraft:green_stained_glass_pane",
+          "minecraft:red_stained_glass_pane",
+          "minecraft:black_stained_glass_pane"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Beton",
+        "members": [
+          "minecraft:white_concrete",
+          "minecraft:orange_concrete",
+          "minecraft:magenta_concrete",
+          "minecraft:light_blue_concrete",
+          "minecraft:yellow_concrete",
+          "minecraft:lime_concrete",
+          "minecraft:pink_concrete",
+          "minecraft:gray_concrete",
+          "minecraft:light_gray_concrete",
+          "minecraft:cyan_concrete",
+          "minecraft:purple_concrete",
+          "minecraft:blue_concrete",
+          "minecraft:brown_concrete",
+          "minecraft:green_concrete",
+          "minecraft:red_concrete",
+          "minecraft:black_concrete"
+        ],
+        "propertyMode": "strict"
+      },
+      {
+        "name": "Laub",
+        "members": [
+          "#minecraft:leaves"
+        ],
+        "propertyMode": "strict"
+      }
+    ]
+  },
+
+  // Hintergrund-Berechnung (läuft nie im Render-Thread)
+  "scan": {
+    // Radius um den Spieler für 'Umgebung' (Durchsicht, /missing near).
+    // Bereich: 8 bis 256 (Standard: 48)
+    "nearRadius": 48,
+    // Obergrenze geprüfter Positionen pro Durchlauf (Schutz vor Rucklern).
+    // Bereich: 10000 bis 50000000 (Standard: 3000000)
+    "maxBlocksPerScan": 3000000,
+    // Mindestabstand zwischen zwei automatischen Scans.
+    // Bereich: 100 bis 60000 (Standard: 500)
+    "minIntervalMs": 500,
+    // Zusätzlich spätestens nach so vielen Sekunden neu prüfen (falls eine Änderung nicht gemeldet wurde).
+    // Bereich: 1 bis 600 (Standard: 10)
+    "fullRescanSeconds": 10
+  },
+
+  // Feature 5: Fehler durch Blöcke hindurch sehen
+  "seeThrough": {
+    // Modus beim Start aktiv (umschalten per Hotkey).
+    "active": false,
+    // own = eigener Renderer (nur Fehler, mit Reichweite/Fade/Limit), litematica = Litematicas eigene
+    // 'Overlay durch Blöcke'-Option umschalten, both = beides.
+    // Erlaubt: own, litematica, both
+    "backend": "own",
+    // Reichweite in Blöcken.
+    // Bereich: 4 bis 256 (Standard: 48)
+    "range": 48,
+    // Maximal gezeichnete Kästen (die nächsten zuerst).
+    // Bereich: 1 bis 5000 (Standard: 300)
+    "maxBoxes": 300,
+    // Ab dieser Entfernung wird ausgeblendet.
+    // Bereich: 0 bis 256 (Standard: 24)
+    "fadeStart": 24,
+    // Minimale Deckkraft am Rand der Reichweite.
+    // Bereich: 0 bis 1 (Standard: 0.2)
+    "minAlpha": 0.2,
+    // Linienstärke in GUI-Pixeln.
+    // Bereich: 0.5 bis 6 (Standard: 1.0)
+    "lineWidth": 1.0,
+    // wire = Umrisslinien des Blocks, box = 2D-Rahmen, marker = kleines Quadrat
+    // Erlaubt: wire, box, marker
+    "style": "wire",
+    // Im Ebenen-Modus von Litematica nur Fehler der aktuellen Ebene zeigen.
+    "onlyCurrentLayer": true,
+    // Fehlende Blöcke zeigen.
+    "showMissing": true,
+    // Falsche Blöcke zeigen.
+    "showWrongType": true,
+    // Falsch ausgerichtete Blöcke zeigen.
+    "showWrongState": true,
+    // Überzählige Blöcke zeigen.
+    "showExtra": false,
+    // Wie oft die Fehlerliste neu berechnet wird.
+    // Bereich: 100 bis 60000 (Standard: 750)
+    "updateIntervalMs": 750,
+    // Farbe fehlend
+    "colorMissing": "#FF55AAFF",
+    // Farbe falscher Block
+    "colorWrongType": "#FFFF5555",
+    // Farbe falsch ausgerichtet
+    "colorWrongState": "#FFFFAA00",
+    // Farbe zu viel
+    "colorExtra": "#FFFF55FF"
+  },
+
+  // Feature 6: KI-Assistent. Standardmäßig AUS. Sendet Spieldaten an einen externen Dienst!
+  "ai": {
+    // KI-Assistent aktivieren. Beim ersten Mal erscheint ein Datenschutz-Hinweis.
+    "enabled": false,
+    // Anbieter: anthropic, openai, gemini, ollama, openai_compatible (eigener Server mit OpenAI-Schnittstelle)
+    // Erlaubt: anthropic, openai, gemini, ollama, openai_compatible
+    "provider": "anthropic",
+    // Modellname. Leer = Standard des Anbieters (anthropic: claude-haiku-5-5, ollama: llama3.1, sonst bitte eintragen).
+    "model": "",
+    // Eigene Endpoint-URL. Leer = Standard des Anbieters. Ollama: http://localhost:11434/v1/chat/completions
+    "endpoint": "",
+    // Optional: Name einer Umgebungsvariable, aus der der API-Key gelesen wird (statt secrets.json5).
+    "apiKeyEnvVar": "",
+    // Kreativität (0 = sachlich).
+    // Bereich: 0 bis 2 (Standard: 0.3)
+    "temperature": 0.3,
+    // Temperatur mitsenden (manche Modelle lehnen sie ab).
+    "sendTemperature": true,
+    // Maximale Antwortlänge in Tokens.
+    // Bereich: 50 bis 16000 (Standard: 700)
+    "maxTokens": 700,
+    // Zeitlimit pro Anfrage.
+    // Bereich: 5 bis 300 (Standard: 40)
+    "timeoutSeconds": 40,
+    // Maximale Fragen pro Minute.
+    // Bereich: 1 bis 120 (Standard: 6)
+    "rateLimitPerMinute": 6,
+    // Maximale Tool-Aufrufe pro Frage.
+    // Bereich: 0 bis 30 (Standard: 5)
+    "maxToolCalls": 5,
+    // Antwortsprache.
+    "answerLanguage": "Deutsch",
+    // Antwortlänge: kurz, mittel, ausfuehrlich
+    // Erlaubt: kurz, mittel, ausfuehrlich
+    "answerLength": "kurz",
+    // Verbrauchte Tokens nach jeder Antwort anzeigen.
+    "showTokenUsage": true,
+    // Antwort anzeigen in: chat (nur lokal), hud, both
+    // Erlaubt: chat, hud, both
+    "output": "chat",
+    // Spieler- und Umgebungs-Tools im Multiplayer sperren (empfohlen!).
+    "lockWorldToolsInMultiplayer": true,
+    // Maximale Einträge in Tool-Ergebnissen.
+    // Bereich: 1 bis 100 (Standard: 15)
+    "topN": 15,
+    // Radius für get_nearby_players.
+    // Bereich: 4 bis 256 (Standard: 64)
+    "playerRadius": 64,
+    // Radius für get_nearby_entities.
+    // Bereich: 4 bis 256 (Standard: 48)
+    "entityRadius": 48,
+    // Radius für find_block.
+    // Bereich: 4 bis 192 (Standard: 48)
+    "findBlockRadius": 48,
+    // Rechenzeit-Grenze für find_block.
+    // Bereich: 20 bis 5000 (Standard: 250)
+    "findBlockMaxMs": 250,
+    // Anzahl Zeilen für get_recent_chat.
+    // Bereich: 1 bis 50 (Standard: 10)
+    "chatLines": 10,
+
+    // Was darf an die KI gesendet werden?
+    "privacy": {
+      // Koordinaten: exact, rounded, hidden
+      // Erlaubt: exact, rounded, hidden
+      "coordinates": "exact",
+      // Rundung bei 'rounded'.
+      // Bereich: 2 bis 1000 (Standard: 10)
+      "roundTo": 10,
+      // Spielernamen durch 'Spieler 1', 'Spieler 2' ersetzen.
+      "anonymizePlayerNames": false,
+      // Servername/-adresse an die KI senden.
+      "sendServerAddress": false,
+      // Inventarinhalt senden.
+      "sendInventory": true,
+      // Namen der Schematics senden.
+      "sendSchematicNames": true,
+      // Umbenannte Item-/Mob-Namen senden (als unvertraute Daten markiert).
+      "sendCustomNames": false
+    },
+
+    // Tools einzeln an/aus. Standard: nur Bau-Tools an.
+    "tools": {
+      "get_missing_blocks": {
+        // Fehlende/falsche Blöcke nach Item gezählt.
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_layer_status": {
+        // Layer-Modus, Ebene, Fortschritt.
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_looked_at_block": {
+        // Soll/Ist des angeschauten Blocks.
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_schematic_info": {
+        // Name, Größe, Position, Fortschritt der Schematic(s).
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_material_list": {
+        // Gesamtbedarf im Vergleich zum Inventar.
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_inventory": {
+        // Inventar (Hotbar, Offhand, Rüstung).
+        "enabled": true,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_player_status": {
+        // Eigene Position, Blickrichtung, Gesundheit ...
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_nearby_players": {
+        // Geladene Spieler in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_online_players": {
+        // Namen aus der Tab-Liste.
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_world_info": {
+        // Zeit, Wetter, Biom, Dimension ...
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_nearby_entities": {
+        // Mobs/Items/Tiere in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "find_block": {
+        // Blocktyp in geladenen Chunks suchen. ACHTUNG: auf vielen Servern als Cheat gewertet!
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_server_info": {
+        // Server, Ping, Spielerzahl, Version.
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      },
+      "get_recent_chat": {
+        // Letzte Chatzeilen (als unvertraute Daten).
+        "enabled": false,
+        // Eigene Tool-Beschreibung für die KI (leer = Standard).
+        "description": ""
+      }
+    }
+  }
+}

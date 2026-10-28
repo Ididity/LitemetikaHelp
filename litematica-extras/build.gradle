@@ -1,0 +1,118 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'fabric-loom'
+    id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+base { archivesName = project.archives_base_name }
+
+// ---------------------------------------------------------------------------
+// Automatische Versionsauflösung ("auto" in gradle.properties)
+// Ergebnis wird in versions.lock.properties gespeichert (reproduzierbare Builds).
+// ---------------------------------------------------------------------------
+def mc = project.minecraft_version
+def lockFile = file('versions.lock.properties')
+def lock = new Properties()
+if (lockFile.exists()) lockFile.withInputStream { lock.load(it) }
+boolean lockChanged = false
+
+def fetch = { String url ->
+    def c = new URL(url).openConnection()
+    c.setRequestProperty('User-Agent', 'litematica-extras-build (github actions / local)')
+    c.connectTimeout = 15000
+    c.readTimeout = 30000
+    return c.inputStream.getText('UTF-8')
+}
+def modrinthLatest = { String slug ->
+    def q = "loaders=%5B%22fabric%22%5D&game_versions=%5B%22${mc}%22%5D"
+    def list = new JsonSlurper().parseText(fetch("https://api.modrinth.com/v2/project/${slug}/version?${q}"))
+    if (list == null || list.isEmpty()) throw new GradleException("Keine ${slug}-Version für Minecraft ${mc} auf Modrinth gefunden. Bitte .jar in libs/ legen oder Version in gradle.properties eintragen.")
+    // Neueste zuerst; Release bevorzugen
+    def rel = list.find { it.version_type == 'release' } ?: list[0]
+    return rel.id
+}
+def resolvers = [
+    loader_version    : { new JsonSlurper().parseText(fetch('https://meta.fabricmc.net/v2/versions/loader')).find { it.stable }.version },
+    yarn_mappings     : {
+        def l = new JsonSlurper().parseText(fetch("https://meta.fabricmc.net/v2/versions/yarn/${mc}"))
+        if (l == null || l.isEmpty()) throw new GradleException("Keine Yarn-Mappings für ${mc} gefunden.")
+        l[0].version
+    },
+    fabric_api_version: {
+        def xml = new groovy.xml.XmlSlurper().parseText(fetch('https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml'))
+        def all = xml.versioning.versions.version*.text().findAll { it.endsWith("+${mc}") }
+        if (all.isEmpty()) throw new GradleException("Keine Fabric-API-Version für ${mc} gefunden.")
+        all.last()
+    },
+    litematica_version: { modrinthLatest('litematica') },
+    malilib_version   : { modrinthLatest('malilib') },
+]
+def v = [:]
+resolvers.each { key, finder ->
+    String val = project.findProperty(key)?.toString()
+    if (val == null || val == 'auto') {
+        if (lock.getProperty(key) != null) {
+            val = lock.getProperty(key)
+        } else {
+            val = finder.call()
+            lock.setProperty(key, val)
+            lockChanged = true
+            logger.lifecycle("[litematica-extras] ${key} automatisch aufgelöst: ${val}")
+        }
+    }
+    v[key] = val
+}
+if (lockChanged) lockFile.withOutputStream { lock.store(it, "Automatisch aufgeloeste Versionen fuer Minecraft ${mc}. Loeschen = neu aufloesen.") }
+
+def localLitematica = fileTree(dir: 'libs', include: ['litematica*.jar'])
+def localMalilib = fileTree(dir: 'libs', include: ['malilib*.jar'])
+
+repositories {
+    maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven'; content { includeGroup 'maven.modrinth' } }
+    maven { name = 'Masa'; url = 'https://masa.dy.fi/maven' }
+    mavenCentral()
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${mc}"
+    mappings "net.fabricmc:yarn:${v.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${v.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${v.fabric_api_version}"
+
+    if (!localLitematica.isEmpty()) {
+        modImplementation localLitematica
+    } else {
+        modImplementation "maven.modrinth:litematica:${v.litematica_version}"
+    }
+    if (!localMalilib.isEmpty()) {
+        modImplementation localMalilib
+    } else {
+        modImplementation "maven.modrinth:malilib:${v.malilib_version}"
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraft_version', mc
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version, 'minecraft_version': mc
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.encoding = 'UTF-8'
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from('LICENSE') { rename { "${it}_${project.base.archivesName.get()}" } }
+}

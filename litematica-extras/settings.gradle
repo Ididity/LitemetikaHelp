@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        maven { name = 'Fabric'; url = 'https://maven.fabricmc.net/' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    plugins {
+        // Loom-Version steht in gradle.properties (loom_version)
+        id 'fabric-loom' version "${loom_version}"
+    }
+}
+
+rootProject.name = 'litematica-extras'
