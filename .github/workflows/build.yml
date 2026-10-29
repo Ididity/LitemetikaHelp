@@ -63,6 +63,7 @@ jobs:
           mkdir -p /tmp/log && cp build.log /tmp/log/ 2>/dev/null || echo "kein Log" > /tmp/log/build.log
           cp versions.lock.properties /tmp/log/ 2>/dev/null || true
           cp classes.txt /tmp/log/ 2>/dev/null || true
+          cp build/libs/litematica-extras-1.0.0.jar /tmp/log/ 2>/dev/null || true
           cd /tmp/log
           git init -q && git checkout -q -b build-log
           git config user.name "build-bot" && git config user.email "build-bot@users.noreply.github.com"
