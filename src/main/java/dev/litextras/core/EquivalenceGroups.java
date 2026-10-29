@@ -166,6 +166,9 @@ public final class EquivalenceGroups {
             try {
                 if (st.isAir()) return false;
                 if (!Block.isShapeFullCube(st.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN))) return false;
+                // Muss Redstone so leiten wie ein normaler Vollblock (Minecrafts eigene Prüfung). Glas, Eis, Laub,
+                // Seelensand usw. leiten nicht und gelten deshalb nie als "gleich" zu Stein & Co.
+                if (!st.isSolidBlock(EmptyBlockView.INSTANCE, BlockPos.ORIGIN)) return false;
                 if (st.emitsRedstonePower()) return false;
                 if (st.hasComparatorOutput()) return false;
                 if (st.hasBlockEntity()) return false;

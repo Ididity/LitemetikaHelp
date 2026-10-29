@@ -231,7 +231,7 @@ public final class ConfigSpec {
         // =================================================================== FEATURE 1
         section("compare", "Vergleichslogik Soll (Schematic) gegen Ist (Welt) – gilt für ALLE Anzeigen.");
         bool("compare.similar.enabled", true, "Feature 1: Ähnliche Blöcke akzeptieren (Typ wird gelockert, Properties bleiben streng).");
-        bool("compare.similar.solidBlocks", true, "Alle soliden Vollblöcke ohne Redstone-Eigenschaften gelten untereinander als gleichwertig.");
+        bool("compare.similar.solidBlocks", true, "Alle soliden Vollblöcke, die Redstone leiten und keine eigenen Redstone-Funktionen haben, gelten untereinander als gleichwertig (Glas, Eis, Laub usw. nie).");
         list("compare.similar.solidBlacklist", "Diese Blöcke/Tags zählen NIE als 'solider Block' (zusätzlich zur automatischen Redstone-/BlockEntity-Prüfung).",
                 "minecraft:observer", "minecraft:piston", "minecraft:sticky_piston", "minecraft:redstone_block", "minecraft:target",
                 "minecraft:dispenser", "minecraft:dropper", "minecraft:note_block", "minecraft:tnt", "minecraft:redstone_lamp",
