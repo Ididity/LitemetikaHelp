@@ -236,13 +236,33 @@ public final class ErrorScanner {
         long r2 = job.radius == Integer.MAX_VALUE ? Long.MAX_VALUE : (long) job.radius * job.radius;
         BlockPos.Mutable m = new BlockPos.Mutable();
         try {
+            // Prüfen, ob Litematicas Schematic-Welt Chunk-Ladezustände meldet (sonst Prüfung überspringen)
+            boolean schemChunkCheck = false;
+            try {
+                search:
+                for (LitematicaBridge.IntBox b : job.boxes) {
+                    for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++) {
+                        for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) {
+                            if (job.schematic.getChunkManager().isChunkLoaded(cx, cz)) { schemChunkCheck = true; break search; }
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {}
+
             outer:
-            for (LitematicaBridge.IntBox b : job.boxes) {
+            for (int bi = 0; bi < job.boxes.size(); bi++) {
+                LitematicaBridge.IntBox b = job.boxes.get(bi);
                 for (int cx = b.minX() >> 4; cx <= b.maxX() >> 4; cx++) {
                     for (int cz = b.minZ() >> 4; cz <= b.maxZ() >> 4; cz++) {
                         int x0 = Math.max(b.minX(), cx << 4), x1 = Math.min(b.maxX(), (cx << 4) + 15);
                         int z0 = Math.max(b.minZ(), cz << 4), z1 = Math.min(b.maxZ(), (cz << 4) + 15);
-                        if (!job.client.getChunkManager().isChunkLoaded(cx, cz)) {
+                        boolean schemLoaded = true;
+                        if (schemChunkCheck) {
+                            try { schemLoaded = job.schematic.getChunkManager().isChunkLoaded(cx, cz); } catch (Throwable ignored) {}
+                        }
+                        // Nur zählen, wenn Welt UND Schematic-Daten für diesen Chunk geladen sind –
+                        // sonst würden fehlende Schematic-Daten als "Luft" gelten und falsche Fehler erzeugen.
+                        if (!job.client.getChunkManager().isChunkLoaded(cx, cz) || !schemLoaded) {
                             unloaded += (x1 - x0 + 1) * (z1 - z0 + 1) * b.sizeY();
                             continue;
                         }
@@ -250,6 +270,12 @@ public final class ErrorScanner {
                             for (int x = x0; x <= x1; x++) {
                                 for (int z = z0; z <= z1; z++) {
                                     if (checked >= job.maxBlocks) { truncated = true; break outer; }
+                                    // Überlappende Bereiche (mehrere Platzierungen/Teilbereiche) nicht doppelt zählen
+                                    boolean dup = false;
+                                    for (int bj = 0; bj < bi; bj++) {
+                                        if (job.boxes.get(bj).contains(x, y, z)) { dup = true; break; }
+                                    }
+                                    if (dup) continue;
                                     long dx = x - job.center.getX(), dy = y - job.center.getY(), dz = z - job.center.getZ();
                                     long d2 = dx * dx + dy * dy + dz * dz;
                                     if (d2 > r2) continue;

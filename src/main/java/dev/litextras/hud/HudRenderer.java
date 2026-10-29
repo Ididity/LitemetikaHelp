@@ -231,7 +231,10 @@ public final class HudRenderer {
             return List.of(HudPanel.Line.text(List.of(new Seg(Lang.get("layer.notActive"), Cfg.color("colors.neutral")))));
         }
         ErrorScanner.ScanResult r = ErrorScanner.latest(ErrorScanner.Scope.LAYER);
-        if (r == null) return List.of(HudPanel.Line.text(List.of(new Seg(Lang.get("layer.calculating"), Cfg.color("colors.neutral")))));
+        if (r == null || !r.label().equals(li.label()) || r.configGeneration() != Cfg.generation()) {
+            // Ergebnis gehört zu einer anderen Ebene/Einstellung -> nicht anzeigen, sondern auf neuen Scan warten
+            return List.of(HudPanel.Line.text(List.of(new Seg(li.label() + ": " + Lang.get("layer.calculating"), Cfg.color("colors.neutral")))));
+        }
 
         List<HudPanel.Line> lines = new ArrayList<>();
         Map<String, Object> hv = new HashMap<>();

@@ -145,6 +145,14 @@ public final class ConfigManager {
     /** Platz für spätere Migrationen: alte Schlüssel umbenennen usw. */
     private void migrate(JsonObject root, int fromVersion) {
         // Version 0 -> 1: nichts umzubenennen (erste Version).
+        // Version 1 -> 2: falsch gedrehte Blöcke zählen standardmäßig nicht mehr als Materialbedarf.
+        if (fromVersion < 2) {
+            com.google.gson.JsonElement hud = root.get("hud");
+            if (hud != null && hud.isJsonObject() && hud.getAsJsonObject().has("layerList")
+                    && hud.getAsJsonObject().get("layerList").isJsonObject()) {
+                hud.getAsJsonObject().getAsJsonObject("layerList").addProperty("includeWrongState", false);
+            }
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 

@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 1;
+    public static final int CONFIG_VERSION = 2;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -217,7 +217,7 @@ public final class ConfigSpec {
         bool("hud.layerList.onlyInLayerMode", true, "Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.");
         enm("hud.layerList.sort", "shortfall", "Sortierung: shortfall (Fehlbetrag), amount (Menge), name", "shortfall", "amount", "name");
         integer("hud.layerList.updateIntervalMs", 1500, 250, 60000, "Gedrosselte Neuberechnung in Millisekunden.");
-        bool("hud.layerList.includeWrongState", true, "Falsch gedrehte Blöcke mitzählen (müssen neu platziert werden).");
+        bool("hud.layerList.includeWrongState", false, "Falsch gedrehte Blöcke als zusätzlichen Materialbedarf zählen (Standard aus: beim Abbauen bekommst du das Item zurück).");
         bool("hud.layerList.includeWrongType", true, "Falsche Blöcke mitzählen.");
         hudElement("status", "Kleine Statusanzeige (aktive Modi, Profil)", true, "top_right", -4, 4, 4);
         hudElement("aiAnswer", "Feature 6: KI-Antwort im HUD", true, "middle_right", -4, 0, 14);
