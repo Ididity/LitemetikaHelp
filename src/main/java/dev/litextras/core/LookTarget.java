@@ -51,37 +51,57 @@ public final class LookTarget {
         return computeTarget(mc, LitematicaBridge.schematicWorld());
     }
 
+    /** Schematic-Treffer: Position + Abstand zum Auge. */
+    private record SchemHit(BlockPos pos, double dist2) {}
+
     private static Target computeTarget(MinecraftClient mc, World schem) {
         ClientPlayerEntity p = mc.player;
+        LitematicaBridge.LayerInfo layer = LitematicaBridge.layer();
+        Vec3d eye = p.getCameraPosVec(1.0f);
         BlockHitResult vanilla = mc.crosshairTarget instanceof BlockHitResult b && b.getType() == HitResult.Type.BLOCK ? b : null;
-        BlockHitResult schemHit = null;
-        if (schem != null) {
-            double reach = p.getBlockInteractionRange();
-            Vec3d eye = p.getCameraPosVec(1.0f);
-            Vec3d end = eye.add(p.getRotationVec(1.0f).multiply(reach));
-            try {
-                BlockHitResult h = schem.raycast(new RaycastContext(eye, end, RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, p));
-                if (h != null && h.getType() == HitResult.Type.BLOCK) schemHit = h;
-            } catch (Throwable ignored) {}
+        // Im Ebenen-Modus: Welt-Blöcke außerhalb der sichtbaren Ebene ignorieren
+        if (vanilla != null && layer.restricting()) {
+            BlockPos vp = vanilla.getBlockPos();
+            if (!layer.contains(vp.getX(), vp.getY(), vp.getZ())) vanilla = null;
         }
-        BlockHitResult use;
-        if (vanilla == null) use = schemHit;
-        else if (schemHit == null) use = vanilla;
-        else {
-            Vec3d eye = p.getCameraPosVec(1.0f);
-            use = schemHit.getPos().squaredDistanceTo(eye) + 1.0E-4 < vanilla.getPos().squaredDistanceTo(eye) ? schemHit : vanilla;
-        }
-        if (use == null) return null;
-        BlockPos pos = use.getBlockPos();
+        SchemHit schemHit = null;
+        if (schem != null) schemHit = marchSchematic(schem, layer, eye, p.getRotationVec(1.0f), p.getBlockInteractionRange());
+        BlockPos pos;
+        net.minecraft.util.math.Direction side = net.minecraft.util.math.Direction.UP;
+        if (vanilla == null && schemHit == null) return null;
+        if (vanilla == null) pos = schemHit.pos();
+        else if (schemHit == null || vanilla.getPos().squaredDistanceTo(eye) <= schemHit.dist2() + 1.0E-4) {
+            pos = vanilla.getBlockPos();
+            side = vanilla.getSide();
+        } else pos = schemHit.pos();
         BlockState soll = LitematicaBridge.schematicState(schem, pos);
         BlockState ist = mc.world.getBlockState(pos);
         CompareResult r = BlockComparator.compare(soll, ist);
         if (r.status() == CompareResult.Status.NONE) return null;
-        // Steht im Plan ein Block, wird immer angezeigt (fehlt/falsch/richtig/ähnlich).
-        // Nur "zu viel" (Plan = Luft) wird außerhalb der Litematica-Bereiche ausgeblendet.
         if (Cfg.bool("hud.lookedAt.onlyInSchematic") && BlockComparator.isEmpty(soll) && !insidePlacement(pos)) return null;
-        return new Target(pos.toImmutable(), r, use.getSide());
+        return new Target(pos.toImmutable(), r, side);
     }
+
+    /**
+     * Läuft den Blickstrahl in kleinen Schritten ab und liefert den ersten Plan-Block, der in der sichtbaren
+     * Litematica-Ebene liegt. Blöcke aus ausgeblendeten Ebenen werden übersprungen.
+     */
+    private static SchemHit marchSchematic(World schem, LitematicaBridge.LayerInfo layer, Vec3d eye, Vec3d dir, double reach) {
+        BlockPos last = null;
+        BlockPos.Mutable m = new BlockPos.Mutable();
+        for (double t = 0; t <= reach; t += 0.05) {
+            int x = (int) Math.floor(eye.x + dir.x * t), y = (int) Math.floor(eye.y + dir.y * t), z = (int) Math.floor(eye.z + dir.z * t);
+            m.set(x, y, z);
+            if (m.equals(last)) continue;
+            last = m.toImmutable();
+            if (layer.restricting() && !layer.contains(x, y, z)) continue;
+            BlockState s = LitematicaBridge.schematicState(schem, m);
+            if (BlockComparator.isEmpty(s)) continue;
+            return new SchemHit(last, t * t);
+        }
+        return null;
+    }
+
 
     /** Liegt die Position in einem aktiven Litematica-Bereich? Außerhalb wird nichts angezeigt. */
     public static boolean insidePlacement(BlockPos pos) {
@@ -112,6 +132,8 @@ public final class LookTarget {
             ItemPlacementContext adj = bi.getPlacementContext(ctx);
             if (adj == null || !adj.canPlace()) return new Preview(ctx.getBlockPos(), null, null, "preview.cannotPlace");
             BlockPos pos = adj.getBlockPos();
+            LitematicaBridge.LayerInfo li = LitematicaBridge.layer();
+            if (li.restricting() && !li.contains(pos.getX(), pos.getY(), pos.getZ())) return null; // außerhalb der sichtbaren Ebene
             BlockState would = bi.getBlock().getPlacementState(adj);
             if (would == null) return new Preview(pos, null, null, "preview.cannotPlace");
             BlockState soll = LitematicaBridge.schematicState(schem, pos);
