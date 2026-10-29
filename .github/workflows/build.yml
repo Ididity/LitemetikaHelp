@@ -46,12 +46,12 @@ jobs:
             echo "===== javap $c"
             javap -cp "$J:$M" "$(echo $c | sed 's/\.class$//; s#/#.#g')" 2>&1 | grep -E "public|enum|class" | head -60
           done
-          echo "===== PRIVATE ChunkRendererSchematicVbo"
-          javap -p -cp "$J:$M" fi.dy.masa.litematica.render.schematic.ChunkRendererSchematicVbo 2>&1 | grep -iE "overlay|blockstate" | head -60
-          echo "===== OverlayType"
-          javap -p -cp "$J:$M" fi.dy.masa.litematica.util.OverlayType 2>&1 | head -30
-          echo "===== bytecode getOverlayType"
-          javap -p -c -cp "$J:$M" fi.dy.masa.litematica.render.schematic.ChunkRendererSchematicVbo 2>&1 | grep -nE "OverlayType|getOverlayType|Method .*overlay" | head -40
+          for c in fi.dy.masa.litematica.schematic.LitematicaSchematic fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer fi.dy.masa.litematica.schematic.placement.SchematicPlacement fi.dy.masa.litematica.schematic.placement.SubRegionPlacement fi.dy.masa.litematica.materials.MaterialListBase fi.dy.masa.litematica.data.SchematicHolder; do
+            echo "===== FULL $c"
+            javap -cp "$J:$M" "$c" 2>&1 | head -120
+          done
+          echo "===== container classes"
+          unzip -l "$J" | awk '{print $4}' | grep -iE "container/|SchematicHolder|schematic/[A-Za-z]+\.class" | head -40
           } > classes.txt 2>&1 || true
 
       - name: Prüfen, ob die Mod-Datei vollständig ist
