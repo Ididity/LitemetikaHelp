@@ -6,7 +6,7 @@ pluginManagement {
     }
     plugins {
         // Loom-Version steht in gradle.properties (loom_version)
-        id 'fabric-loom' version "${loom_version}"
+        id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
     }
 }
 
