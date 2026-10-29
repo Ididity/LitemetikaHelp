@@ -77,6 +77,10 @@ public class LitematicaExtras implements ClientModInitializer {
             }
             for (String m : config.lastMessages()) ChatOut.warn(m);
             CommandRegistry.reportConflicts();
+            if (Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
+                    && !(dev.litextras.voice.VoiceManager.ttsReady() && dev.litextras.voice.VoiceManager.sttReady())) {
+                dev.litextras.voice.VoiceManager.install(false);
+            }
         }));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, mc) -> {
             ErrorScanner.invalidateAll();
@@ -117,6 +121,8 @@ public class LitematicaExtras implements ClientModInitializer {
         });
         Hotkeys.register("reloadConfig", down -> { if (down) reload(true); });
         Hotkeys.register("openConfig", down -> { if (down) Actions.run("open_config"); });
+        Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
+        Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {
             if (down) Actions.run(ErrorScanner.layer().restricting() ? "missing_layer" : "missing_near");
         });

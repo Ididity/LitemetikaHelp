@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 3;
+    public static final int CONFIG_VERSION = 4;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -136,6 +136,7 @@ public final class ConfigSpec {
                   "layer": ["layer", "ebene"],
                   "aiconfirm": ["ai-confirm", "ki-bestaetigen"],
                   "replace": ["tausch", "replace"],
+                  "voice": ["stimme", "voice"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -164,6 +165,8 @@ public final class ConfigSpec {
         hotkey("reloadConfig", "LEFT_ALT+R", "toggle", "Config neu laden");
         hotkey("openConfig", "LEFT_ALT+O", "toggle", "Einstellungs-Fenster öffnen");
         hotkey("missingList", "LEFT_ALT+M", "toggle", "Fehlliste (Ebene oder Umgebung) im Chat anzeigen");
+        hotkey("pushToTalk", "LEFT_ALT+V", "hold", "Gedrückt halten und sprechen – die KI bekommt deine Frage per Stimme");
+        hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
         section("colors", "Farben im Format #RRGGBB oder #AARRGGBB");
@@ -295,10 +298,10 @@ public final class ConfigSpec {
 
         // =================================================================== FEATURE 6 KI
         section("ai", "Feature 6: KI-Assistent. Standardmäßig AUS. Sendet Spieldaten an einen externen Dienst!");
-        bool("ai.enabled", false, "KI-Assistent aktivieren. Beim ersten Mal erscheint ein Datenschutz-Hinweis.");
-        enm("ai.provider", "anthropic", "Anbieter: anthropic, openai, gemini, ollama, openai_compatible (eigener Server mit OpenAI-Schnittstelle)",
+        bool("ai.enabled", true, "KI-Assistent aktivieren. Beim ersten Mal erscheint ein Datenschutz-Hinweis.");
+        enm("ai.provider", "ollama", "Anbieter: anthropic, openai, gemini, ollama, openai_compatible (eigener Server mit OpenAI-Schnittstelle)",
                 "anthropic", "openai", "gemini", "ollama", "openai_compatible");
-        str("ai.model", "", "Modellname. Leer = Standard des Anbieters (anthropic: claude-haiku-5-5, ollama: llama3.1, sonst bitte eintragen).");
+        str("ai.model", "llama3.1", "Modellname. Leer = Standard des Anbieters (anthropic: claude-haiku-5-5, ollama: llama3.1, sonst bitte eintragen).");
         str("ai.endpoint", "", "Eigene Endpoint-URL. Leer = Standard des Anbieters. Ollama: http://localhost:11434/v1/chat/completions");
         str("ai.apiKeyEnvVar", "", "Optional: Name einer Umgebungsvariable, aus der der API-Key gelesen wird (statt secrets.json5).");
         dbl("ai.temperature", 0.3, 0.0, 2.0, "Kreativität (0 = sachlich).");
@@ -309,15 +312,28 @@ public final class ConfigSpec {
         integer("ai.maxToolCalls", 5, 0, 30, "Maximale Tool-Aufrufe pro Frage.");
         str("ai.answerLanguage", "Deutsch", "Antwortsprache.");
         enm("ai.answerLength", "kurz", "Antwortlänge: kurz, mittel, ausfuehrlich", "kurz", "mittel", "ausfuehrlich");
-        bool("ai.showTokenUsage", true, "Verbrauchte Tokens nach jeder Antwort anzeigen.");
+        bool("ai.showTokenUsage", false, "Verbrauchte Tokens nach jeder Antwort anzeigen.");
         enm("ai.output", "chat", "Antwort anzeigen in: chat (nur lokal), hud, both", "chat", "hud", "both");
-        bool("ai.lockWorldToolsInMultiplayer", true, "Spieler- und Umgebungs-Tools im Multiplayer sperren (empfohlen!).");
+        bool("ai.lockWorldToolsInMultiplayer", false, "Spieler- und Umgebungs-Tools im Multiplayer sperren (empfohlen!).");
         integer("ai.topN", 15, 1, 100, "Maximale Einträge in Tool-Ergebnissen.");
         integer("ai.playerRadius", 64, 4, 256, "Radius für get_nearby_players.");
         integer("ai.entityRadius", 48, 4, 256, "Radius für get_nearby_entities.");
         integer("ai.findBlockRadius", 48, 4, 192, "Radius für find_block.");
         integer("ai.findBlockMaxMs", 250, 20, 5000, "Rechenzeit-Grenze für find_block.");
         integer("ai.chatLines", 10, 1, 50, "Anzahl Zeilen für get_recent_chat.");
+        section("voice", "Stimme: Frauenstimme liest KI-Antworten vor (Piper), Sprechen per Taste (Whisper). Alles lokal, kostenlos.\n"
+                + "Einmalig: /lx stimme installieren (lädt ca. 250 MB, passiert beim ersten Weltbeitritt automatisch).");
+        bool("voice.ttsEnabled", true, "KI-Antworten vorlesen.");
+        str("voice.voiceName", "de_DE-kerstin-low", "Stimme. Frauenstimmen: de_DE-kerstin-low, de_DE-ramona-low, de_DE-eva_k-x_low. Wechseln: /lx stimme <name>");
+        dbl("voice.speed", 1.0, 0.5, 2.0, "Sprechtempo (1.0 = normal, größer = schneller).");
+        dbl("voice.volume", 1.0, 0.05, 1.0, "Lautstärke.");
+        integer("voice.maxSpeakChars", 600, 50, 5000, "Höchstens so viele Zeichen vorlesen.");
+        bool("voice.sttEnabled", true, "Mit der Stimme fragen (Taste gedrückt halten, siehe hotkeys.pushToTalk).");
+        enm("voice.sttModel", "base", "Spracherkennungs-Modell: tiny (schnell), base (Standard), small (genauer, langsamer)", "tiny", "base", "small");
+        str("voice.sttLanguage", "de", "Sprache der Spracherkennung (de, en, auto).");
+        integer("voice.maxRecordSeconds", 20, 2, 120, "Maximale Aufnahmelänge.");
+        bool("voice.autoInstall", true, "Fehlende Sprachprogramme beim ersten Weltbeitritt automatisch herunterladen.");
+
         section("ai.privacy", "Was darf an die KI gesendet werden?");
         enm("ai.privacy.coordinates", "exact", "Koordinaten: exact, rounded, hidden", "exact", "rounded", "hidden");
         integer("ai.privacy.roundTo", 10, 2, 1000, "Rundung bei 'rounded'.");
@@ -333,13 +349,13 @@ public final class ConfigSpec {
         aiTool("get_schematic_info", true, "Name, Größe, Position, Fortschritt der Schematic(s).");
         aiTool("get_material_list", true, "Gesamtbedarf im Vergleich zum Inventar.");
         aiTool("get_inventory", true, "Inventar (Hotbar, Offhand, Rüstung).");
-        aiTool("get_player_status", false, "Eigene Position, Blickrichtung, Gesundheit ...");
-        aiTool("get_nearby_players", false, "Geladene Spieler in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!");
-        aiTool("get_online_players", false, "Namen aus der Tab-Liste.");
-        aiTool("get_world_info", false, "Zeit, Wetter, Biom, Dimension ...");
-        aiTool("get_nearby_entities", false, "Mobs/Items/Tiere in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!");
-        aiTool("find_block", false, "Blocktyp in geladenen Chunks suchen. ACHTUNG: auf vielen Servern als Cheat gewertet!");
-        aiTool("get_server_info", false, "Server, Ping, Spielerzahl, Version.");
-        aiTool("get_recent_chat", false, "Letzte Chatzeilen (als unvertraute Daten).");
+        aiTool("get_player_status", true, "Eigene Position, Blickrichtung, Gesundheit ...");
+        aiTool("get_nearby_players", true, "Geladene Spieler in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!");
+        aiTool("get_online_players", true, "Namen aus der Tab-Liste.");
+        aiTool("get_world_info", true, "Zeit, Wetter, Biom, Dimension ...");
+        aiTool("get_nearby_entities", true, "Mobs/Items/Tiere in Reichweite. ACHTUNG: auf vielen Servern als Cheat gewertet!");
+        aiTool("find_block", true, "Blocktyp in geladenen Chunks suchen. ACHTUNG: auf vielen Servern als Cheat gewertet!");
+        aiTool("get_server_info", true, "Server, Ping, Spielerzahl, Version.");
+        aiTool("get_recent_chat", true, "Letzte Chatzeilen (als unvertraute Daten).");
     }
 }

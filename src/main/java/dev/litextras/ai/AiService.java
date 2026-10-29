@@ -119,7 +119,9 @@ public final class AiService {
             ChatOut.warn(Lang.get("ai.disabled"));
             return;
         }
-        if (!Cfg.manager().aiPrivacyAcknowledged()) {
+        boolean local = "ollama".equals(Cfg.str("ai.provider"))
+                && (Cfg.str("ai.endpoint").isBlank() || Cfg.str("ai.endpoint").contains("localhost") || Cfg.str("ai.endpoint").contains("127.0.0.1"));
+        if (!local && !Cfg.manager().aiPrivacyAcknowledged()) {
             pendingQuestion = question;
             showPrivacyNotice();
             return;
@@ -275,6 +277,7 @@ public final class AiService {
                 ChatOut.send(Lang.get("ai.prefix") + line, error ? 0xFF5555 : 0xFFFFFF);
             }
         }
+        if (!error) dev.litextras.voice.VoiceManager.speak(text);
         if (Cfg.bool("ai.showTokenUsage") && (in + out) > 0) {
             ChatOut.send(Lang.get("ai.tokens", "in", in, "out", out, "calls", calls), 0x777777);
         }

@@ -161,6 +161,20 @@ public final class CommandRegistry {
         sub(root, "layer", n -> n.executes(c -> { Actions.run("missing_layer"); return 1; }));
         sub(root, "help", n -> n.executes(c -> { help(); return 1; }));
         sub(root, "aiconfirm", n -> n.executes(c -> { AiService.confirmPrivacy(); return 1; }));
+        sub(root, "voice", n -> n
+                .executes(c -> { voiceHelp(); return 1; })
+                .then(literal("installieren").executes(c -> { dev.litextras.voice.VoiceManager.install(true); return 1; }))
+                .then(literal("install").executes(c -> { dev.litextras.voice.VoiceManager.install(true); return 1; }))
+                .then(literal("an").executes(c -> { setVoice(true); return 1; }))
+                .then(literal("aus").executes(c -> { setVoice(false); return 1; }))
+                .then(literal("test").executes(c -> { dev.litextras.voice.VoiceManager.speak(Lang.get("voice.hello")); return 1; }))
+                .then(literal("stopp").executes(c -> { dev.litextras.voice.VoiceManager.stopSpeaking(); return 1; }))
+                .then(argument("name", StringArgumentType.word())
+                        .suggests((c, b) -> {
+                            for (String v : new String[]{"de_DE-kerstin-low", "de_DE-ramona-low", "de_DE-eva_k-x_low", "de_DE-thorsten-high", "de_DE-thorsten-medium"}) b.suggest(v);
+                            return b.buildFuture();
+                        })
+                        .executes(c -> { dev.litextras.voice.VoiceManager.setVoice(StringArgumentType.getString(c, "name")); return 1; })));
         sub(root, "replace", n -> n
                 .executes(c -> { ReplaceCommand.help(); return 1; })
                 .then(literal("zurueck").executes(c -> { ReplaceCommand.undo(); return 1; }))
@@ -199,6 +213,20 @@ public final class CommandRegistry {
                         })));
     }
 
+    private static void voiceHelp() {
+        ChatOut.info(Lang.get("voice.help1"));
+        ChatOut.info(Lang.get("voice.help2", "key", dev.litextras.util.Hotkeys.describe("pushToTalk")));
+        ChatOut.info(Lang.get("voice.help3"));
+        ChatOut.send(Lang.get("voice.status", "tts", Lang.get(dev.litextras.voice.VoiceManager.ttsReady() ? "msg.on" : "msg.off"),
+                "stt", Lang.get(dev.litextras.voice.VoiceManager.sttReady() ? "msg.on" : "msg.off")), 0xAAAAAA);
+    }
+
+    private static void setVoice(boolean on) {
+        Cfg.manager().setRuntime("voice.ttsEnabled", new com.google.gson.JsonPrimitive(on));
+        if (!on) dev.litextras.voice.VoiceManager.stopSpeaking();
+        ChatOut.info(Lang.get("voice.ttsToggle") + ": " + Lang.get(on ? "msg.on" : "msg.off"));
+    }
+
     private static void export(String name) {
         String path = Cfg.manager().exportConfig(name);
         ChatOut.ok(Lang.get("msg.exported", "path", path));
@@ -213,6 +241,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("similar").get(0) + " – " + Lang.get("help.similar"));
         ChatOut.info("/" + p + " " + subNames("seethrough").get(0) + " – " + Lang.get("help.seethrough"));
         ChatOut.info("/" + p + " " + subNames("profile").get(0) + " <name> – " + Lang.get("help.profile"));
+        ChatOut.info("/" + p + " " + subNames("voice").get(0) + " – " + Lang.get("help.voice"));
         ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));
         if (!Cfg.list("commands.missing.names").isEmpty())

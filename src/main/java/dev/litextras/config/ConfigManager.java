@@ -161,6 +161,23 @@ public final class ConfigManager {
                 cmp.getAsJsonObject().getAsJsonObject("similar").addProperty("enabled", true);
             }
         }
+        // Version 3 -> 4: KI fertig eingerichtet (Ollama, alle Tools an, keine MP-Sperre) – auf Wunsch fest eingebaut.
+        if (fromVersion < 4) {
+            com.google.gson.JsonElement ai = root.get("ai");
+            if (ai != null && ai.isJsonObject()) {
+                JsonObject a = ai.getAsJsonObject();
+                a.addProperty("enabled", true);
+                a.addProperty("provider", "ollama");
+                a.addProperty("model", "llama3.1");
+                a.addProperty("showTokenUsage", false);
+                a.addProperty("lockWorldToolsInMultiplayer", false);
+                if (a.has("tools") && a.get("tools").isJsonObject()) {
+                    for (var e : a.getAsJsonObject("tools").entrySet()) {
+                        if (e.getValue().isJsonObject()) e.getValue().getAsJsonObject().addProperty("enabled", true);
+                    }
+                }
+            }
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 

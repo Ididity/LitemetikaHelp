@@ -52,26 +52,10 @@ jobs:
           done
           echo "===== container classes"
           unzip -l "$J" | awk '{print $4}' | grep -iE "container/|SchematicHolder|schematic/[A-Za-z]+\.class" | head -40
-          echo "===== URL CHECK"
-          for u in \
-            https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip \
-            https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/kerstin/low/de_DE-kerstin-low.onnx \
-            https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/kerstin/low/de_DE-kerstin-low.onnx.json \
-            https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/eva_k/x_low/de_DE-eva_k-x_low.onnx \
-            https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/ramona/low/de_DE-ramona-low.onnx \
-            https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/mls/medium/de_DE-mls-medium.onnx \
-            https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin \
-            https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin ; do
-            echo "$(curl -sIL -o /dev/null -w '%{http_code} %{size_download}' "$u") $u"
-          done
-          echo "===== WHISPER RELEASE"
-          curl -s https://api.github.com/repos/ggml-org/whisper.cpp/releases/latest | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('tag_name'));[print(a['name'],a['size'],a['browser_download_url']) for a in d.get('assets',[])]"
-          echo "===== PIPER RELEASES"
-          curl -s https://api.github.com/repos/rhasspy/piper/releases/latest | python3 -c "import json,sys;d=json.load(sys.stdin);print(d.get('tag_name'));[print(a['name'],a['size'],a['browser_download_url']) for a in d.get('assets',[]) if 'windows' in a['name']]"
-          curl -sL -o /tmp/p.zip https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip && unzip -l /tmp/p.zip | head -15
-          W=$(curl -s https://api.github.com/repos/ggml-org/whisper.cpp/releases/latest | python3 -c "import json,sys;d=json.load(sys.stdin);print(next((a['browser_download_url'] for a in d['assets'] if a['name']=='whisper-bin-x64.zip'),''))")
-          [ -n "$W" ] && curl -sL -o /tmp/w.zip "$W" && unzip -l /tmp/w.zip | head -40
-          curl -sL https://huggingface.co/rhasspy/piper-voices/resolve/main/voices.json | python3 -c "import json,sys;d=json.load(sys.stdin);[print(k, v.get('quality'), v.get('num_speakers')) for k,v in d.items() if k.startswith('de_')]"
+          echo "===== WHISPER ASSETS"
+          curl -s "https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=20" | python3 -c "import json,sys;d=json.load(sys.stdin);[print(r['tag_name'],a['name']) for r in d for a in r['assets'] if 'x64' in a['name']]" | head -20
+          U=$(curl -s "https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=20" | python3 -c "import json,sys;d=json.load(sys.stdin);print(next((a['browser_download_url'] for r in d for a in r['assets'] if a['name']=='whisper-bin-x64.zip'),''))")
+          echo "URL=$U"; [ -n "$U" ] && curl -sL -o /tmp/w.zip "$U" && unzip -l /tmp/w.zip | grep -iE "exe|dll" | head -20
           } > classes.txt 2>&1 || true
 
       - name: Prüfen, ob die Mod-Datei vollständig ist
