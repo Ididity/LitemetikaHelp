@@ -60,6 +60,12 @@ jobs:
           javap -p -cp "$J:$M" fi.dy.masa.litematica.util.OverlayType 2>&1 | head -30
           echo "===== classes using OverlayType"
           for c in $(unzip -l "$J" | awk '{print $4}' | grep -E "\.class$"); do n=$(echo $c | sed 's/\.class$//; s#/#.#g'); javap -p -c -cp "$J:$M" "$n" 2>/dev/null | grep -q "util/OverlayType" && echo "$n"; done | head -30
+          echo "===== PRIVATE ChunkRendererSchematicVbo"
+          javap -p -cp "$J:$M" fi.dy.masa.litematica.render.schematic.ChunkRendererSchematicVbo 2>&1 | grep -iE "overlay|blockstate" | head -60
+          echo "===== OverlayType"
+          javap -p -cp "$J:$M" fi.dy.masa.litematica.util.OverlayType 2>&1 | head -30
+          echo "===== classes using OverlayType"
+          for c in $(unzip -l "$J" | awk '{print $4}' | grep -E "\.class$"); do n=$(echo $c | sed 's/\.class$//; s#/#.#g'); javap -p -c -cp "$J:$M" "$n" 2>/dev/null | grep -q "util/OverlayType" && echo "$n"; done | head -30
           } > classes.txt 2>&1 || true
 
       - name: Prüfen, ob die Mod-Datei vollständig ist

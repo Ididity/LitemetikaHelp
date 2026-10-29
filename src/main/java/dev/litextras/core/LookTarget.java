@@ -92,6 +92,17 @@ public final class LookTarget {
         return false;
     }
 
+    /** Liegt die Position in einem aktiven Litematica-Bereich? Außerhalb wird nichts angezeigt. */
+    public static boolean insidePlacement(BlockPos pos) {
+        for (LitematicaBridge.PlacementInfo p : ErrorScanner.placements()) {
+            if (!p.enclosing().contains(pos.getX(), pos.getY(), pos.getZ())) continue;
+            for (LitematicaBridge.IntBox b : p.boxes()) {
+                if (b.contains(pos.getX(), pos.getY(), pos.getZ())) return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Platzier-Vorschau: baut einen ItemPlacementContext aus Blickrichtung, angeklickter Seite und
      * Trefferpunkt (wie beim echten Rechtsklick) und fragt block.getPlacementState(ctx).
