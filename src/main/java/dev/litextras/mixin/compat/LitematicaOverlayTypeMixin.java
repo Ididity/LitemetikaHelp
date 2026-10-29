@@ -1,5 +1,6 @@
 package dev.litextras.mixin.compat;
 
+import dev.litextras.compat.OverlayTypes;
 import dev.litextras.core.BlockComparator;
 import dev.litextras.core.CompareResult;
 import net.minecraft.block.BlockState;
@@ -24,14 +25,18 @@ public abstract class LitematicaOverlayTypeMixin {
     @Inject(method = "getOverlayType", at = @At("HEAD"), cancellable = true, remap = false, require = 0)
     private void litextras$overlayType(BlockState stateSchematic, BlockState stateClient, CallbackInfoReturnable<Object> cir) {
         try {
+            OverlayTypes.CALLS.incrementAndGet();
             if (stateSchematic == stateClient) return; // Litematica entscheidet selbst
             CompareResult r = BlockComparator.compare(stateSchematic, stateClient);
             if (r.status().isOk()) {
                 Object none = OverlayTypes.none(cir);
-                if (none != null) cir.setReturnValue(none);
+                if (none != null) {
+                    cir.setReturnValue(none);
+                    OverlayTypes.CLEARED.incrementAndGet();
+                }
             }
-        } catch (Throwable ignored) {
-            // Im Zweifel Litematica entscheiden lassen
+        } catch (Throwable t) {
+            OverlayTypes.lastError = t.toString(); // im Zweifel Litematica entscheiden lassen
         }
     }
 }

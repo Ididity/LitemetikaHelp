@@ -1,16 +1,20 @@
-package dev.litextras.mixin.compat;
+package dev.litextras.compat;
 
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /** Holt Litematicas OverlayType.NONE per Reflection (Klassenname kann je Version leicht anders sein). */
-final class OverlayTypes {
+public final class OverlayTypes {
     private OverlayTypes() {}
 
     private static volatile Object none;
+    /** Diagnose: wie oft Litematica gefragt hat und wie oft wir "keine Markierung" geliefert haben. */
+    public static final java.util.concurrent.atomic.AtomicLong CALLS = new java.util.concurrent.atomic.AtomicLong();
+    public static final java.util.concurrent.atomic.AtomicLong CLEARED = new java.util.concurrent.atomic.AtomicLong();
+    public static volatile String lastError = null;
     private static volatile boolean tried;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static Object none(CallbackInfoReturnable<?> cir) {
+    public static Object none(CallbackInfoReturnable<?> cir) {
         if (tried) return none;
         tried = true;
         String[] candidates = {

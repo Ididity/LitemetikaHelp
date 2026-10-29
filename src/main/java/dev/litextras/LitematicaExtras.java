@@ -10,7 +10,7 @@ import dev.litextras.core.ErrorScanner;
 import dev.litextras.core.ItemMapping;
 import dev.litextras.core.LookTarget;
 import dev.litextras.hud.HudRenderer;
-import dev.litextras.mixin.compat.CompatMixinPlugin;
+import dev.litextras.compat.CompatMixinPlugin;
 import dev.litextras.render.SeeThroughRenderer;
 import dev.litextras.util.ChatOut;
 import dev.litextras.util.Hotkeys;

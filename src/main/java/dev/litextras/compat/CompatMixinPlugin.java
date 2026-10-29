@@ -1,4 +1,4 @@
-package dev.litextras.mixin.compat;
+package dev.litextras.compat;
 
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;

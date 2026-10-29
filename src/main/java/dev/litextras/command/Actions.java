@@ -127,6 +127,10 @@ public final class Actions {
                 "similar", Lang.get(Cfg.bool("compare.similar.enabled") ? "msg.on" : "msg.off"),
                 "seethrough", Lang.get(SeeThroughRenderer.active() ? "msg.on" : "msg.off"),
                 "ai", Lang.get(Cfg.bool("ai.enabled") ? "msg.on" : "msg.off")));
+        ChatOut.send("Overlay-Integration: " + dev.litextras.compat.CompatMixinPlugin.overlayStatus
+                + " | Litematica-Abfragen: " + dev.litextras.compat.OverlayTypes.CALLS.get()
+                + " | davon als ähnlich/richtig entfernt: " + dev.litextras.compat.OverlayTypes.CLEARED.get()
+                + (dev.litextras.compat.OverlayTypes.lastError != null ? " | Fehler: " + dev.litextras.compat.OverlayTypes.lastError : ""), 0xAAAAAA);
         ErrorScanner.ScanResult r = ErrorScanner.latest(ErrorScanner.Scope.LAYER);
         if (r != null && li.restricting()) {
             ChatOut.info(Lang.get("msg.statusLayer", "layer", r.label(), "percent", String.format("%.1f", r.progressPercent()), "errors", r.errorCount()));
