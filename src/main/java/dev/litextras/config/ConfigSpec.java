@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 7;
+    public static final int CONFIG_VERSION = 8;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -223,7 +223,7 @@ public final class ConfigSpec {
         bool("hud.neededItem.highlightHotbar", true, "Passenden Hotbar-Slot einrahmen.");
         bool("hud.neededItem.onlyWhenIncorrect", true, "Nur anzeigen, wenn der angeschaute Block fehlt oder falsch ist.");
         bool("hud.neededItem.autoSwitch", false, "Automatisch auf den passenden Hotbar-Slot wechseln.");
-        integer("hud.neededItem.autoSwitchDelayTicks", 4, 0, 40, "Wartezeit, bevor automatisch gewechselt wird.");
+        integer("hud.neededItem.autoSwitchDelayTicks", 0, 0, 40, "Wartezeit in Ticks (1 Tick = 50 ms), bevor automatisch gewechselt wird. 0 = sofort.");
         hudElement("layerList", "Feature 4: Fehlliste der aktuellen Ebene", true, "top_left", 4, 40, 12);
         bool("hud.layerList.onlyInLayerMode", true, "Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.");
         enm("hud.layerList.sort", "shortfall", "Sortierung: shortfall (Fehlbetrag), amount (Menge), name", "shortfall", "amount", "name");

@@ -33,7 +33,8 @@ public final class HudRenderer {
 
     private static volatile InventoryIndex inventory = InventoryIndex.EMPTY;
     private static BlockPos autoSwitchPos = null;
-    private static int autoSwitchWait = 0;
+    private static long autoSwitchDue = 0;
+    private static boolean autoSwitchDone = false;
 
     public static InventoryIndex inventory() { return inventory; }
 
@@ -48,6 +49,7 @@ public final class HudRenderer {
         if (mc.player == null || mc.options.hudHidden) return;
         if (!Cfg.bool("hud.enabled")) return;
         if (mc.currentScreen instanceof dev.litextras.gui.HudEditorScreen) return; // Editor zeichnet selbst
+        handleAutoSwitch(mc); // jedes Bild statt nur jeden Tick -> sofortiger Wechsel
         try {
             if (Cfg.bool("hud.realtime")) LookTarget.refreshNow(mc); // jedes Bild neu = keine Verzögerung
             SeeThroughRenderer.render(ctx, counter.getTickProgress(false));
@@ -228,24 +230,30 @@ public final class HudRenderer {
         // Nur wechseln, wenn der Block FEHLT (Luft). Steht dort ein falscher Block, will man ihn abbauen –
         // dann bleibt das Werkzeug in der Hand. Auch während man die Angriffstaste hält, nie wechseln.
         if (t == null || t.result().status() != CompareResult.Status.MISSING || BlockComparator.isEmpty(t.result().soll())) { autoSwitchPos = null; return; }
-        if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchWait = Math.max(autoSwitchWait, Cfg.integer("hud.neededItem.autoSwitchDelayTicks")); return; }
+        long now = System.currentTimeMillis();
+        long delay = Cfg.integer("hud.neededItem.autoSwitchDelayTicks") * 50L;
+        if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchPos = null; return; }
         if (!t.pos().equals(autoSwitchPos)) {
             autoSwitchPos = t.pos();
-            autoSwitchWait = Cfg.integer("hud.neededItem.autoSwitchDelayTicks");
-            return;
+            autoSwitchDue = now + delay;
+            autoSwitchDone = false;
         }
-        if (autoSwitchWait > 0) { autoSwitchWait--; return; }
-        if (autoSwitchWait < 0) return; // bereits gewechselt
+        if (autoSwitchDone || now < autoSwitchDue) return;
         var invObj = mc.player.getInventory();
-        int selected = invObj.getSelectedSlot(); // UNSICHER: ab 1.21.5 Getter statt Feld
-        if (ItemMapping.isExact(t.result().soll(), invObj.getStack(selected).getItem())) { autoSwitchWait = -1; return; }
-        for (InventoryIndex.SlotStack s : inventory.matchingSlots(t.result().soll())) {
-            if (s.slot() <= 8) {
-                invObj.setSelectedSlot(s.slot()); // UNSICHER: ab 1.21.5 Setter
-                break;
-            }
+        int selected = invObj.getSelectedSlot();
+        BlockState soll = t.result().soll();
+        net.minecraft.item.Item held = invObj.getStack(selected).getItem();
+        if (ItemMapping.isExact(soll, held)) { autoSwitchDone = true; return; }
+        int target = -1;
+        for (InventoryIndex.SlotStack s : InventoryIndex.capture(mc).matchingSlots(soll)) { // frisch, nicht vom letzten Tick
+            if (s.slot() <= 8) { target = s.slot(); break; }
         }
-        autoSwitchWait = -1;
+        if (target >= 0 && target != selected) {
+            // Hält man schon ein ähnliches Item, nur wechseln, wenn es ein EXAKTES gibt
+            boolean heldSimilar = ItemMapping.matches(soll, held);
+            if (!heldSimilar || ItemMapping.isExact(soll, invObj.getStack(target).getItem())) invObj.setSelectedSlot(target);
+        }
+        autoSwitchDone = true;
     }
 
     // ================================================================== Feature 4: Ebenenliste

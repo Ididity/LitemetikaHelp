@@ -193,6 +193,11 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 7 -> 8: Auto-Switch sofort statt mit Verzögerung.
+        if (fromVersion < 8) {
+            JsonObject h = root.has("hud") && root.get("hud").isJsonObject() ? root.getAsJsonObject("hud") : null;
+            if (h != null && h.has("neededItem") && h.get("neededItem").isJsonObject()) h.getAsJsonObject("neededItem").addProperty("autoSwitchDelayTicks", 0);
+        }
         // Version 6 -> 7: schnellere Aktualisierung der Anzeigen.
         if (fromVersion < 7) {
             JsonObject h = root.has("hud") && root.get("hud").isJsonObject() ? root.getAsJsonObject("hud") : null;
