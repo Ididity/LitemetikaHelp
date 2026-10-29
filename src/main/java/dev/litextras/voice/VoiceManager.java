@@ -78,14 +78,16 @@ public final class VoiceManager {
     public static Path dir() { return Cfg.manager().dir().resolve("voice"); }
     private static boolean windows() { return System.getProperty("os.name", "").toLowerCase(Locale.ROOT).contains("win"); }
 
+    /** Sucht die Dateien in der angegebenen Reihenfolge (erster Name hat Vorrang). */
     private static Path findFile(Path root, String... names) {
         if (!Files.isDirectory(root)) return null;
-        try (Stream<Path> s = Files.walk(root, 6)) {
-            for (Path p : (Iterable<Path>) s::iterator) {
-                String n = p.getFileName().toString().toLowerCase(Locale.ROOT);
-                for (String want : names) if (n.equals(want)) return p;
-            }
-        } catch (IOException ignored) {}
+        for (String want : names) {
+            try (Stream<Path> s = Files.walk(root, 6)) {
+                for (Path p : (Iterable<Path>) s::iterator) {
+                    if (p.getFileName().toString().toLowerCase(Locale.ROOT).equals(want)) return p;
+                }
+            } catch (IOException ignored) {}
+        }
         return null;
     }
 

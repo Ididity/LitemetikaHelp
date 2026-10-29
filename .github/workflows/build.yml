@@ -55,7 +55,7 @@ jobs:
           echo "===== WHISPER ASSETS"
           curl -s "https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=20" | python3 -c "import json,sys;d=json.load(sys.stdin);[print(r['tag_name'],a['name']) for r in d for a in r['assets'] if 'x64' in a['name']]" | head -20
           U=$(curl -s "https://api.github.com/repos/ggml-org/whisper.cpp/releases?per_page=20" | python3 -c "import json,sys;d=json.load(sys.stdin);print(next((a['browser_download_url'] for r in d for a in r['assets'] if a['name']=='whisper-bin-x64.zip'),''))")
-          echo "URL=$U"; [ -n "$U" ] && curl -sL -o /tmp/w.zip "$U" && unzip -l /tmp/w.zip | grep -iE "exe|dll" | head -20
+          echo "URL=$U"; [ -n "$U" ] && curl -sL -o /tmp/w.zip "$U" && unzip -l /tmp/w.zip | grep -iE "\\.exe"
           } > classes.txt 2>&1 || true
 
       - name: Prüfen, ob die Mod-Datei vollständig ist
