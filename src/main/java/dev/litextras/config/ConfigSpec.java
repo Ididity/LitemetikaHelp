@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 2;
+    public static final int CONFIG_VERSION = 3;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -227,7 +227,7 @@ public final class ConfigSpec {
 
         // =================================================================== FEATURE 1
         section("compare", "Vergleichslogik Soll (Schematic) gegen Ist (Welt) – gilt für ALLE Anzeigen.");
-        bool("compare.similar.enabled", false, "Feature 1: Ähnliche Blöcke akzeptieren (Typ wird gelockert, Properties bleiben streng).");
+        bool("compare.similar.enabled", true, "Feature 1: Ähnliche Blöcke akzeptieren (Typ wird gelockert, Properties bleiben streng).");
         bool("compare.similar.solidBlocks", true, "Alle soliden Vollblöcke ohne Redstone-Eigenschaften gelten untereinander als gleichwertig.");
         list("compare.similar.solidBlacklist", "Diese Blöcke/Tags zählen NIE als 'solider Block' (zusätzlich zur automatischen Redstone-/BlockEntity-Prüfung).",
                 "minecraft:observer", "minecraft:piston", "minecraft:sticky_piston", "minecraft:redstone_block", "minecraft:target",

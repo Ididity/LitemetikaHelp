@@ -153,6 +153,14 @@ public final class ConfigManager {
                 hud.getAsJsonObject().getAsJsonObject("layerList").addProperty("includeWrongState", false);
             }
         }
+        // Version 2 -> 3: "Ähnliche Blöcke akzeptieren" ist jetzt standardmäßig AN.
+        if (fromVersion < 3) {
+            com.google.gson.JsonElement cmp = root.get("compare");
+            if (cmp != null && cmp.isJsonObject() && cmp.getAsJsonObject().has("similar")
+                    && cmp.getAsJsonObject().get("similar").isJsonObject()) {
+                cmp.getAsJsonObject().getAsJsonObject("similar").addProperty("enabled", true);
+            }
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 
