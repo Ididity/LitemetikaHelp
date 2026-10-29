@@ -76,8 +76,20 @@ public final class LookTarget {
         BlockState soll = LitematicaBridge.schematicState(schem, pos);
         BlockState ist = mc.world.getBlockState(pos);
         CompareResult r = BlockComparator.compare(soll, ist);
-        if (r.status() == CompareResult.Status.NONE && Cfg.bool("hud.lookedAt.onlyInSchematic")) return null;
+        if (Cfg.bool("hud.lookedAt.onlyInSchematic")
+                && (r.status() == CompareResult.Status.NONE || !insidePlacement(pos))) return null;
         return new Target(pos.toImmutable(), r, use.getSide());
+    }
+
+    /** Liegt die Position in einem aktiven Litematica-Bereich? Außerhalb wird nichts angezeigt. */
+    public static boolean insidePlacement(BlockPos pos) {
+        for (LitematicaBridge.PlacementInfo p : ErrorScanner.placements()) {
+            if (!p.enclosing().contains(pos.getX(), pos.getY(), pos.getZ())) continue;
+            for (LitematicaBridge.IntBox b : p.boxes()) {
+                if (b.contains(pos.getX(), pos.getY(), pos.getZ())) return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -101,7 +113,10 @@ public final class LookTarget {
             BlockState would = bi.getBlock().getPlacementState(adj);
             if (would == null) return new Preview(pos, null, null, "preview.cannotPlace");
             BlockState soll = LitematicaBridge.schematicState(schem, pos);
-            if (BlockComparator.isEmpty(soll)) return new Preview(pos, would, null, "preview.notInPlan");
+            if (BlockComparator.isEmpty(soll)) {
+                if (!insidePlacement(pos)) return null; // außerhalb der Schematic: keine Vorschau
+                return new Preview(pos, would, null, "preview.notInPlan");
+            }
             return new Preview(pos.toImmutable(), would, BlockComparator.compare(soll, would), null);
         } catch (Throwable t) {
             return null;

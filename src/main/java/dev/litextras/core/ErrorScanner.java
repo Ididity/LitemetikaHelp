@@ -108,7 +108,7 @@ public final class ErrorScanner {
     public static void tick(MinecraftClient mc) {
         if (mc.world == null || mc.player == null) return;
         tickCounter++;
-        if (tickCounter % 10 == 0) {
+        if (tickCounter % 10 == 1) {
             placements = LitematicaBridge.placements();
         }
         layer = LitematicaBridge.layer();
