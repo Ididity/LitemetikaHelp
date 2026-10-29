@@ -46,6 +46,7 @@ public class LitematicaExtras implements ClientModInitializer {
         EquivalenceGroups.rebuild();
         for (String m : msgs) LOG.info("[Config] {}", m);
 
+        afterConfigChange(); // Signatur der Vergleichsregeln merken
         registerHotkeys();
         AiService.init(); // eingebaute Lese-Tools registrieren (eigene Tools können danach ergänzt werden)
 
@@ -138,10 +139,22 @@ public class LitematicaExtras implements ClientModInitializer {
     }
 
     /** Nach jeder Config-Änderung: abhängige Caches erneuern. */
+    private static String lastCompareSignature = "";
+
     public static void afterConfigChange() {
         Lang.reload();
         EquivalenceGroups.ensureBuilt();
         ErrorScanner.invalidateAll();
+        // Haben sich die Vergleichsregeln geändert? Dann Litematicas Overlay neu aufbauen lassen,
+        // damit "ähnliche" Blöcke auch dort sofort nicht mehr markiert werden.
+        String sig = Cfg.bool("compare.similar.enabled") + "|" + Cfg.bool("compare.similar.solidBlocks") + "|"
+                + Cfg.list("compare.ignoredProperties") + "|" + Cfg.bool("compare.ignoredPropertiesAlsoWhenExact") + "|"
+                + Cfg.jsonArray("compare.groups") + "|" + Cfg.list("compare.similar.solidBlacklist") + "|" + Cfg.bool("compare.reportExtra");
+        if (!sig.equals(lastCompareSignature)) {
+            boolean first = lastCompareSignature.isEmpty();
+            lastCompareSignature = sig;
+            if (!first) mc().execute(dev.litextras.core.LitematicaBridge::rebuildOverlay);
+        }
     }
 
     public static void debug(String msg) {

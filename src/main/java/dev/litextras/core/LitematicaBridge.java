@@ -130,6 +130,22 @@ public final class LitematicaBridge {
         return out;
     }
 
+    /**
+     * Litematica speichert die Overlay-Markierungen pro Chunk. Nach einer Änderung der Vergleichsregeln
+     * (z. B. "Ähnliche Blöcke" an/aus) müssen die Chunks neu aufgebaut werden, sonst bleiben alte Markierungen.
+     * Nur auf dem Haupt-Thread aufrufen.
+     */
+    public static void rebuildOverlay() {
+        try {
+            var mgr = DataManager.getSchematicPlacementManager();
+            for (SchematicPlacement p : mgr.getAllSchematicsPlacements()) {
+                if (p.isEnabled()) mgr.markChunksForRebuild(p);
+            }
+        } catch (Throwable t) {
+            LitematicaExtras.debug("rebuildOverlay fehlgeschlagen: " + t);
+        }
+    }
+
     // ------------------------------------------------------------------ Layer
     /** Nur auf dem Haupt-Thread aufrufen. LayerRange/LayerMode liegen seit Malilib 0.27 in fi.dy.masa.malilib.util. */
     public static LayerInfo layer() {

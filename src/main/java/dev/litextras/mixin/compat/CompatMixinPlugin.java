@@ -53,7 +53,10 @@ public class CompatMixinPlugin implements IMixinConfigPlugin {
             }
             overlayStatus = "getOverlayType(BlockState, BlockState) nicht gefunden – Mixin übersprungen";
         } catch (Throwable t) {
-            overlayStatus = "Litematica-Klasse nicht gefunden (" + t.getClass().getSimpleName() + ") – Mixin übersprungen";
+            // Prüfung selbst nicht möglich -> trotzdem anwenden; der Mixin ist mit require=0 ungefährlich
+            overlayStatus = "aktiv (ungeprüft)";
+            overlayMixinApplied = true;
+            return true;
         }
         return false;
     }
