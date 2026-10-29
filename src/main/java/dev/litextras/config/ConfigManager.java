@@ -178,6 +178,16 @@ public final class ConfigManager {
                 }
             }
         }
+        // Version 4 -> 5: schnelleres Standardmodell und etwas schnellere Stimme.
+        if (fromVersion < 5) {
+            com.google.gson.JsonElement ai = root.get("ai");
+            if (ai != null && ai.isJsonObject()) {
+                JsonObject a = ai.getAsJsonObject();
+                if (!a.has("model") || "llama3.1".equals(a.get("model").getAsString())) a.addProperty("model", "llama3.2");
+            }
+            com.google.gson.JsonElement v = root.get("voice");
+            if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("speed", 1.1);
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 
@@ -364,6 +374,20 @@ public final class ConfigManager {
     }
 
     JsonElement raw(String key) { return effective.get(key); }
+
+    /** Wert dauerhaft in config.json5 speichern (z. B. aus dem Einstellungsfenster). */
+    public synchronized void setPersistent(String key, JsonElement value) {
+        main.put(key, value);
+        runtime.remove(key);
+        Map<String, JsonElement> full = new LinkedHashMap<>();
+        full.put("configVersion", new JsonPrimitive(ConfigSpec.CONFIG_VERSION));
+        for (ConfigSpec.Entry e : ConfigSpec.entries().values()) {
+            JsonElement v = main.get(e.key());
+            full.put(e.key(), v != null ? v : e.def());
+        }
+        writeFile(mainFile, Json5.write(full, HEADER));
+        rebuild();
+    }
 
     // ================================================================== Secrets (API-Keys)
     private void loadSecrets() {

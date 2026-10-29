@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 4;
+    public static final int CONFIG_VERSION = 5;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -301,7 +301,7 @@ public final class ConfigSpec {
         bool("ai.enabled", true, "KI-Assistent aktivieren. Beim ersten Mal erscheint ein Datenschutz-Hinweis.");
         enm("ai.provider", "ollama", "Anbieter: anthropic, openai, gemini, ollama, openai_compatible (eigener Server mit OpenAI-Schnittstelle)",
                 "anthropic", "openai", "gemini", "ollama", "openai_compatible");
-        str("ai.model", "llama3.1", "Modellname. Leer = Standard des Anbieters (anthropic: claude-haiku-5-5, ollama: llama3.1, sonst bitte eintragen).");
+        str("ai.model", "llama3.2", "Modellname. Leer = Standard des Anbieters (anthropic: claude-haiku-5-5, ollama: llama3.1, sonst bitte eintragen).");
         str("ai.endpoint", "", "Eigene Endpoint-URL. Leer = Standard des Anbieters. Ollama: http://localhost:11434/v1/chat/completions");
         str("ai.apiKeyEnvVar", "", "Optional: Name einer Umgebungsvariable, aus der der API-Key gelesen wird (statt secrets.json5).");
         dbl("ai.temperature", 0.3, 0.0, 2.0, "Kreativität (0 = sachlich).");
@@ -310,6 +310,7 @@ public final class ConfigSpec {
         integer("ai.timeoutSeconds", 40, 5, 300, "Zeitlimit pro Anfrage.");
         integer("ai.rateLimitPerMinute", 6, 1, 120, "Maximale Fragen pro Minute.");
         integer("ai.maxToolCalls", 5, 0, 30, "Maximale Tool-Aufrufe pro Frage.");
+        integer("ai.memoryTurns", 6, 0, 30, "Wie viele vorherige Fragen/Antworten die KI sich im Gespräch merkt (0 = keine).");
         str("ai.answerLanguage", "Deutsch", "Antwortsprache.");
         enm("ai.answerLength", "kurz", "Antwortlänge: kurz, mittel, ausfuehrlich", "kurz", "mittel", "ausfuehrlich");
         bool("ai.showTokenUsage", false, "Verbrauchte Tokens nach jeder Antwort anzeigen.");
@@ -325,7 +326,7 @@ public final class ConfigSpec {
                 + "Einmalig: /lx stimme installieren (lädt ca. 250 MB, passiert beim ersten Weltbeitritt automatisch).");
         bool("voice.ttsEnabled", true, "KI-Antworten vorlesen.");
         str("voice.voiceName", "de_DE-kerstin-low", "Stimme. Frauenstimmen: de_DE-kerstin-low, de_DE-ramona-low, de_DE-eva_k-x_low. Wechseln: /lx stimme <name>");
-        dbl("voice.speed", 1.0, 0.5, 2.0, "Sprechtempo (1.0 = normal, größer = schneller).");
+        dbl("voice.speed", 1.1, 0.5, 2.0, "Sprechtempo (1.0 = normal, größer = schneller).");
         dbl("voice.volume", 1.0, 0.05, 1.0, "Lautstärke.");
         integer("voice.maxSpeakChars", 600, 50, 5000, "Höchstens so viele Zeichen vorlesen.");
         bool("voice.sttEnabled", true, "Mit der Stimme fragen (Taste gedrückt halten, siehe hotkeys.pushToTalk).");

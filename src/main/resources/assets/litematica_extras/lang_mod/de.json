@@ -193,5 +193,18 @@
  "voice.help2": "Sprechen: {key} gedrückt halten, reden, loslassen",
  "voice.help3": "/lx stimme an | aus | test | stopp | <Stimmenname>",
  "voice.status": "Vorlesen bereit: {tts} | Spracherkennung bereit: {stt}",
- "voice.ttsToggle": "Vorlesen"
+ "voice.ttsToggle": "Vorlesen",
+ "gui.hotkeys": "Tasten belegen …",
+ "gui.hotkeysTitle": "Tasten belegen – anklicken, dann Taste(n) drücken",
+ "gui.pressKeys": "> Taste(n) drücken … (Esc = keine Taste) <",
+ "gui.none": "keine",
+ "gui.mode.hold": "halten",
+ "gui.mode.toggle": "umschalten",
+ "gui.back": "Zurück",
+ "ollama.notRunning": "Ollama läuft nicht. Starte Ollama (Lama-Symbol unten rechts) und frag nochmal.",
+ "ollama.pulling": "Lade das KI-Modell {model} in Ollama herunter (einmalig, ca. 2 GB). Ich sage Bescheid, wenn es fertig ist …",
+ "ollama.stillPulling": "Das KI-Modell {model} wird noch heruntergeladen – einen Moment bitte.",
+ "ollama.pulled": "KI-Modell {model} ist bereit! Frag mich etwas.",
+ "ollama.pulledSpeak": "So, ich bin bereit. Frag mich einfach!",
+ "ollama.pullFailed": "KI-Modell {model} konnte nicht geladen werden: {error}"
 }

@@ -139,5 +139,18 @@
  "voice.help2": "Talk: hold {key}, speak, release",
  "voice.help3": "/lx voice an | aus | test | stopp | <voice name>",
  "voice.status": "Read aloud ready: {tts} | Speech recognition ready: {stt}",
- "voice.ttsToggle": "Read aloud"
+ "voice.ttsToggle": "Read aloud",
+ "gui.hotkeys": "Key bindings …",
+ "gui.hotkeysTitle": "Key bindings – click, then press key(s)",
+ "gui.pressKeys": "> Press key(s) … (Esc = none) <",
+ "gui.none": "none",
+ "gui.mode.hold": "hold",
+ "gui.mode.toggle": "toggle",
+ "gui.back": "Back",
+ "ollama.notRunning": "Ollama is not running. Start Ollama and ask again.",
+ "ollama.pulling": "Downloading AI model {model} into Ollama (once, about 2 GB) …",
+ "ollama.stillPulling": "AI model {model} is still downloading – please wait.",
+ "ollama.pulled": "AI model {model} is ready! Ask me something.",
+ "ollama.pulledSpeak": "So, ich bin bereit. Frag mich einfach!",
+ "ollama.pullFailed": "AI model {model} could not be downloaded: {error}"
 }

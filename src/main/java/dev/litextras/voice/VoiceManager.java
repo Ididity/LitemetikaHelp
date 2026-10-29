@@ -247,36 +247,78 @@ public final class VoiceManager {
     }
 
     // ================================================================== Sprechen (Piper)
+    /** Jede neue Ausgabe erhöht die Nummer – alte, noch laufende Sätze werden dadurch verworfen. */
+    private static final java.util.concurrent.atomic.AtomicLong SPEECH_GEN = new java.util.concurrent.atomic.AtomicLong();
+    private static final ExecutorService PLAY = Executors.newSingleThreadExecutor(r -> daemon(r, "LitematicaExtras-Abspielen"));
+
+    /**
+     * Liest Text vor. Schnell: Der Text wird in Sätze geteilt; der erste Satz wird sofort erzeugt und abgespielt,
+     * während die nächsten schon im Hintergrund entstehen.
+     */
     public static void speak(String text) {
         if (!Cfg.bool("voice.ttsEnabled") || text == null || text.isBlank()) return;
         if (!windows() || !ttsReady()) return;
-        String clean = text.replaceAll("[*_#`>«»\\[\\]]", " ").replaceAll("\\s+", " ").trim();
+        String clean = text.replaceAll("[*_#`>«»\\[\\]()]", " ").replaceAll("\\s+", " ").trim();
         int max = Cfg.integer("voice.maxSpeakChars");
         if (clean.length() > max) clean = clean.substring(0, max);
-        final String say = clean;
         stopSpeaking();
-        SPEAK.execute(() -> {
-            Path wav = null;
-            try {
-                wav = Files.createTempFile("lx-tts", ".wav");
-                List<String> cmd = new ArrayList<>(List.of(piperExe().toString(), "--model", voiceModel().toString(),
-                        "--output_file", wav.toString(), "--length_scale", String.valueOf(1.0 / Math.max(0.3, Cfg.dbl("voice.speed")))));
-                ProcessBuilder pb = new ProcessBuilder(cmd).directory(piperExe().getParent().toFile()).redirectErrorStream(true);
-                Process p = pb.start();
-                currentPiper = p;
-                try (OutputStream os = p.getOutputStream()) {
-                    os.write(say.getBytes(StandardCharsets.UTF_8));
-                }
-                p.getInputStream().transferTo(OutputStream.nullOutputStream());
-                if (!p.waitFor(60, TimeUnit.SECONDS)) { p.destroyForcibly(); return; }
-                play(wav);
-            } catch (Throwable t) {
-                LitematicaExtras.debug("Sprachausgabe fehlgeschlagen: " + t);
-            } finally {
-                currentPiper = null;
-                if (wav != null) try { Files.deleteIfExists(wav); } catch (IOException ignored) {}
+        long gen = SPEECH_GEN.incrementAndGet();
+        for (String chunk : sentences(clean)) {
+            SPEAK.execute(() -> {
+                if (SPEECH_GEN.get() != gen) return;
+                Path wav = synth(chunk);
+                if (wav == null) return;
+                PLAY.execute(() -> {
+                    try {
+                        if (SPEECH_GEN.get() == gen) play(wav);
+                    } catch (Throwable t) {
+                        LitematicaExtras.debug("Abspielen fehlgeschlagen: " + t);
+                    } finally {
+                        try { Files.deleteIfExists(wav); } catch (IOException ignored) {}
+                    }
+                });
+            });
+        }
+    }
+
+    /** Teilt in Sätze; sehr kurze Stücke werden zusammengefasst, der erste bleibt kurz für schnellen Start. */
+    static List<String> sentences(String text) {
+        List<String> out = new ArrayList<>();
+        StringBuilder cur = new StringBuilder();
+        for (String part : text.split("(?<=[.!?…:;])\\s+")) {
+            if (cur.length() > 0 && (out.isEmpty() ? cur.length() >= 20 : cur.length() + part.length() > 220)) {
+                out.add(cur.toString());
+                cur.setLength(0);
             }
-        });
+            if (cur.length() > 0) cur.append(' ');
+            cur.append(part);
+        }
+        if (cur.length() > 0) out.add(cur.toString());
+        return out;
+    }
+
+    private static Path synth(String say) {
+        Path wav = null;
+        try {
+            wav = Files.createTempFile("lx-tts", ".wav");
+            List<String> cmd = new ArrayList<>(List.of(piperExe().toString(), "--model", voiceModel().toString(),
+                    "--output_file", wav.toString(), "--length_scale", String.valueOf(1.0 / Math.max(0.3, Cfg.dbl("voice.speed"))),
+                    "--sentence_silence", "0.1"));
+            Process p = new ProcessBuilder(cmd).directory(piperExe().getParent().toFile()).redirectErrorStream(true).start();
+            currentPiper = p;
+            try (OutputStream os = p.getOutputStream()) {
+                os.write(say.getBytes(StandardCharsets.UTF_8));
+            }
+            p.getInputStream().transferTo(OutputStream.nullOutputStream());
+            if (!p.waitFor(60, TimeUnit.SECONDS)) { p.destroyForcibly(); return null; }
+            return wav;
+        } catch (Throwable t) {
+            LitematicaExtras.debug("Sprachausgabe fehlgeschlagen: " + t);
+            if (wav != null) try { Files.deleteIfExists(wav); } catch (IOException ignored) {}
+            return null;
+        } finally {
+            currentPiper = null;
+        }
     }
 
     private static void play(Path wav) throws Exception {
@@ -290,12 +332,14 @@ public final class VoiceManager {
             } catch (Exception ignored) {}
             currentClip = clip;
             clip.start();
-            Thread.sleep(Math.max(100, clip.getMicrosecondLength() / 1000));
+            long end = System.currentTimeMillis() + Math.max(100, clip.getMicrosecondLength() / 1000);
+            while (System.currentTimeMillis() < end && clip.isOpen()) Thread.sleep(20);
             clip.close();
         }
     }
 
     public static void stopSpeaking() {
+        SPEECH_GEN.incrementAndGet();
         Clip c = currentClip;
         if (c != null) try { c.stop(); c.close(); } catch (Exception ignored) {}
         Process p = currentPiper;
