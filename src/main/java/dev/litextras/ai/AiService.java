@@ -95,6 +95,16 @@ public final class AiService {
         sb.append("- Koordinaten-Datenschutz: ").append(Cfg.str("ai.privacy.coordinates")).append('\n');
         sb.append("- Die Antwort wird als Minecraft-Chattext angezeigt: kein Markdown, keine Tabellen, keine Überschriften.\n");
         if (tools.isEmpty()) sb.append("- Es sind KEINE Tools freigeschaltet. Sage dem Nutzer, dass er sie in der Config aktivieren kann.\n");
+        List<String> disabled = new ArrayList<>();
+        for (ReadOnlyTool t : ToolRegistry.all()) {
+            if (!ToolRegistry.isEnabled(t)) disabled.add(t.name());
+        }
+        if (!disabled.isEmpty()) {
+            sb.append("- In der Config ausgeschaltet: ").append(String.join(", ", disabled))
+                    .append(". Braucht eine Frage eines davon (z. B. Spieler orten), sage klar: 'Das Tool X ist in der Config ausgeschaltet'"
+                            + " und rate NICHT mit anderen Tools.\n");
+        }
+        sb.append("- Nutze nur Tools, die zur Frage passen. Fragen nach Spielern haben nichts mit der Schematic zu tun.\n");
         if (!blocked.isEmpty()) {
             sb.append("- Gesperrt (Multiplayer-Schutz bzw. Profil 'sicher'): ").append(String.join(", ", blocked))
                     .append(". Wenn eine Frage diese braucht, erkläre, dass sie hier gesperrt sind.\n");
@@ -170,10 +180,29 @@ public final class AiService {
         List<AiTypes.ToolSpec> specs = new ArrayList<>();
         for (ReadOnlyTool t : tools) specs.add(new AiTypes.ToolSpec(t.name(), ToolRegistry.description(t), t.parameters()));
         List<AiTypes.Message> msgs = new ArrayList<>();
-        msgs.add(new AiTypes.UserMsg(question));
         ToolContext ctx = new ToolContext();
         int maxCalls = Cfg.integer("ai.maxToolCalls");
         int usedCalls = 0, inTok = 0, outTok = 0;
+        // Kleine Modelle (z. B. llama3.1) wählen Tools oft falsch. Daher passende Daten vorab abfragen
+        // und direkt mitgeben. Nur aktive (erlaubte) Tools, gleiche Sicherheitsregeln wie sonst.
+        StringBuilder pre = new StringBuilder();
+        for (String name : prefetchFor(question)) {
+            if (usedCalls >= maxCalls) break;
+            ReadOnlyTool t = tools.stream().filter(x -> x.name().equals(name)).findFirst().orElse(null);
+            if (t == null) continue;
+            usedCalls++;
+            String out;
+            try {
+                out = t.execute(new com.google.gson.JsonObject(), ctx);
+            } catch (Exception e) {
+                out = "{\"error\":\"" + safe(String.valueOf(e.getMessage())) + "\"}";
+            }
+            if (out.length() > 6000) out = out.substring(0, 6000) + "…(gekürzt)";
+            pre.append("\n[Vorab abgefragt mit Tool ").append(name).append("]: ").append(out);
+        }
+        String userText = pre.length() == 0 ? question
+                : question + "\n\n--- Bereits abgefragte Spieldaten (benutze sie für die Antwort) ---" + pre;
+        msgs.add(new AiTypes.UserMsg(userText));
         try {
             for (int round = 0; round < maxCalls + 2; round++) {
                 boolean allowTools = usedCalls < maxCalls && !specs.isEmpty();
@@ -214,6 +243,23 @@ public final class AiService {
             LitematicaExtras.LOG.error("KI-Anfrage fehlgeschlagen: {}", t.getClass().getSimpleName());
             deliver(Lang.get("ai.internalError", "error", t.getClass().getSimpleName()), true, inTok, outTok, usedCalls);
         }
+    }
+
+    /** Einfache Stichwort-Zuordnung Frage -> passende Tools. */
+    static List<String> prefetchFor(String q) {
+        String t = q.toLowerCase(java.util.Locale.ROOT);
+        java.util.LinkedHashSet<String> out = new java.util.LinkedHashSet<>();
+        if (t.matches(".*(spieler|player|wer ist|leute|person|jemand).*")) {
+            out.add("get_nearby_players");
+            if (t.matches(".*(online|tab|alle spieler|wie viele).*")) out.add("get_online_players");
+        }
+        if (t.matches("(?s).*\\b(fehlt|fehlen|brauche|material|ebene|layer|missing|bauen)\\b.*")) out.add("get_missing_blocks");
+        if (t.matches(".*(wo bin ich|meine position|koordinat|leben|hunger|wohin schau).*")) out.add("get_player_status");
+        if (t.matches("(?s).*(uhrzeit|zeit|spät|uhr\\b|wetter|biom|\\btag\\b|nacht|dimension|mond).*")) out.add("get_world_info");
+        if (t.matches(".*(inventar|was hab ich|habe ich).*")) out.add("get_inventory");
+        if (t.matches(".*(mob|monster|tier|zombie|creeper|items? am boden).*")) out.add("get_nearby_entities");
+        if (t.matches(".*(anschau|schaue|dieser block|der block hier).*")) out.add("get_looked_at_block");
+        return new ArrayList<>(out);
     }
 
     private static String safe(String s) {
