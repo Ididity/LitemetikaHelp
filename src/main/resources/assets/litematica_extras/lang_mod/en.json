@@ -103,5 +103,17 @@
  "ai.privacyText": "Your questions and game data (coordinates, inventory, schematics, possibly player names) are sent to an external service ({provider}). Control what is sent under ai.privacy and ai.tools in the config.",
  "ai.privacyServer": "Warning: locating players, searching blocks and listing entities count as cheating on many servers and can get you banned – even though everything runs client-side. You are responsible for following server rules.",
  "ai.privacyConfirm": "If you agree, type {cmd}. Your question will then be sent.",
- "ai.privacyAccepted": "Notice confirmed."
+ "ai.privacyAccepted": "Notice confirmed.",
+ "help.replace": "swap blocks in the plan (zurueck = undo, speichern = save as new file)",
+ "replace.help1": "Usage: /{cmd} <from> <to>  e.g. /{cmd} oak_planks spruce_planks",
+ "replace.help2": "Or look at a plan block and type /{cmd} <to>.",
+ "replace.help3": "/{cmd} undo = undo, /{cmd} save = save as new .litematic file",
+ "replace.unknown": "Unknown block: {id}",
+ "replace.noTarget": "You are not looking at a plan block. Give both blocks: /{cmd} <from> <to>",
+ "replace.same": "From and to block are the same.",
+ "replace.done": "{n} blocks swapped: {from} → {to} (in {s} schematic(s)). Undo: /{cmd} undo",
+ "replace.none": "There is no {from} in the plan.",
+ "replace.undone": "{n} blocks swapped back.",
+ "replace.nothingToUndo": "Nothing to undo.",
+ "replace.note": "Note: the change lasts while the schematic is loaded. Permanently: /{cmd} save"
 }

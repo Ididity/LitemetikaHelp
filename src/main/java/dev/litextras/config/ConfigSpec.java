@@ -135,6 +135,7 @@ public final class ConfigSpec {
                   "seethrough": ["xray", "durchsicht"],
                   "layer": ["layer", "ebene"],
                   "aiconfirm": ["ai-confirm", "ki-bestaetigen"],
+                  "replace": ["tausch", "replace"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");

@@ -76,8 +76,10 @@ public final class LookTarget {
         BlockState soll = LitematicaBridge.schematicState(schem, pos);
         BlockState ist = mc.world.getBlockState(pos);
         CompareResult r = BlockComparator.compare(soll, ist);
-        if (Cfg.bool("hud.lookedAt.onlyInSchematic")
-                && (r.status() == CompareResult.Status.NONE || !insidePlacement(pos))) return null;
+        if (r.status() == CompareResult.Status.NONE) return null;
+        // Steht im Plan ein Block, wird immer angezeigt (fehlt/falsch/richtig/ähnlich).
+        // Nur "zu viel" (Plan = Luft) wird außerhalb der Litematica-Bereiche ausgeblendet.
+        if (Cfg.bool("hud.lookedAt.onlyInSchematic") && BlockComparator.isEmpty(soll) && !insidePlacement(pos)) return null;
         return new Target(pos.toImmutable(), r, use.getSide());
     }
 

@@ -157,5 +157,17 @@
  "val.tall": "hoch",
  "val.side": "Seite",
  "val.head": "Kopf",
- "val.foot": "Fuß"
+ "val.foot": "Fuß",
+ "help.replace": "Blöcke im Plan austauschen (zurueck = rückgängig, speichern = als neue Datei)",
+ "replace.help1": "Benutzung: /{cmd} <von> <zu>  z. B. /{cmd} oak_planks spruce_planks",
+ "replace.help2": "Oder auf einen Plan-Block schauen und /{cmd} <zu> eingeben.",
+ "replace.help3": "/{cmd} zurueck = rückgängig, /{cmd} speichern = als neue .litematic-Datei speichern",
+ "replace.unknown": "Unbekannter Block: {id}",
+ "replace.noTarget": "Du schaust auf keinen Plan-Block. Gib beide Blöcke an: /{cmd} <von> <zu>",
+ "replace.same": "Von- und Zu-Block sind gleich.",
+ "replace.done": "{n} Blöcke getauscht: {from} → {to} (in {s} Schematic(s)). Rückgängig: /{cmd} zurueck",
+ "replace.none": "Im Plan gibt es keinen Block {from}.",
+ "replace.undone": "{n} Blöcke zurückgetauscht.",
+ "replace.nothingToUndo": "Nichts zum Rückgängigmachen.",
+ "replace.note": "Hinweis: Die Änderung gilt, solange die Schematic geladen ist. Dauerhaft: /{cmd} speichern"
 }

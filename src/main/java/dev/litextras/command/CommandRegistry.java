@@ -134,6 +134,7 @@ public final class CommandRegistry {
 
     private static List<String> subNames(String id) {
         JsonObject o = Cfg.jsonObject("commands.subcommands");
+        if (!o.has(id)) o = dev.litextras.config.ConfigSpec.get("commands.subcommands").def().getAsJsonObject();
         List<String> out = new ArrayList<>();
         if (o.has(id) && o.get(id).isJsonArray()) for (JsonElement e : o.getAsJsonArray(id)) out.add(e.getAsString());
         if (out.isEmpty()) out.add(id);
@@ -160,6 +161,15 @@ public final class CommandRegistry {
         sub(root, "layer", n -> n.executes(c -> { Actions.run("missing_layer"); return 1; }));
         sub(root, "help", n -> n.executes(c -> { help(); return 1; }));
         sub(root, "aiconfirm", n -> n.executes(c -> { AiService.confirmPrivacy(); return 1; }));
+        sub(root, "replace", n -> n
+                .executes(c -> { ReplaceCommand.help(); return 1; })
+                .then(literal("zurueck").executes(c -> { ReplaceCommand.undo(); return 1; }))
+                .then(literal("undo").executes(c -> { ReplaceCommand.undo(); return 1; }))
+                .then(literal("speichern").executes(c -> { ReplaceCommand.save(); return 1; }))
+                .then(literal("save").executes(c -> { ReplaceCommand.save(); return 1; }))
+                .then(argument("bloecke", StringArgumentType.greedyString())
+                        .suggests((c, b) -> ReplaceCommand.suggest(b))
+                        .executes(c -> { ReplaceCommand.run(StringArgumentType.getString(c, "bloecke")); return 1; })));
         sub(root, "profile", n -> n
                 .executes(c -> {
                     ChatOut.info(Lang.get("msg.profiles", "active", Cfg.manager().activeProfileName(), "all", String.join(", ", Cfg.manager().profileNames())));
@@ -203,6 +213,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("similar").get(0) + " – " + Lang.get("help.similar"));
         ChatOut.info("/" + p + " " + subNames("seethrough").get(0) + " – " + Lang.get("help.seethrough"));
         ChatOut.info("/" + p + " " + subNames("profile").get(0) + " <name> – " + Lang.get("help.profile"));
+        ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));
         if (!Cfg.list("commands.missing.names").isEmpty())
             ChatOut.info("/" + Cfg.list("commands.missing.names").get(0) + " [all|layer|near] – " + Lang.get("help.missing"));
