@@ -47,7 +47,9 @@ public final class HudRenderer {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (mc.player == null || mc.options.hudHidden) return;
         if (!Cfg.bool("hud.enabled")) return;
+        if (mc.currentScreen instanceof dev.litextras.gui.HudEditorScreen) return; // Editor zeichnet selbst
         try {
+            if (Cfg.bool("hud.realtime")) LookTarget.refreshNow(mc); // jedes Bild neu = keine Verzögerung
             SeeThroughRenderer.render(ctx, counter.getTickProgress(false));
             if (HudPanel.enabled("lookedAt")) HudPanel.draw(ctx, "lookedAt", lookedAtLines());
             if (HudPanel.enabled("preview")) HudPanel.draw(ctx, "preview", previewLines());
@@ -173,7 +175,9 @@ public final class HudRenderer {
                     tpl = Cfg.str("templates.neededInventory");
                     v.put("slot", s.slot());
                 }
-                int c = s.slot() <= 8 ? Cfg.color("colors.correct") : Cfg.color("colors.warning");
+                boolean exact = ItemMapping.isExact(soll, s.item());
+                if (!exact) tpl = tpl + Lang.get("needed.similarSuffix");
+                int c = !exact ? Cfg.color("colors.similarItem") : s.slot() <= 8 ? Cfg.color("colors.correct") : Cfg.color("colors.warning");
                 lines.add(new HudPanel.Line(new ItemStack(s.item()), Template.segments(tpl, v, c)));
             }
         }
@@ -184,9 +188,11 @@ public final class HudRenderer {
         }
         if (Cfg.bool("hud.neededItem.highlightHotbar")) {
             int sw = ctx.getScaledWindowWidth(), sh = ctx.getScaledWindowHeight();
-            int border = Cfg.color("colors.hotbarHighlight"), fill = Cfg.color("colors.hotbarHighlightFill");
             for (InventoryIndex.SlotStack s : matches) {
                 if (s.slot() > 8) continue;
+                boolean exact = ItemMapping.isExact(soll, s.item());
+                int border = Cfg.color(exact ? "colors.hotbarHighlight" : "colors.similarItemHighlight");
+                int fill = Cfg.color(exact ? "colors.hotbarHighlightFill" : "colors.similarItemHighlightFill");
                 int x = sw / 2 - 91 + s.slot() * 20 + 1;
                 int y = sh - 22 + 1;
                 ctx.fill(x + 1, y + 1, x + 19, y + 19, fill);
@@ -198,11 +204,31 @@ public final class HudRenderer {
         }
     }
 
+    /** Slot-Index -> exakt(true)/ähnlich(false) für die Inventar-Markierung (leer = nichts markieren). */
+    public static Map<Integer, Boolean> inventoryMarks() {
+        if (!Cfg.bool("hud.neededItem.enabled") || !Cfg.bool("hud.neededItem.highlightInventory")) return Map.of();
+        LookTarget.Target t = LookTarget.current();
+        if (t == null || BlockComparator.isEmpty(t.result().soll())) return Map.of();
+        if (Cfg.bool("hud.neededItem.onlyWhenIncorrect") && !t.result().isError()) return Map.of();
+        BlockState soll = t.result().soll();
+        Map<Integer, Boolean> out = new HashMap<>();
+        for (InventoryIndex.SlotStack s : inventory.matchingSlots(soll)) out.put(s.slot(), ItemMapping.isExact(soll, s.item()));
+        return out;
+    }
+
+    public static int[] markColors(boolean exact) {
+        return exact ? new int[]{Cfg.color("colors.hotbarHighlight"), Cfg.color("colors.hotbarHighlightFill")}
+                : new int[]{Cfg.color("colors.similarItemHighlight"), Cfg.color("colors.similarItemHighlightFill")};
+    }
+
     /** Optional: automatisch auf den passenden Hotbar-Slot wechseln (wie Mausrad – nur Client-Auswahl). */
     private static void handleAutoSwitch(MinecraftClient mc) {
         if (!Cfg.bool("hud.neededItem.autoSwitch") || mc.player == null || mc.currentScreen != null) return;
         LookTarget.Target t = LookTarget.current();
-        if (t == null || !t.result().isError() || BlockComparator.isEmpty(t.result().soll())) { autoSwitchPos = null; return; }
+        // Nur wechseln, wenn der Block FEHLT (Luft). Steht dort ein falscher Block, will man ihn abbauen –
+        // dann bleibt das Werkzeug in der Hand. Auch während man die Angriffstaste hält, nie wechseln.
+        if (t == null || t.result().status() != CompareResult.Status.MISSING || BlockComparator.isEmpty(t.result().soll())) { autoSwitchPos = null; return; }
+        if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchWait = Math.max(autoSwitchWait, Cfg.integer("hud.neededItem.autoSwitchDelayTicks")); return; }
         if (!t.pos().equals(autoSwitchPos)) {
             autoSwitchPos = t.pos();
             autoSwitchWait = Cfg.integer("hud.neededItem.autoSwitchDelayTicks");
@@ -212,7 +238,7 @@ public final class HudRenderer {
         if (autoSwitchWait < 0) return; // bereits gewechselt
         var invObj = mc.player.getInventory();
         int selected = invObj.getSelectedSlot(); // UNSICHER: ab 1.21.5 Getter statt Feld
-        if (ItemMapping.matches(t.result().soll(), invObj.getStack(selected).getItem())) { autoSwitchWait = -1; return; }
+        if (ItemMapping.isExact(t.result().soll(), invObj.getStack(selected).getItem())) { autoSwitchWait = -1; return; }
         for (InventoryIndex.SlotStack s : inventory.matchingSlots(t.result().soll())) {
             if (s.slot() <= 8) {
                 invObj.setSelectedSlot(s.slot()); // UNSICHER: ab 1.21.5 Setter

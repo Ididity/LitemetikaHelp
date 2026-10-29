@@ -126,5 +126,10 @@ public final class ItemMapping {
         return false;
     }
 
+    /** Genau das geplante Item (nicht nur ähnlich). */
+    public static boolean isExact(BlockState soll, Item candidate) {
+        return candidate != null && candidate != Items.AIR && primary(soll) == candidate;
+    }
+
     public static void clearCache() { CACHE.clear(); }
 }

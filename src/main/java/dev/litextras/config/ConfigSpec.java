@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 6;
+    public static final int CONFIG_VERSION = 7;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -137,6 +137,7 @@ public final class ConfigSpec {
                   "aiconfirm": ["ai-confirm", "ki-bestaetigen"],
                   "replace": ["tausch", "replace"],
                   "voice": ["stimme", "voice"],
+                  "hudedit": ["hud", "hudedit"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -166,6 +167,7 @@ public final class ConfigSpec {
         hotkey("openConfig", "LEFT_ALT+O", "toggle", "Einstellungs-Fenster öffnen");
         hotkey("missingList", "LEFT_ALT+M", "toggle", "Fehlliste (Ebene oder Umgebung) im Chat anzeigen");
         hotkey("pushToTalk", "LEFT_ALT+V", "hold", "Gedrückt halten und sprechen – die KI bekommt deine Frage per Stimme");
+        hotkey("hudEditor", "LEFT_ALT+U", "toggle", "HUD-Editor öffnen (Anzeigen verschieben und vergrößern)");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
@@ -180,6 +182,10 @@ public final class ConfigSpec {
         color("colors.neutral", "#AAAAAA", "Nebeninfo");
         color("colors.hotbarHighlight", "#C055FF55", "Rahmen um passenden Hotbar-Slot");
         color("colors.hotbarHighlightFill", "#4055FF55", "Hintergrund des passenden Hotbar-Slots");
+        color("colors.similarItem", "#FFFF55", "Text für Items, die nur ähnlich (nicht exakt) passen");
+        color("colors.similarItemHighlight", "#C0FFFF55", "Rahmen um Slots mit nur ähnlichem Item (gelb)");
+        color("colors.similarItemHighlightFill", "#40FFFF55", "Hintergrund von Slots mit nur ähnlichem Item");
+        bool("hud.neededItem.highlightInventory", true, "Passende Slots auch im geöffneten Inventar markieren (grün = exakt, gelb = ähnlich).");
 
         section("templates", "Textvorlagen. Platzhalter in geschweiften Klammern.\n"
                 + "Allgemein: {soll}, {ist}, {abweichungen}, {block}, {props}, {status}, {item}, {slot}, {need}, {have}, {fehl}, {layer}, {count}, {result}, {pos}");
@@ -204,7 +210,8 @@ public final class ConfigSpec {
         section("hud", "HUD-Grundeinstellungen");
         bool("hud.enabled", true, "Gesamtes HUD des Mods.");
         bool("hud.textShadow", true, "Text mit Schatten.");
-        integer("hud.updateIntervalTicks", 2, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
+        bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
+        integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);
         list("hud.lookedAt.lines", "Reihenfolge/Sichtbarkeit der Zeilen: status, soll, ist, diff, compact, pos", "status", "soll", "ist", "diff");
         bool("hud.lookedAt.onlyInSchematic", true, "Nur anzeigen, wenn der Block zur Schematic gehört (oder dort stört).");
@@ -220,7 +227,7 @@ public final class ConfigSpec {
         hudElement("layerList", "Feature 4: Fehlliste der aktuellen Ebene", true, "top_left", 4, 40, 12);
         bool("hud.layerList.onlyInLayerMode", true, "Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.");
         enm("hud.layerList.sort", "shortfall", "Sortierung: shortfall (Fehlbetrag), amount (Menge), name", "shortfall", "amount", "name");
-        integer("hud.layerList.updateIntervalMs", 1500, 250, 60000, "Gedrosselte Neuberechnung in Millisekunden.");
+        integer("hud.layerList.updateIntervalMs", 400, 100, 60000, "Gedrosselte Neuberechnung in Millisekunden.");
         bool("hud.layerList.includeWrongState", false, "Falsch gedrehte Blöcke als zusätzlichen Materialbedarf zählen (Standard aus: beim Abbauen bekommst du das Item zurück).");
         bool("hud.layerList.includeWrongType", true, "Falsche Blöcke mitzählen.");
         hudElement("status", "Kleine Statusanzeige (aktive Modi, Profil)", true, "top_right", -4, 4, 4);
@@ -271,7 +278,7 @@ public final class ConfigSpec {
         section("scan", "Hintergrund-Berechnung (läuft nie im Render-Thread)");
         integer("scan.nearRadius", 48, 8, 256, "Radius um den Spieler für 'Umgebung' (Durchsicht, /missing near).");
         integer("scan.maxBlocksPerScan", 3000000, 10000, 50000000, "Obergrenze geprüfter Positionen pro Durchlauf (Schutz vor Rucklern).");
-        integer("scan.minIntervalMs", 500, 100, 60000, "Mindestabstand zwischen zwei automatischen Scans.");
+        integer("scan.minIntervalMs", 150, 50, 60000, "Mindestabstand zwischen zwei automatischen Scans.");
         integer("scan.fullRescanSeconds", 10, 1, 600, "Zusätzlich spätestens nach so vielen Sekunden neu prüfen (falls eine Änderung nicht gemeldet wurde).");
 
         // =================================================================== FEATURE 5
@@ -290,7 +297,7 @@ public final class ConfigSpec {
         bool("seeThrough.showWrongType", true, "Falsche Blöcke zeigen.");
         bool("seeThrough.showWrongState", true, "Falsch ausgerichtete Blöcke zeigen.");
         bool("seeThrough.showExtra", false, "Überzählige Blöcke zeigen.");
-        integer("seeThrough.updateIntervalMs", 750, 100, 60000, "Wie oft die Fehlerliste neu berechnet wird.");
+        integer("seeThrough.updateIntervalMs", 300, 100, 60000, "Wie oft die Fehlerliste neu berechnet wird.");
         color("seeThrough.colorMissing", "#FF55AAFF", "Farbe fehlend");
         color("seeThrough.colorWrongType", "#FFFF5555", "Farbe falscher Block");
         color("seeThrough.colorWrongState", "#FFFFAA00", "Farbe falsch ausgerichtet");

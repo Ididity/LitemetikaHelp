@@ -121,6 +121,9 @@ public class LitematicaExtras implements ClientModInitializer {
         });
         Hotkeys.register("reloadConfig", down -> { if (down) reload(true); });
         Hotkeys.register("openConfig", down -> { if (down) Actions.run("open_config"); });
+        Hotkeys.register("hudEditor", down -> {
+            if (down) { MinecraftClient mc = MinecraftClient.getInstance(); mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null))); }
+        });
         Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
         Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {

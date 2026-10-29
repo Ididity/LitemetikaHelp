@@ -46,6 +46,19 @@ public final class LookTarget {
         preview = computePreview(mc, schem);
     }
 
+    private static long lastRefreshNanos = 0;
+
+    /** Jedes Bild aufrufbar (höchstens alle 15 ms), damit die Anzeige ohne Verzögerung dem Blick folgt. */
+    public static void refreshNow(MinecraftClient mc) {
+        long now = System.nanoTime();
+        if (now - lastRefreshNanos < 15_000_000L) return;
+        lastRefreshNanos = now;
+        if (mc.player == null || mc.world == null) return;
+        World schem = LitematicaBridge.schematicWorld();
+        current = computeTarget(mc, schem);
+        preview = computePreview(mc, schem);
+    }
+
     /** Sofort neu berechnen (z. B. für die KI). Haupt-Thread. */
     public static Target computeNow(MinecraftClient mc) {
         return computeTarget(mc, LitematicaBridge.schematicWorld());

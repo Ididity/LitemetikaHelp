@@ -193,6 +193,16 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 6 -> 7: schnellere Aktualisierung der Anzeigen.
+        if (fromVersion < 7) {
+            JsonObject h = root.has("hud") && root.get("hud").isJsonObject() ? root.getAsJsonObject("hud") : null;
+            if (h != null) {
+                h.addProperty("updateIntervalTicks", 1);
+                if (h.has("layerList") && h.get("layerList").isJsonObject()) h.getAsJsonObject("layerList").addProperty("updateIntervalMs", 400);
+            }
+            if (root.has("scan") && root.get("scan").isJsonObject()) root.getAsJsonObject("scan").addProperty("minIntervalMs", 150);
+            if (root.has("seeThrough") && root.get("seeThrough").isJsonObject()) root.getAsJsonObject("seeThrough").addProperty("updateIntervalMs", 300);
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 

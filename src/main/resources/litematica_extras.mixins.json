@@ -4,7 +4,8 @@
   "package": "dev.litextras.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "WorldBlockChangeMixin"
+    "WorldBlockChangeMixin",
+    "HandledScreenHighlightMixin"
   ],
   "injectors": {
     "defaultRequire": 0

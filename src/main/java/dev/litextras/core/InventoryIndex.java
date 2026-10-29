@@ -61,10 +61,14 @@ public final class InventoryIndex {
         return n;
     }
 
-    /** Alle passenden Slots (Hotbar zuerst, dann Inventar, dann Offhand). */
+    /** Alle passenden Slots: zuerst exakt richtige Items, danach nur ähnliche (jeweils Hotbar, Inventar, Offhand). */
     public List<SlotStack> matchingSlots(BlockState soll) {
-        List<SlotStack> out = new ArrayList<>();
-        for (SlotStack s : stacks) if ((s.slot() <= 35 || s.slot() == 40) && ItemMapping.matches(soll, s.item())) out.add(s);
-        return out;
+        List<SlotStack> exact = new ArrayList<>(), similar = new ArrayList<>();
+        for (SlotStack s : stacks) {
+            if (!(s.slot() <= 35 || s.slot() == 40) || !ItemMapping.matches(soll, s.item())) continue;
+            (ItemMapping.isExact(soll, s.item()) ? exact : similar).add(s);
+        }
+        exact.addAll(similar);
+        return exact;
     }
 }

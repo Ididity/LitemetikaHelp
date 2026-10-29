@@ -161,6 +161,11 @@ public final class CommandRegistry {
         sub(root, "layer", n -> n.executes(c -> { Actions.run("missing_layer"); return 1; }));
         sub(root, "help", n -> n.executes(c -> { help(); return 1; }));
         sub(root, "aiconfirm", n -> n.executes(c -> { AiService.confirmPrivacy(); return 1; }));
+        sub(root, "hudedit", n -> n.executes(c -> {
+            MinecraftClient mc = MinecraftClient.getInstance();
+            mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null)));
+            return 1;
+        }));
         sub(root, "voice", n -> n
                 .executes(c -> { voiceHelp(); return 1; })
                 .then(literal("installieren").executes(c -> { dev.litextras.voice.VoiceManager.install(true); return 1; }))
