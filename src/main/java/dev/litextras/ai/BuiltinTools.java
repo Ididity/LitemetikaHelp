@@ -119,7 +119,7 @@ public final class BuiltinTools {
                     LitematicaBridge.LayerInfo li = ctx.onMainThread(LitematicaBridge::layer);
                     JsonObject o = new JsonObject();
                     o.addProperty("mode", li.mode());
-                    o.addProperty("axis", li.axis().getName());
+                    o.addProperty("axis", li.axis().asString());
                     o.addProperty("label", li.label());
                     o.addProperty("restricting", li.restricting());
                     if (li.restricting()) {

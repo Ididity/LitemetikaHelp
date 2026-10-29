@@ -69,7 +69,7 @@ public final class LitematicaBridge {
             };
         }
         public String label() {
-            String ax = axis.getName().toUpperCase();
+            String ax = axis.asString().toUpperCase();
             if (!restricting) return "Alle Ebenen";
             if (min == max) return "Ebene " + ax + "=" + min;
             String lo = min <= -RANGE ? "…" : String.valueOf(min);
