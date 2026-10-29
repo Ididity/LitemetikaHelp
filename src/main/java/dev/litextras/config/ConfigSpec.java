@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 5;
+    public static final int CONFIG_VERSION = 6;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -335,7 +335,8 @@ public final class ConfigSpec {
         dbl("voice.volume", 1.0, 0.05, 1.0, "Lautstärke.");
         integer("voice.maxSpeakChars", 600, 50, 5000, "Höchstens so viele Zeichen vorlesen.");
         bool("voice.sttEnabled", true, "Mit der Stimme fragen (Taste gedrückt halten, siehe hotkeys.pushToTalk).");
-        enm("voice.sttModel", "base", "Spracherkennungs-Modell: tiny (schnell), base (Standard), small (genauer, langsamer)", "tiny", "base", "small");
+        enm("voice.sttModel", "small", "Spracherkennungs-Modell: tiny (schnell), base (Standard), small (genauer, langsamer)", "tiny", "base", "small");
+        str("voice.micName", "", "Mikrofon (leer = Windows-Standard). Liste: /lx stimme mikros, auswählen: /lx stimme mikro <Nummer>");
         str("voice.sttLanguage", "de", "Sprache der Spracherkennung (de, en, auto).");
         integer("voice.maxRecordSeconds", 20, 2, 120, "Maximale Aufnahmelänge.");
         bool("voice.autoInstall", true, "Fehlende Sprachprogramme beim ersten Weltbeitritt automatisch herunterladen.");

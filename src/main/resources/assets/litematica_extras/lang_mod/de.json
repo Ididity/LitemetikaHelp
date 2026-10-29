@@ -186,12 +186,12 @@
  "voice.listening": "🎤 Ich höre zu … (Taste loslassen zum Senden)",
  "voice.micError": "Mikrofon nicht verfügbar: {error}",
  "voice.tooShort": "Zu kurz – Taste länger gedrückt halten.",
- "voice.notUnderstood": "Ich habe nichts verstanden.",
+ "voice.notUnderstood": "Ich habe nichts verstanden. Tipp: Taste erst drücken, dann deutlich sprechen, dann loslassen.",
  "voice.youSaid": "Du: {text}",
  "voice.sttError": "Spracherkennung fehlgeschlagen: {error}",
  "voice.help1": "/lx stimme installieren – lädt Stimme und Spracherkennung (einmalig)",
  "voice.help2": "Sprechen: {key} gedrückt halten, reden, loslassen",
- "voice.help3": "/lx stimme an | aus | test | stopp | maedchen | junge | nett | frech | derb",
+ "voice.help3": "/lx stimme an | aus | test | stopp | mikros | mikro <Nr> | maedchen | junge | nett | frech | derb",
  "voice.status": "Vorlesen bereit: {tts} | Spracherkennung bereit: {stt}",
  "voice.ttsToggle": "Vorlesen",
  "gui.hotkeys": "Tasten belegen …",
@@ -213,5 +213,10 @@
  "gui.personality": "Art",
  "gui.nice": "nett",
  "gui.cheeky": "frech",
- "gui.crude": "derb"
+ "gui.crude": "derb",
+ "voice.processing": "Verstehe …",
+ "voice.tooQuiet": "Ich höre fast nichts – falsches Mikrofon? Liste: /lx stimme mikros, wählen: /lx stimme mikro <Nummer>",
+ "voice.micList": "Mikrofone (auswählen mit /lx stimme mikro <Nummer>):",
+ "voice.micDefault": "Windows-Standard",
+ "voice.micSet": "Mikrofon: {name}"
 }

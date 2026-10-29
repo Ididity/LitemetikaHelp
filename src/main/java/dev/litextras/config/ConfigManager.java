@@ -188,6 +188,11 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("speed", 1.1);
         }
+        // Version 5 -> 6: genauere Spracherkennung (small statt base).
+        if (fromVersion < 6) {
+            com.google.gson.JsonElement v = root.get("voice");
+            if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
+        }
         root.addProperty("configVersion", ConfigSpec.CONFIG_VERSION);
     }
 

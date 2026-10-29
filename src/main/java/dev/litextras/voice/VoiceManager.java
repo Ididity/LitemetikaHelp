@@ -372,22 +372,63 @@ public final class VoiceManager {
         else stopRecordingAndAsk();
     }
 
+    private static volatile float recordRate = 16000f;
+
+    /** Alle Mikrofone (Aufnahmegeräte). */
+    public static List<javax.sound.sampled.Mixer.Info> microphones() {
+        List<javax.sound.sampled.Mixer.Info> out = new ArrayList<>();
+        DataLine.Info want = new DataLine.Info(TargetDataLine.class, new AudioFormat(44100f, 16, 1, true, false));
+        for (javax.sound.sampled.Mixer.Info mi : AudioSystem.getMixerInfo()) {
+            try {
+                if (AudioSystem.getMixer(mi).isLineSupported(want)) out.add(mi);
+            } catch (Exception ignored) {}
+        }
+        return out;
+    }
+
+    /** Öffnet das eingestellte (oder Standard-)Mikrofon; erst 16 kHz, sonst 48/44,1 kHz (wird später umgerechnet). */
+    private static TargetDataLine openMic() throws Exception {
+        String name = Cfg.str("voice.micName");
+        javax.sound.sampled.Mixer mixer = null;
+        if (!name.isBlank()) {
+            for (javax.sound.sampled.Mixer.Info mi : microphones()) {
+                if (mi.getName().equals(name)) { mixer = AudioSystem.getMixer(mi); break; }
+            }
+        }
+        Exception last = null;
+        for (float rate : new float[]{16000f, 48000f, 44100f}) {
+            AudioFormat fmt = new AudioFormat(rate, 16, 1, true, false);
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, fmt);
+            try {
+                TargetDataLine line = mixer != null ? (TargetDataLine) mixer.getLine(info) : (TargetDataLine) AudioSystem.getLine(info);
+                line.open(fmt, (int) (rate / 5) * 2);
+                recordRate = rate;
+                return line;
+            } catch (Exception e) {
+                last = e;
+            }
+        }
+        throw last != null ? last : new IllegalStateException("kein Mikrofon");
+    }
+
     private static void startRecording() {
         if (!windows()) { ChatOut.warn(Lang.get("voice.onlyWindows")); return; }
-        if (!sttReady()) { ChatOut.warn(Lang.get("voice.notInstalled")); return; }
+        if (!sttReady()) {
+            ChatOut.warn(Lang.get("voice.notInstalled"));
+            install(false);
+            return;
+        }
         if (!RECORDING.compareAndSet(false, true)) return;
         stopSpeaking();
         try {
-            AudioFormat fmt = new AudioFormat(16000f, 16, 1, true, false);
-            TargetDataLine line = (TargetDataLine) AudioSystem.getLine(new DataLine.Info(TargetDataLine.class, fmt));
-            line.open(fmt);
+            TargetDataLine line = openMic();
             line.start();
             mic = line;
             recorded = new ByteArrayOutputStream();
             ChatOut.send(Lang.get("voice.listening"), 0x55FFFF);
             Thread t = new Thread(() -> {
-                byte[] buf = new byte[3200];
-                long maxBytes = 32000L * Cfg.integer("voice.maxRecordSeconds");
+                byte[] buf = new byte[4096];
+                long maxBytes = (long) (recordRate * 2) * Cfg.integer("voice.maxRecordSeconds");
                 while (RECORDING.get() && recorded.size() < maxBytes) {
                     int n = line.read(buf, 0, buf.length);
                     if (n > 0) recorded.write(buf, 0, n);
@@ -401,46 +442,111 @@ public final class VoiceManager {
         }
     }
 
+    /** 16-bit-PCM -> 16 kHz, Pegel anheben (Normalisieren), damit Whisper gut versteht. */
+    static short[] prepare(byte[] pcm, float rate) {
+        int n = pcm.length / 2;
+        short[] in = new short[n];
+        for (int i = 0; i < n; i++) in[i] = (short) ((pcm[2 * i] & 0xFF) | (pcm[2 * i + 1] << 8));
+        short[] out;
+        if (Math.abs(rate - 16000f) < 1) out = in;
+        else {
+            double ratio = rate / 16000.0;
+            int m = (int) (n / ratio);
+            out = new short[m];
+            for (int i = 0; i < m; i++) {
+                // Mittelwert über das Fenster = einfacher Tiefpass gegen Verzerrung
+                int from = (int) (i * ratio), to = Math.min(n, (int) ((i + 1) * ratio));
+                long sum = 0;
+                for (int k = from; k < Math.max(from + 1, to); k++) sum += in[Math.min(k, n - 1)];
+                out[i] = (short) (sum / Math.max(1, to - from));
+            }
+        }
+        // Gleichanteil entfernen und normalisieren
+        long mean = 0;
+        for (short v : out) mean += v;
+        mean = out.length == 0 ? 0 : mean / out.length;
+        int peak = 1;
+        for (int i = 0; i < out.length; i++) {
+            int v = out[i] - (int) mean;
+            out[i] = (short) Math.max(-32768, Math.min(32767, v));
+            peak = Math.max(peak, Math.abs(v));
+        }
+        lastPeak = peak / 32768.0;
+        if (peak > 300 && peak < 26000) {
+            double gain = Math.min(20.0, 26000.0 / peak);
+            for (int i = 0; i < out.length; i++) out[i] = (short) Math.max(-32768, Math.min(32767, Math.round(out[i] * gain)));
+        }
+        return out;
+    }
+
+    static volatile double lastPeak = 0;
+
     private static void stopRecordingAndAsk() {
         if (!RECORDING.compareAndSet(true, false)) return;
         TargetDataLine line = mic;
         ByteArrayOutputStream data = recorded;
         mic = null;
         if (line != null) { line.stop(); line.close(); }
-        if (data == null || data.size() < 8000) { // < 0,25 s
+        float rate = recordRate;
+        if (data == null || data.size() < rate * 2 * 0.3) {
             ChatOut.send(Lang.get("voice.tooShort"), 0xAAAAAA);
             return;
         }
+        ChatOut.send(Lang.get("voice.processing"), 0xAAAAAA);
         WORK.execute(() -> {
-            Path wav = null;
             try {
-                wav = Files.createTempFile("lx-stt", ".wav");
-                byte[] pcm = data.toByteArray();
+                short[] samples = prepare(data.toByteArray(), rate);
+                if (lastPeak < 0.01) {
+                    ChatOut.warn(Lang.get("voice.tooQuiet"));
+                    return;
+                }
+                byte[] pcm = new byte[samples.length * 2];
+                for (int i = 0; i < samples.length; i++) { pcm[2 * i] = (byte) samples[i]; pcm[2 * i + 1] = (byte) (samples[i] >> 8); }
+                Path wav = dir().resolve("letzte-aufnahme.wav");
                 AudioFormat fmt = new AudioFormat(16000f, 16, 1, true, false);
-                try (AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(pcm), fmt, pcm.length / 2)) {
+                try (AudioInputStream ais = new AudioInputStream(new ByteArrayInputStream(pcm), fmt, samples.length)) {
                     AudioSystem.write(ais, javax.sound.sampled.AudioFileFormat.Type.WAVE, wav.toFile());
                 }
-                List<String> cmd = List.of(whisperExe().toString(), "-m", whisperModel().toString(), "-l", Cfg.str("voice.sttLanguage"),
-                        "-nt", "-f", wav.toString());
-                Process p = new ProcessBuilder(cmd).directory(whisperExe().getParent().toFile()).redirectErrorStream(false).start();
-                p.getOutputStream().close();
-                Thread drain = new Thread(() -> { try { p.getErrorStream().transferTo(OutputStream.nullOutputStream()); } catch (IOException ignored) {} });
-                drain.setDaemon(true);
-                drain.start();
-                String out = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-                p.waitFor(60, TimeUnit.SECONDS);
-                String text = out.replaceAll("\\[[^\\]]*\\]", " ").replaceAll("\\([^)]*\\)", " ").replaceAll("\\s+", " ").trim();
-                if (text.isEmpty()) {
+                int threads = Math.max(2, Math.min(8, Runtime.getRuntime().availableProcessors() - 1));
+                List<String> cmd = new ArrayList<>(List.of(whisperExe().toString(), "-m", whisperModel().toString(),
+                        "-l", Cfg.str("voice.sttLanguage"), "-t", String.valueOf(threads), "-nt", "-np", "-f", wav.toString(),
+                        "--prompt", "Minecraft, Litematica, Schematic, Ebene, Block, Bauen, Creeper, Spieler."));
+                String text = runWhisper(cmd);
+                if (text == null) {
+                    // ältere whisper-Versionen kennen -np/--prompt nicht -> ohne erneut
+                    cmd.removeIf(x -> x.equals("-np"));
+                    int pi = cmd.indexOf("--prompt");
+                    if (pi >= 0) { cmd.remove(pi + 1); cmd.remove(pi); }
+                    text = runWhisper(cmd);
+                }
+                if (text == null || text.isEmpty()) {
                     ChatOut.send(Lang.get("voice.notUnderstood"), 0xAAAAAA);
                     return;
                 }
-                ChatOut.send(Lang.get("voice.youSaid", "text", text), 0xFFFFAA);
-                net.minecraft.client.MinecraftClient.getInstance().execute(() -> AiService.ask(text));
+                final String said = text;
+                ChatOut.send(Lang.get("voice.youSaid", "text", said), 0xFFFFAA);
+                net.minecraft.client.MinecraftClient.getInstance().execute(() -> AiService.ask(said));
             } catch (Exception e) {
                 ChatOut.error(Lang.get("voice.sttError", "error", String.valueOf(e.getMessage())));
-            } finally {
-                if (wav != null) try { Files.deleteIfExists(wav); } catch (IOException ignored) {}
             }
         });
+    }
+
+    /** Startet whisper und liefert den erkannten Text (ohne [BLANK_AUDIO] usw.), null bei Programmfehler. */
+    private static String runWhisper(List<String> cmd) throws Exception {
+        Process p = new ProcessBuilder(cmd).directory(whisperExe().getParent().toFile()).start();
+        p.getOutputStream().close();
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        Thread drain = new Thread(() -> { try { p.getErrorStream().transferTo(err); } catch (IOException ignored) {} });
+        drain.setDaemon(true);
+        drain.start();
+        String out = new String(p.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        if (!p.waitFor(120, TimeUnit.SECONDS)) { p.destroyForcibly(); return ""; }
+        drain.join(1000);
+        if (p.exitValue() != 0 && out.isBlank()) {
+            LitematicaExtras.LOG.warn("whisper Fehler: {}", err.toString(StandardCharsets.UTF_8));
+            return null;
+        }
+        return out.replaceAll("\\[[^\\]]*\\]", " ").replaceAll("\\([^)]*\\)", " ").replaceAll("\\s+", " ").trim();
     }
 }

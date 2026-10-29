@@ -137,7 +137,7 @@
  "voice.sttError": "Speech recognition failed: {error}",
  "voice.help1": "/lx voice install – downloads voice and speech recognition (once)",
  "voice.help2": "Talk: hold {key}, speak, release",
- "voice.help3": "/lx voice an | aus | test | stopp | maedchen | junge | nett | frech | derb",
+ "voice.help3": "/lx voice an | aus | test | stopp | mikros | mikro <nr> | maedchen | junge | nett | frech | derb",
  "voice.status": "Read aloud ready: {tts} | Speech recognition ready: {stt}",
  "voice.ttsToggle": "Read aloud",
  "gui.hotkeys": "Key bindings …",
@@ -159,5 +159,10 @@
  "gui.personality": "Style",
  "gui.nice": "nice",
  "gui.cheeky": "cheeky",
- "gui.crude": "crude"
+ "gui.crude": "crude",
+ "voice.processing": "Understanding …",
+ "voice.tooQuiet": "I hear almost nothing – wrong microphone? List: /lx voice mikros",
+ "voice.micList": "Microphones (select with /lx voice mikro <number>):",
+ "voice.micDefault": "Windows default",
+ "voice.micSet": "Microphone: {name}"
 }

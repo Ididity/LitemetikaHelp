@@ -169,6 +169,9 @@ public final class CommandRegistry {
                 .then(literal("aus").executes(c -> { setVoice(false); return 1; }))
                 .then(literal("test").executes(c -> { dev.litextras.voice.VoiceManager.speak(Lang.get("voice.hello")); return 1; }))
                 .then(literal("stopp").executes(c -> { dev.litextras.voice.VoiceManager.stopSpeaking(); return 1; }))
+                .then(literal("mikros").executes(c -> { listMics(); return 1; }))
+                .then(literal("mikro").then(argument("nummer", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 99))
+                        .executes(c -> { setMic(com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "nummer")); return 1; })))
                 .then(literal("maedchen").executes(c -> { persona("maedchen"); return 1; }))
                 .then(literal("junge").executes(c -> { persona("junge"); return 1; }))
                 .then(literal("nett").executes(c -> { personality("nett"); return 1; }))
@@ -224,6 +227,24 @@ public final class CommandRegistry {
         ChatOut.info(Lang.get("voice.help3"));
         ChatOut.send(Lang.get("voice.status", "tts", Lang.get(dev.litextras.voice.VoiceManager.ttsReady() ? "msg.on" : "msg.off"),
                 "stt", Lang.get(dev.litextras.voice.VoiceManager.sttReady() ? "msg.on" : "msg.off")), 0xAAAAAA);
+    }
+
+    private static void listMics() {
+        var mics = dev.litextras.voice.VoiceManager.microphones();
+        String cur = Cfg.str("voice.micName");
+        ChatOut.info(Lang.get("voice.micList"));
+        ChatOut.info("0: " + Lang.get("voice.micDefault") + (cur.isBlank() ? "  ✔" : ""));
+        for (int i = 0; i < mics.size(); i++) {
+            String n = mics.get(i).getName();
+            ChatOut.info((i + 1) + ": " + n + (n.equals(cur) ? "  ✔" : ""));
+        }
+    }
+
+    private static void setMic(int nr) {
+        var mics = dev.litextras.voice.VoiceManager.microphones();
+        String name = nr == 0 || nr > mics.size() ? "" : mics.get(nr - 1).getName();
+        Cfg.manager().setPersistent("voice.micName", new com.google.gson.JsonPrimitive(name));
+        ChatOut.ok(Lang.get("voice.micSet", "name", name.isBlank() ? Lang.get("voice.micDefault") : name));
     }
 
     private static void persona(String p) {
