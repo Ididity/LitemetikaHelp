@@ -93,7 +93,25 @@ public final class VoiceManager {
 
     private static Path piperExe() { return findFile(dir().resolve("piper"), "piper.exe"); }
     private static Path whisperExe() { return findFile(dir().resolve("whisper"), "whisper-cli.exe", "main.exe"); }
-    private static Path voiceModel() { return dir().resolve("voices").resolve(Cfg.str("voice.voiceName") + ".onnx"); }
+    /** Aktuelle Stimme: Frauenstimme (voice.voiceName) oder Männerstimme (voice.maleVoice) je nach Persona. */
+    public static String currentVoice() {
+        return "junge".equals(Cfg.str("ai.persona")) ? Cfg.str("voice.maleVoice") : Cfg.str("voice.voiceName");
+    }
+
+    private static Path voiceModel() { return dir().resolve("voices").resolve(currentVoice() + ".onnx"); }
+
+    /** Nach Persona-Wechsel: fehlende Stimme im Hintergrund laden und kurz Hallo sagen. */
+    public static void personaChanged() {
+        if (!windows() || piperExe() == null) return;
+        WORK.execute(() -> {
+            try {
+                ensureVoice(currentVoice());
+                speak(Lang.get("voice.hello"));
+            } catch (Exception e) {
+                ChatOut.error(Lang.get("voice.voiceUnknown", "name", currentVoice()));
+            }
+        });
+    }
     private static Path whisperModel() { return dir().resolve("models").resolve("ggml-" + Cfg.str("voice.sttModel") + ".bin"); }
 
     public static boolean ttsReady() { return piperExe() != null && Files.exists(voiceModel()) && Files.exists(Path.of(voiceModel() + ".json")); }
@@ -122,7 +140,7 @@ public final class VoiceManager {
                     unzip(zip, dir().resolve("piper"));
                     Files.deleteIfExists(zip);
                 }
-                ensureVoice(Cfg.str("voice.voiceName"));
+                ensureVoice(currentVoice());
                 if (whisperExe() == null) {
                     String url = findWhisperZip();
                     if (url == null) {

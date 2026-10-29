@@ -169,6 +169,10 @@ public final class CommandRegistry {
                 .then(literal("aus").executes(c -> { setVoice(false); return 1; }))
                 .then(literal("test").executes(c -> { dev.litextras.voice.VoiceManager.speak(Lang.get("voice.hello")); return 1; }))
                 .then(literal("stopp").executes(c -> { dev.litextras.voice.VoiceManager.stopSpeaking(); return 1; }))
+                .then(literal("maedchen").executes(c -> { persona("maedchen"); return 1; }))
+                .then(literal("junge").executes(c -> { persona("junge"); return 1; }))
+                .then(literal("nett").executes(c -> { personality("nett"); return 1; }))
+                .then(literal("frech").executes(c -> { personality("frech"); return 1; }))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((c, b) -> {
                             for (String v : new String[]{"de_DE-kerstin-low", "de_DE-ramona-low", "de_DE-eva_k-x_low", "de_DE-thorsten-high", "de_DE-thorsten-medium"}) b.suggest(v);
@@ -219,6 +223,18 @@ public final class CommandRegistry {
         ChatOut.info(Lang.get("voice.help3"));
         ChatOut.send(Lang.get("voice.status", "tts", Lang.get(dev.litextras.voice.VoiceManager.ttsReady() ? "msg.on" : "msg.off"),
                 "stt", Lang.get(dev.litextras.voice.VoiceManager.sttReady() ? "msg.on" : "msg.off")), 0xAAAAAA);
+    }
+
+    private static void persona(String p) {
+        Cfg.manager().setPersistent("ai.persona", new com.google.gson.JsonPrimitive(p));
+        AiService.resetSession();
+        ChatOut.ok(Lang.get("gui.persona") + ": " + Lang.get("junge".equals(p) ? "gui.boy" : "gui.girl"));
+        dev.litextras.voice.VoiceManager.personaChanged();
+    }
+
+    private static void personality(String p) {
+        Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(p));
+        ChatOut.ok(Lang.get("gui.personality") + ": " + Lang.get("frech".equals(p) ? "gui.cheeky" : "gui.nice"));
     }
 
     private static void setVoice(boolean on) {

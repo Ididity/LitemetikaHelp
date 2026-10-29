@@ -310,6 +310,10 @@ public final class ConfigSpec {
         integer("ai.timeoutSeconds", 40, 5, 300, "Zeitlimit pro Anfrage.");
         integer("ai.rateLimitPerMinute", 6, 1, 120, "Maximale Fragen pro Minute.");
         integer("ai.maxToolCalls", 5, 0, 30, "Maximale Tool-Aufrufe pro Frage.");
+        enm("ai.persona", "maedchen", "Wer redet mit dir: maedchen (Frauenstimme) oder junge (Männerstimme).", "maedchen", "junge");
+        enm("ai.personality", "nett", "Art: nett (herzlich) oder frech (schlagfertig, neckt dich im Spaß).", "nett", "frech");
+        str("ai.nameGirl", "Mia", "Name, wenn persona = maedchen.");
+        str("ai.nameBoy", "Max", "Name, wenn persona = junge.");
         integer("ai.memoryTurns", 6, 0, 30, "Wie viele vorherige Fragen/Antworten die KI sich im Gespräch merkt (0 = keine).");
         str("ai.answerLanguage", "Deutsch", "Antwortsprache.");
         enm("ai.answerLength", "kurz", "Antwortlänge: kurz, mittel, ausfuehrlich", "kurz", "mittel", "ausfuehrlich");
@@ -326,6 +330,7 @@ public final class ConfigSpec {
                 + "Einmalig: /lx stimme installieren (lädt ca. 250 MB, passiert beim ersten Weltbeitritt automatisch).");
         bool("voice.ttsEnabled", true, "KI-Antworten vorlesen.");
         str("voice.voiceName", "de_DE-kerstin-low", "Stimme. Frauenstimmen: de_DE-kerstin-low, de_DE-ramona-low, de_DE-eva_k-x_low. Wechseln: /lx stimme <name>");
+        str("voice.maleVoice", "de_DE-thorsten-medium", "Männerstimme (für persona = junge). Weitere: de_DE-thorsten-high, de_DE-karlsson-low");
         dbl("voice.speed", 1.1, 0.5, 2.0, "Sprechtempo (1.0 = normal, größer = schneller).");
         dbl("voice.volume", 1.0, 0.05, 1.0, "Lautstärke.");
         integer("voice.maxSpeakChars", 600, 50, 5000, "Höchstens so viele Zeichen vorlesen.");

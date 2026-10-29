@@ -179,7 +179,7 @@
  "voice.installFailed": "Installation der Stimme fehlgeschlagen: {error}",
  "voice.whisperNotFound": "Spracherkennung (whisper) nicht automatisch gefunden. Lege whisper-cli.exe manuell in {dir}.",
  "voice.progress": "{what}: {pct}% von {mb} MB",
- "voice.hello": "Hallo! Ich bin deine Bau-Assistentin. Halte die Taste gedrückt und frag mich einfach.",
+ "voice.hello": "Hey! Halte die Taste gedrückt und frag mich einfach was.",
  "voice.voiceSet": "Stimme gewechselt: {name}",
  "voice.voiceUnknown": "Stimme {name} nicht gefunden. Beispiele: de_DE-kerstin-low, de_DE-ramona-low, de_DE-eva_k-x_low",
  "voice.notInstalled": "Spracherkennung ist noch nicht installiert: /lx stimme installieren",
@@ -191,7 +191,7 @@
  "voice.sttError": "Spracherkennung fehlgeschlagen: {error}",
  "voice.help1": "/lx stimme installieren – lädt Stimme und Spracherkennung (einmalig)",
  "voice.help2": "Sprechen: {key} gedrückt halten, reden, loslassen",
- "voice.help3": "/lx stimme an | aus | test | stopp | <Stimmenname>",
+ "voice.help3": "/lx stimme an | aus | test | stopp | maedchen | junge | nett | frech",
  "voice.status": "Vorlesen bereit: {tts} | Spracherkennung bereit: {stt}",
  "voice.ttsToggle": "Vorlesen",
  "gui.hotkeys": "Tasten belegen …",
@@ -206,5 +206,11 @@
  "ollama.stillPulling": "Das KI-Modell {model} wird noch heruntergeladen – einen Moment bitte.",
  "ollama.pulled": "KI-Modell {model} ist bereit! Frag mich etwas.",
  "ollama.pulledSpeak": "So, ich bin bereit. Frag mich einfach!",
- "ollama.pullFailed": "KI-Modell {model} konnte nicht geladen werden: {error}"
+ "ollama.pullFailed": "KI-Modell {model} konnte nicht geladen werden: {error}",
+ "gui.persona": "Stimme",
+ "gui.girl": "Mädchen",
+ "gui.boy": "Junge",
+ "gui.personality": "Art",
+ "gui.nice": "nett",
+ "gui.cheeky": "frech"
 }

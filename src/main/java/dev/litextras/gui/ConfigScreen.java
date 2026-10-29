@@ -89,6 +89,19 @@ public class ConfigScreen extends Screen {
             clearAndInit();
         }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;
+        boolean boy = "junge".equals(Cfg.str("ai.persona"));
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.persona") + ": " + Lang.get(boy ? "gui.boy" : "gui.girl")), b -> {
+            Cfg.manager().setPersistent("ai.persona", new com.google.gson.JsonPrimitive(boy ? "maedchen" : "junge"));
+            dev.litextras.ai.AiService.resetSession();
+            dev.litextras.voice.VoiceManager.personaChanged();
+            clearAndInit();
+        }).dimensions(left, by, colW, 20).build());
+        boolean frech = "frech".equals(Cfg.str("ai.personality"));
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.personality") + ": " + Lang.get(frech ? "gui.cheeky" : "gui.nice")), b -> {
+            Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(frech ? "nett" : "frech"));
+            clearAndInit();
+        }).dimensions(left + colW + gap, by, colW, 20).build());
+        by += 24;
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.hotkeys")), b -> {
             if (this.client != null) this.client.setScreen(new HotkeyScreen(this));
         }).dimensions(left, by, colW * 2 + gap, 20).build());
