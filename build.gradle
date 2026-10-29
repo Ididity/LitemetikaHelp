@@ -5,7 +5,8 @@ plugins {
     id 'maven-publish'
 }
 
-version = project.mod_version
+// Jede Version bekommt eine eigene Nummer: auf GitHub 1.0.<Bau-Nummer>, lokal mod_version
+version = System.getenv('GITHUB_RUN_NUMBER') ? "1.0.${System.getenv('GITHUB_RUN_NUMBER')}" : project.mod_version
 group = project.maven_group
 base { archivesName = project.archives_base_name }
 

@@ -55,13 +55,15 @@ jobs:
           } > classes.txt 2>&1 || true
 
       - name: Prüfen, ob die Mod-Datei vollständig ist
-        run: unzip -l build/libs/litematica-extras-1.0.0.jar | grep -E "fabric.mod.json|LitematicaExtras.class"
+        run: unzip -l $(ls build/libs/*.jar | grep -v sources) | grep -E "fabric.mod.json|LitematicaExtras.class|icon.png"
 
       - name: Fertige Mod-Datei hochladen
         uses: actions/upload-artifact@v4
         with:
           name: litematica-extras-jar
-          path: build/libs/litematica-extras-1.0.0.jar
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
 
       - name: Bau-Protokoll speichern (für Fehlersuche)
         if: always()
@@ -69,7 +71,7 @@ jobs:
           mkdir -p /tmp/log && cp build.log /tmp/log/ 2>/dev/null || echo "kein Log" > /tmp/log/build.log
           cp versions.lock.properties /tmp/log/ 2>/dev/null || true
           cp classes.txt /tmp/log/ 2>/dev/null || true
-          cp build/libs/litematica-extras-1.0.0.jar /tmp/log/ 2>/dev/null || true
+          cp $(ls build/libs/*.jar | grep -v sources) /tmp/log/ 2>/dev/null || true
           cd /tmp/log
           git init -q && git checkout -q -b build-log
           git config user.name "build-bot" && git config user.email "build-bot@users.noreply.github.com"

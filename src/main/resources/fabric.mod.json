@@ -6,6 +6,7 @@
   "description": "Clientseitiges Litematica-Addon: ähnliche Blöcke akzeptieren, Soll/Ist-HUD mit Platzier-Vorschau, Item-Markierung, Ebenen-Fehlliste, Fehler-Durchsicht und optionaler KI-Assistent (nur lesend).",
   "authors": ["Litematica Extras"],
   "license": "MIT",
+  "icon": "assets/litematica_extras/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": ["dev.litextras.LitematicaExtras"]
