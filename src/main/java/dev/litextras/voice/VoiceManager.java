@@ -321,7 +321,10 @@ public final class VoiceManager {
             wav = Files.createTempFile("lx-tts", ".wav");
             List<String> cmd = new ArrayList<>(List.of(piperExe().toString(), "--model", voiceModel().toString(),
                     "--output_file", wav.toString(), "--length_scale", String.valueOf(1.0 / Math.max(0.3, Cfg.dbl("voice.speed"))),
-                    "--sentence_silence", "0.1"));
+                    "--sentence_silence", "0.12",
+                    "--noise_scale", String.valueOf(Cfg.dbl("voice.expressiveness")),
+                    "--noise_w", "0.8"));
+            if (Cfg.integer("voice.speaker") >= 0) { cmd.add("--speaker"); cmd.add(String.valueOf(Cfg.integer("voice.speaker"))); }
             Process p = new ProcessBuilder(cmd).directory(piperExe().getParent().toFile()).redirectErrorStream(true).start();
             currentPiper = p;
             try (OutputStream os = p.getOutputStream()) {

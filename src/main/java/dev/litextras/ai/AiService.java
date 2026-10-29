@@ -114,7 +114,8 @@ public final class AiService {
         if ("derb".equals(Cfg.str("ai.personality"))) {
             sb.append("- Modus DERB ist an (vom erwachsenen Nutzer ausdrücklich gewählt): Roaste ihn gnadenlos und mit Schimpfwörtern, wenn er"
                     + " dich beleidigt oder herausfordert – kreativ, böse-witzig, übertrieben, wie ein Roast unter Kumpels. Fluchen ist erlaubt."
-                    + " Die IMMER-verboten-Liste aus den festen Regeln gilt trotzdem. Bei normalen Fragen hilf trotzdem richtig, gern mit Sprüchen.\n");
+                    + " Die IMMER-verboten-Liste aus den festen Regeln gilt trotzdem. Bei normalen Fragen hilf trotzdem richtig, gern mit Sprüchen."
+                    + " Verweigere keine normalen Schimpfwörter, zensiere sie nicht mit Sternchen, entschuldige dich nicht und halte keine Moralpredigt.\n");
         } else if ("frech".equals(Cfg.str("ai.personality"))) {
             sb.append("- Modus FRECH ist an: Sei schlagfertig, frech und sarkastisch. Necke und roaste den Nutzer im Spaß, besonders wenn er dich"
                     + " beleidigt oder herausfordert – kontere witzig und übertrieben (z. B. über seine Baukünste, Creeper-Unfälle, Noob-Fehler)."
@@ -137,7 +138,10 @@ public final class AiService {
                     + " keine Klammern, Zahlen ausgeschrieben wo es natürlicher klingt.\n");
         }
         sb.append("- Nicht jede Frage braucht ein Tool. Bei Plaudereien oder allgemeinen Fragen antworte direkt aus deinem Wissen.\n");
-        if (tools.isEmpty()) sb.append("- Es sind KEINE Tools freigeschaltet. Sage dem Nutzer, dass er sie in der Config aktivieren kann.\n");
+        sb.append("- WICHTIG: Antworte NUR auf das, was gerade gefragt oder gesagt wurde. Erzähle nichts Ungefragtes über Minecraft,"
+                + " die Schematic, Spieldaten, Tools oder dich selbst. Keine Einleitungen, keine Zusammenfassungen, keine Zusatzangebote"
+                + " wie 'Soll ich noch…?'. Wenn jemand nur Hallo sagt, sag kurz Hallo zurück.\n");
+        if (tools.isEmpty()) sb.append("- Für diese Nachricht stehen keine Spiel-Tools bereit – antworte einfach normal im Gespräch.\n");
         List<String> disabled = new ArrayList<>();
         for (ReadOnlyTool t : ToolRegistry.all()) {
             if (!ToolRegistry.isEnabled(t)) disabled.add(t.name());
@@ -207,7 +211,8 @@ public final class AiService {
             }
             ensureTools();
             List<String> blocked = new ArrayList<>();
-            List<ReadOnlyTool> tools = ToolRegistry.activeTools(mc, blocked);
+            // Bei reinen Plaudereien keine Spiel-Tools anbieten – sonst erzählen kleine Modelle ungefragt Spieldaten.
+            final List<ReadOnlyTool> tools = gameRelated(question) ? ToolRegistry.activeTools(mc, blocked) : List.of();
             String system = systemPrompt(mc, blocked, tools);
             ChatOut.send(Lang.get("ai.question", "q", question), 0xAAAAAA);
             final AiTypes.Provider provider0 = p;
@@ -293,6 +298,14 @@ public final class AiService {
             LitematicaExtras.LOG.error("KI-Anfrage fehlgeschlagen: {}", t.getClass().getSimpleName());
             deliver(Lang.get("ai.internalError", "error", t.getClass().getSimpleName()), true, inTok, outTok, usedCalls);
         }
+    }
+
+    /** Klingt die Frage nach Spiel/Bauen? Nur dann bekommt die KI Spiel-Tools. */
+    static boolean gameRelated(String q) {
+        if (!prefetchFor(q).isEmpty()) return true;
+        String t = q.toLowerCase(java.util.Locale.ROOT);
+        return t.matches("(?s).*(minecraft|litematica|schematic|block|blöcke|bau|ebene|layer|inventar|item|spieler|player|server|welt|"
+                + "koordinat|creeper|zombie|mob|kiste|truhe|redstone|biom|nether|end\\b|chunk|wo ist|wo bin|wie viel|wieviel|fehlt|material).*");
     }
 
     /** Einfache Stichwort-Zuordnung Frage -> passende Tools. */

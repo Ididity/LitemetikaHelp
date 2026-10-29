@@ -169,6 +169,14 @@ public final class CommandRegistry {
                 .then(literal("aus").executes(c -> { setVoice(false); return 1; }))
                 .then(literal("test").executes(c -> { dev.litextras.voice.VoiceManager.speak(Lang.get("voice.hello")); return 1; }))
                 .then(literal("stopp").executes(c -> { dev.litextras.voice.VoiceManager.stopSpeaking(); return 1; }))
+                .then(literal("sprecher").then(argument("nr", com.mojang.brigadier.arguments.IntegerArgumentType.integer(-1, 999))
+                        .executes(c -> {
+                            int nr = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "nr");
+                            Cfg.manager().setPersistent("voice.speaker", new com.google.gson.JsonPrimitive(nr));
+                            ChatOut.ok(Lang.get("voice.speakerSet", "nr", nr));
+                            dev.litextras.voice.VoiceManager.speak(Lang.get("voice.hello"));
+                            return 1;
+                        })))
                 .then(literal("mikros").executes(c -> { listMics(); return 1; }))
                 .then(literal("mikro").then(argument("nummer", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 99))
                         .executes(c -> { setMic(com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "nummer")); return 1; })))
@@ -179,7 +187,7 @@ public final class CommandRegistry {
                 .then(literal("derb").executes(c -> { personality("derb"); return 1; }))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((c, b) -> {
-                            for (String v : new String[]{"de_DE-kerstin-low", "de_DE-ramona-low", "de_DE-eva_k-x_low", "de_DE-thorsten-high", "de_DE-thorsten-medium"}) b.suggest(v);
+                            for (String v : new String[]{"de_DE-kerstin-low", "de_DE-ramona-low", "de_DE-eva_k-x_low", "de_DE-mls-medium", "de_DE-thorsten-high", "de_DE-thorsten-medium"}) b.suggest(v);
                             return b.buildFuture();
                         })
                         .executes(c -> { dev.litextras.voice.VoiceManager.setVoice(StringArgumentType.getString(c, "name")); return 1; })));

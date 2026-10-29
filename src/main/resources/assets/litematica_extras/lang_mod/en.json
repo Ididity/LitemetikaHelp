@@ -164,5 +164,6 @@
  "voice.tooQuiet": "I hear almost nothing – wrong microphone? List: /lx voice mikros",
  "voice.micList": "Microphones (select with /lx voice mikro <number>):",
  "voice.micDefault": "Windows default",
- "voice.micSet": "Microphone: {name}"
+ "voice.micSet": "Microphone: {name}",
+ "voice.speakerSet": "Speaker {nr} set (for multi-speaker voices like de_DE-mls-medium)."
 }

@@ -218,5 +218,6 @@
  "voice.tooQuiet": "Ich höre fast nichts – falsches Mikrofon? Liste: /lx stimme mikros, wählen: /lx stimme mikro <Nummer>",
  "voice.micList": "Mikrofone (auswählen mit /lx stimme mikro <Nummer>):",
  "voice.micDefault": "Windows-Standard",
- "voice.micSet": "Mikrofon: {name}"
+ "voice.micSet": "Mikrofon: {name}",
+ "voice.speakerSet": "Sprecher {nr} eingestellt (wirkt bei Stimmen mit mehreren Sprechern, z. B. de_DE-mls-medium)."
 }

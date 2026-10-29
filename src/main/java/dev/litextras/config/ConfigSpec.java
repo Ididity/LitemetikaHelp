@@ -331,6 +331,8 @@ public final class ConfigSpec {
         bool("voice.ttsEnabled", true, "KI-Antworten vorlesen.");
         str("voice.voiceName", "de_DE-kerstin-low", "Stimme. Frauenstimmen: de_DE-kerstin-low, de_DE-ramona-low, de_DE-eva_k-x_low. Wechseln: /lx stimme <name>");
         str("voice.maleVoice", "de_DE-thorsten-medium", "Männerstimme (für persona = junge). Weitere: de_DE-thorsten-high, de_DE-karlsson-low");
+        integer("voice.speaker", -1, -1, 999, "Sprecher-Nummer bei Stimmen mit mehreren Sprechern (z. B. de_DE-mls-medium). -1 = Standard. Ausprobieren: /lx stimme sprecher <Nr>");
+        dbl("voice.expressiveness", 0.6, 0.0, 1.2, "Lebendigkeit der Stimme (0 = monoton, 0.6 = natürlich, 1 = sehr lebhaft).");
         dbl("voice.speed", 1.1, 0.5, 2.0, "Sprechtempo (1.0 = normal, größer = schneller).");
         dbl("voice.volume", 1.0, 0.05, 1.0, "Lautstärke.");
         integer("voice.maxSpeakChars", 600, 50, 5000, "Höchstens so viele Zeichen vorlesen.");
