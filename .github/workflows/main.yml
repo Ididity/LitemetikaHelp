@@ -1,37 +1,11 @@
-name: Mod bauen
-
-on:
-  push:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Projekt auspacken
-        run: |
-          if [ -f Mod-Dateien.zip ]; then unzip -o -q Mod-Dateien.zip -d . ; fi
-          ls src/main/resources/fabric.mod.json
-
-      - name: Java 21 einrichten
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Gradle einrichten
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 9.5.1
-
-      - name: Bauen
-        run: gradle build --stacktrace
-
-      - name: Prüfen, ob die Mod-Datei vollständig ist
-        run: |
-          JAR=$(ls build/libs/*.jar | grep -v sources | head -1)
-          unzip -l "$JAR" | grep -E "fabric.mod.json|LitematicaExtras.class"
-
-      - name: Fertige
+{"name": "Mod bauen",
+"on": {"push": null, "workflow_dispatch": null},
+"jobs": {"build": {"runs-on": "ubuntu-latest", "steps": [
+{"uses": "actions/checkout@v4"},
+{"name": "Projekt auspacken", "run": "unzip -o -q Mod-Dateien.zip -d . && ls src/main/resources/fabric.mod.json"},
+{"uses": "actions/setup-java@v4", "with": {"distribution": "temurin", "java-version": "21"}},
+{"uses": "gradle/actions/setup-gradle@v4", "with": {"gradle-version": "9.5.1"}},
+{"name": "Bauen", "run": "gradle build --stacktrace"},
+{"name": "Pruefen", "run": "unzip -l build/libs/litematica-extras-1.0.0.jar | grep fabric.mod.json"},
+{"name": "Hochladen", "uses": "actions/upload-artifact@v4", "with": {"name": "litematica-extras-jar", "path": "build/libs/litematica-extras-1.0.0.jar"}}
+]}}}
