@@ -5,6 +5,9 @@ import com.google.gson.JsonObject;
 import dev.litextras.config.Cfg;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FallingBlock;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
@@ -160,7 +163,7 @@ public final class EquivalenceGroups {
         return Cfg.bool("compare.similar.solidBlocks") && isPlainSolid(soll.getDefaultState()) && isPlainSolid(candidate.getDefaultState());
     }
 
-    /** Voller Quader (Kollision), keine Redstone-Eigenschaften, keine BlockEntity, nicht auf Blacklist. */
+    /** Voller Quader (Kollision), leitet Redstone, normales Kolbenverhalten, kein Fallblock, keine Redstone-Eigenschaften, keine BlockEntity, nicht auf Blacklist. */
     public static boolean isPlainSolid(BlockState s) {
         return SOLID_CACHE.computeIfAbsent(s, st -> {
             try {
@@ -172,6 +175,12 @@ public final class EquivalenceGroups {
                 if (st.emitsRedstonePower()) return false;
                 if (st.hasComparatorOutput()) return false;
                 if (st.hasBlockEntity()) return false;
+                // Kolben-Verhalten muss normal sein: Obsidian, weinender Obsidian, Bedrock, Ankerblöcke usw.
+                // (unbeweglich) und glasierte Keramik (nur schiebbar) sind für Redstone-Maschinen etwas anderes.
+                if (st.getPistonBehavior() != PistonBehavior.NORMAL) return false;
+                // Schleim/Honig kleben an Kolben, Sand/Kies/Trockenbeton fallen – nie "gleich" wie Stein.
+                if (st.isOf(Blocks.SLIME_BLOCK) || st.isOf(Blocks.HONEY_BLOCK)) return false;
+                if (st.getBlock() instanceof FallingBlock) return false;
                 for (Matcher m : solidBlacklist) if (m.matches(st)) return false;
                 return true;
             } catch (Throwable t) {
