@@ -96,9 +96,11 @@ public class ConfigScreen extends Screen {
             dev.litextras.voice.VoiceManager.personaChanged();
             clearAndInit();
         }).dimensions(left, by, colW, 20).build());
-        boolean frech = "frech".equals(Cfg.str("ai.personality"));
-        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.personality") + ": " + Lang.get(frech ? "gui.cheeky" : "gui.nice")), b -> {
-            Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(frech ? "nett" : "frech"));
+        String art = Cfg.str("ai.personality");
+        String artLabel = "derb".equals(art) ? "gui.crude" : "frech".equals(art) ? "gui.cheeky" : "gui.nice";
+        String next = "nett".equals(art) ? "frech" : "frech".equals(art) ? "derb" : "nett";
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.personality") + ": " + Lang.get(artLabel)), b -> {
+            Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(next));
             clearAndInit();
         }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;

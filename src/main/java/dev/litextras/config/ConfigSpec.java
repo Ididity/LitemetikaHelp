@@ -311,7 +311,7 @@ public final class ConfigSpec {
         integer("ai.rateLimitPerMinute", 6, 1, 120, "Maximale Fragen pro Minute.");
         integer("ai.maxToolCalls", 5, 0, 30, "Maximale Tool-Aufrufe pro Frage.");
         enm("ai.persona", "maedchen", "Wer redet mit dir: maedchen (Frauenstimme) oder junge (Männerstimme).", "maedchen", "junge");
-        enm("ai.personality", "nett", "Art: nett (herzlich) oder frech (schlagfertig, neckt dich im Spaß).", "nett", "frech");
+        enm("ai.personality", "nett", "Art: nett (herzlich), frech (neckt im Spaß) oder derb (roastet mit Schimpfwörtern – nur für Erwachsene).", "nett", "frech", "derb");
         str("ai.nameGirl", "Mia", "Name, wenn persona = maedchen.");
         str("ai.nameBoy", "Max", "Name, wenn persona = junge.");
         integer("ai.memoryTurns", 6, 0, 30, "Wie viele vorherige Fragen/Antworten die KI sich im Gespräch merkt (0 = keine).");

@@ -173,6 +173,7 @@ public final class CommandRegistry {
                 .then(literal("junge").executes(c -> { persona("junge"); return 1; }))
                 .then(literal("nett").executes(c -> { personality("nett"); return 1; }))
                 .then(literal("frech").executes(c -> { personality("frech"); return 1; }))
+                .then(literal("derb").executes(c -> { personality("derb"); return 1; }))
                 .then(argument("name", StringArgumentType.word())
                         .suggests((c, b) -> {
                             for (String v : new String[]{"de_DE-kerstin-low", "de_DE-ramona-low", "de_DE-eva_k-x_low", "de_DE-thorsten-high", "de_DE-thorsten-medium"}) b.suggest(v);
@@ -234,7 +235,7 @@ public final class CommandRegistry {
 
     private static void personality(String p) {
         Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(p));
-        ChatOut.ok(Lang.get("gui.personality") + ": " + Lang.get("frech".equals(p) ? "gui.cheeky" : "gui.nice"));
+        ChatOut.ok(Lang.get("gui.personality") + ": " + Lang.get("derb".equals(p) ? "gui.crude" : "frech".equals(p) ? "gui.cheeky" : "gui.nice"));
     }
 
     private static void setVoice(boolean on) {
