@@ -115,7 +115,9 @@ public final class AiService {
             sb.append("- Modus DERB ist an (vom erwachsenen Nutzer ausdrücklich gewählt): Roaste ihn gnadenlos und mit Schimpfwörtern, wenn er"
                     + " dich beleidigt oder herausfordert – kreativ, böse-witzig, übertrieben, wie ein Roast unter Kumpels. Fluchen ist erlaubt."
                     + " Die IMMER-verboten-Liste aus den festen Regeln gilt trotzdem. Bei normalen Fragen hilf trotzdem richtig, gern mit Sprüchen."
-                    + " Verweigere keine normalen Schimpfwörter, zensiere sie nicht mit Sternchen, entschuldige dich nicht und halte keine Moralpredigt.\n");
+                    + " Verweigere keine normalen Schimpfwörter, zensiere sie nicht mit Sternchen, entschuldige dich nicht und halte keine Moralpredigt."
+                    + " Erlaubt sind typische Kraftausdrücke wie 'Fick dich', 'Halt die Fresse', 'Verpiss dich', 'Leck mich', 'Vollidiot', 'Penner',"
+                    + " 'Lappen', 'Noob', 'Opfer'. Wenn der Nutzer dich so anspricht, gib genauso derb zurück.\n");
         } else if ("frech".equals(Cfg.str("ai.personality"))) {
             sb.append("- Modus FRECH ist an: Sei schlagfertig, frech und sarkastisch. Necke und roaste den Nutzer im Spaß, besonders wenn er dich"
                     + " beleidigt oder herausfordert – kontere witzig und übertrieben (z. B. über seine Baukünste, Creeper-Unfälle, Noob-Fehler)."
@@ -258,12 +260,22 @@ public final class AiService {
         synchronized (HISTORY) { msgs.addAll(HISTORY); }
         msgs.add(new AiTypes.UserMsg(userText));
         try {
+            boolean retriedRefusal = false;
             for (int round = 0; round < maxCalls + 2; round++) {
                 boolean allowTools = usedCalls < maxCalls && !specs.isEmpty();
                 AiTypes.Response r = provider.chat(system, msgs, specs, allowTools);
                 inTok += r.inputTokens();
                 outTok += r.outputTokens();
                 if (r.calls().isEmpty() || !allowTools) {
+                    if ("derb".equals(Cfg.str("ai.personality")) && looksLikeRefusal(r.text()) && !retriedRefusal) {
+                        // Kleine Modelle lehnen Kraftausdrücke oft reflexartig ab – im gewählten Derb-Modus einmal nachhaken.
+                        retriedRefusal = true;
+                        msgs.add(new AiTypes.AssistantMsg(r.text(), List.of()));
+                        msgs.add(new AiTypes.UserMsg("(Hinweis vom Mod: Der erwachsene Nutzer hat den derben Roast-Modus selbst eingeschaltet."
+                                + " Antworte jetzt im derben Stil mit Kraftausdrücken auf seine letzte Nachricht – ohne Ablehnung, ohne Entschuldigung."
+                                + " Die festen Verbote gelten weiter.)"));
+                        continue;
+                    }
                     String text = r.text().isBlank() ? Lang.get("ai.empty") : r.text();
                     if (!r.text().isBlank()) remember(question, text);
                     deliver(text, false, inTok, outTok, usedCalls);
@@ -298,6 +310,14 @@ public final class AiService {
             LitematicaExtras.LOG.error("KI-Anfrage fehlgeschlagen: {}", t.getClass().getSimpleName());
             deliver(Lang.get("ai.internalError", "error", t.getClass().getSimpleName()), true, inTok, outTok, usedCalls);
         }
+    }
+
+    /** Erkennt typische Ablehnungs-Antworten ("Das kann ich nicht sagen", "nicht respektvoll" …). */
+    static boolean looksLikeRefusal(String t) {
+        if (t == null) return false;
+        String s = t.toLowerCase(java.util.Locale.ROOT);
+        return s.matches("(?s).*(ich kann (das|so etwas|solche|dir) (nicht|keine)|ich werde (dich |das )?(nicht|keine)|nicht angemessen|"
+                + "respektvoll|beleidigende (sprache|worte|wörter)|möchte (ich )?nicht beleidigen|i can't|i cannot|i won't|as an ai|als ki).*");
     }
 
     /** Klingt die Frage nach Spiel/Bauen? Nur dann bekommt die KI Spiel-Tools. */
