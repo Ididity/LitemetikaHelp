@@ -2,18 +2,17 @@ name: Mod bauen
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Projekt auspacken
-        run: |
-          if [ -f Mod-Dateien.zip ]; then unzip -o -q Mod-Dateien.zip -d . ; fi
-          ls src/main/resources/fabric.mod.json
 
       - name: Java 21 einrichten
         uses: actions/setup-java@v4
@@ -27,25 +26,27 @@ jobs:
           gradle-version: 9.5.1
 
       - name: Bauen
-        run: gradle build --stacktrace
+        run: |
+          set -o pipefail
+          gradle build --stacktrace 2>&1 | tee build.log
 
       - name: Prüfen, ob die Mod-Datei vollständig ist
-        run: |
-          JAR=$(ls build/libs/*.jar | grep -v sources | head -1)
-          unzip -l "$JAR" | grep -E "fabric.mod.json|LitematicaExtras.class"
+        run: unzip -l build/libs/litematica-extras-1.0.0.jar | grep -E "fabric.mod.json|LitematicaExtras.class"
 
       - name: Fertige Mod-Datei hochladen
         uses: actions/upload-artifact@v4
         with:
           name: litematica-extras-jar
-          path: |
-            build/libs/*.jar
-            !build/libs/*-sources.jar
+          path: build/libs/litematica-extras-1.0.0.jar
 
-      - name: Aufgelöste Versionen hochladen
+      - name: Bau-Protokoll speichern (für Fehlersuche)
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: versions-lock
-          path: versions.lock.properties
-          if-no-files-found: ignore
+        run: |
+          mkdir -p /tmp/log && cp build.log /tmp/log/ 2>/dev/null || echo "kein Log" > /tmp/log/build.log
+          cp versions.lock.properties /tmp/log/ 2>/dev/null || true
+          cd /tmp/log
+          git init -q && git checkout -q -b build-log
+          git config user.name "build-bot" && git config user.email "build-bot@users.noreply.github.com"
+          echo "${{ job.status }} ${{ github.sha }}" > status.txt
+          git add -A && git commit -qm "Bau-Protokoll ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" build-log
