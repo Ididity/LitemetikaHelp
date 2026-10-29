@@ -5,8 +5,8 @@ import fi.dy.masa.litematica.data.DataManager;
 import fi.dy.masa.litematica.schematic.placement.SchematicPlacement;
 import fi.dy.masa.litematica.schematic.placement.SubRegionPlacement;
 import fi.dy.masa.litematica.selection.Box;
-import fi.dy.masa.litematica.util.LayerMode;
-import fi.dy.masa.litematica.util.LayerRange;
+import fi.dy.masa.malilib.util.LayerMode;
+import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.litematica.world.SchematicWorldHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -131,12 +131,12 @@ public final class LitematicaBridge {
     }
 
     // ------------------------------------------------------------------ Layer
-    /** Nur auf dem Haupt-Thread aufrufen. */
+    /** Nur auf dem Haupt-Thread aufrufen. LayerRange/LayerMode liegen seit Malilib 0.27 in fi.dy.masa.malilib.util. */
     public static LayerInfo layer() {
         try {
             LayerRange r = DataManager.getRenderLayerRange();
             LayerMode mode = r.getLayerMode();
-            Direction.Axis axis = r.getAxis();
+            Direction.Axis axis = axisOf(r);
             switch (mode) {
                 case SINGLE_LAYER -> {
                     int v = r.getLayerSingle();
@@ -146,13 +146,10 @@ public final class LitematicaBridge {
                     return new LayerInfo("range", axis, r.getLayerRangeMin(), r.getLayerRangeMax(), true);
                 }
                 case ALL_ABOVE -> {
-                    // Grenze per Abfrage bestimmen – vermeidet unsichere Getter-Namen
-                    long lo = boundary(r, axis, true);
-                    return new LayerInfo("above", axis, lo, RANGE, true);
+                    return new LayerInfo("above", axis, r.getLayerAbove(), RANGE, true);
                 }
                 case ALL_BELOW -> {
-                    long hi = boundary(r, axis, false);
-                    return new LayerInfo("below", axis, -RANGE, hi, true);
+                    return new LayerInfo("below", axis, -RANGE, r.getLayerBelow(), true);
                 }
                 default -> {
                     return new LayerInfo("all", axis, -RANGE, RANGE, false);
@@ -163,24 +160,24 @@ public final class LitematicaBridge {
         }
     }
 
-    private static long boundary(LayerRange r, Direction.Axis axis, boolean above) {
-        long lo = -RANGE, hi = RANGE;
-        // above: kleinstes v mit within(v); below: größtes v mit within(v)
-        while (lo < hi) {
-            long mid = above ? Math.floorDiv(lo + hi, 2) : Math.floorDiv(lo + hi + 1, 2);
-            boolean in = r.isPositionWithinRange(posOnAxis(axis, (int) mid));
-            if (above) { if (in) hi = mid; else lo = mid + 1; }
-            else { if (in) lo = mid; else hi = mid - 1; }
+    /** Achse per Reflection (Methodenname je nach Malilib-Version), Standard Y. */
+    private static Direction.Axis axisOf(Object range) {
+        for (String m : new String[]{"getAxis", "getLayerAxis"}) {
+            try {
+                Object a = range.getClass().getMethod(m).invoke(range);
+                if (a instanceof Direction.Axis ax) return ax;
+            } catch (Throwable ignored) {}
         }
-        return lo;
-    }
-
-    private static BlockPos posOnAxis(Direction.Axis axis, int v) {
-        return switch (axis) {
-            case X -> new BlockPos(v, 64, 0);
-            case Y -> new BlockPos(0, v, 0);
-            case Z -> new BlockPos(0, 64, v);
-        };
+        try {
+            for (java.lang.reflect.Field f : range.getClass().getDeclaredFields()) {
+                if (f.getType() == Direction.Axis.class) {
+                    f.setAccessible(true);
+                    Object a = f.get(range);
+                    if (a instanceof Direction.Axis ax) return ax;
+                }
+            }
+        } catch (Throwable ignored) {}
+        return Direction.Axis.Y;
     }
 
     /** Fingerabdruck von Platzierungen + Layer – ändert er sich, wird neu gescannt. */
