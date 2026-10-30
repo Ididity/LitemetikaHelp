@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 8;
+    public static final int CONFIG_VERSION = 9;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -250,16 +250,21 @@ public final class ConfigSpec {
         bool("compare.ignoredPropertiesAlsoWhenExact", true, "Die Ignorierliste auch dann anwenden, wenn 'Ähnliche Blöcke' aus ist.");
         list("compare.orientationProperties", "Was als 'Ausrichtung' gilt (für propertyMode orientation_only).",
                 "facing", "axis", "rotation", "orientation", "half", "type", "shape", "face", "hinge", "attachment", "horizontal_facing", "vertical_direction");
+        bool("compare.chestIgnoreFacing", true, "Truhen: Blickrichtung egal – nur einzeln/doppelt und die Lage der zweiten Hälfte zählen.");
         bool("compare.reportExtra", true, "Blöcke, wo die Schematic Luft hat, als Fehler ('zu viel') melden.");
         json("compare.groups", """
                 [
                   {"name": "Treppen", "members": ["#minecraft:stairs"], "propertyMode": "strict"},
                   {"name": "Stufen", "members": ["#minecraft:slabs"], "propertyMode": "strict"},
-                  {"name": "Zäune", "members": ["#minecraft:fences"], "propertyMode": "strict"},
+                  {"name": "Holzzäune", "members": ["#minecraft:wooden_fences"], "propertyMode": "strict"},
                   {"name": "Zauntore", "members": ["#minecraft:fence_gates"], "propertyMode": "strict"},
                   {"name": "Mauern", "members": ["#minecraft:walls"], "propertyMode": "strict"},
                   {"name": "Holztüren", "members": ["#minecraft:wooden_doors"], "propertyMode": "strict"},
                   {"name": "Holzfalltüren", "members": ["#minecraft:wooden_trapdoors"], "propertyMode": "strict"},
+                  {"name": "Schilder", "members": ["#minecraft:standing_signs", "#minecraft:wall_signs"], "propertyMode": "strict"},
+                  {"name": "Hängeschilder", "members": ["#minecraft:ceiling_hanging_signs", "#minecraft:wall_hanging_signs"], "propertyMode": "strict"},
+                  {"name": "Holzknöpfe", "members": ["#minecraft:wooden_buttons"], "propertyMode": "strict"},
+                  {"name": "Holzdruckplatten", "members": ["#minecraft:wooden_pressure_plates"], "propertyMode": "strict"},
                   {"name": "Stämme", "members": ["#minecraft:logs"], "propertyMode": "strict"},
                   {"name": "Bretter", "members": ["#minecraft:planks"], "propertyMode": "strict"},
                   {"name": "Wolle", "members": ["#minecraft:wool"], "propertyMode": "strict"},

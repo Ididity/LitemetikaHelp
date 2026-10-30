@@ -193,6 +193,11 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 8 -> 9: neue Gruppen (Schilder, Hängeschilder, Holzknöpfe, Holzdruckplatten; Zäune nur aus Holz).
+        if (fromVersion < 9) {
+            com.google.gson.JsonElement cmp = root.get("compare");
+            if (cmp != null && cmp.isJsonObject()) cmp.getAsJsonObject().add("groups", ConfigSpec.get("compare.groups").def().deepCopy());
+        }
         // Version 7 -> 8: Auto-Switch sofort statt mit Verzögerung.
         if (fromVersion < 8) {
             JsonObject h = root.has("hud") && root.get("hud").isJsonObject() ? root.getAsJsonObject("hud") : null;
