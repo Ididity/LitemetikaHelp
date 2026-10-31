@@ -1,0 +1,792 @@
+===== JARS
+/home/runner/.gradle/caches/modules-2/files-2.1/maven.modrinth/litematica/mengBR9D/6faf0156520bc951a3a57681914228ea9354cc64/litematica-mengBR9D.jar
+/home/runner/.gradle/caches/modules-2/files-2.1/maven.modrinth/malilib/loabWpyU/ba18a2c6664b4136006090e3cd0263a2703edb75/malilib-loabWpyU.jar
+.gradle/loom-cache/remapped_mods/remapped/maven/modrinth/malilib-16c8840d/loabWpyU/malilib-16c8840d-loabWpyU.jar
+.gradle/loom-cache/remapped_mods/remapped/maven/modrinth/litematica-16c8840d/mengBR9D/litematica-16c8840d-mengBR9D.jar
+===== .gradle/loom-cache/remapped_mods/remapped/maven/modrinth/malilib-16c8840d/loabWpyU/malilib-16c8840d-loabWpyU.jar
+fi/dy/masa/malilib/render/InventoryOverlayType.class
+fi/dy/masa/malilib/util/position/LayerRange$2.class
+fi/dy/masa/malilib/util/LayerRange$1.class
+fi/dy/masa/malilib/util/LayerMode.class
+fi/dy/masa/malilib/util/position/LayerRange$1.class
+fi/dy/masa/malilib/util/LayerRange.class
+fi/dy/masa/malilib/util/position/LayerRange.class
+fi/dy/masa/malilib/util/LayerRange$2.class
+===== .gradle/loom-cache/remapped_mods/remapped/maven/modrinth/litematica-16c8840d/mengBR9D/litematica-16c8840d-mengBR9D.jar
+fi/dy/masa/litematica/data/EntityDataManager.class
+fi/dy/masa/litematica/world/SchematicWorldHandler.class
+fi/dy/masa/litematica/util/OverlayType.class
+fi/dy/masa/litematica/data/DataManager.class
+fi/dy/masa/litematica/selection/Box.class
+fi/dy/masa/litematica/render/schematic/ChunkRendererSchematicVbo$1.class
+fi/dy/masa/litematica/gui/widgets/WidgetSchematicPlacement.class
+fi/dy/masa/litematica/selection/BoxSliced$1.class
+fi/dy/masa/litematica/selection/Box$2.class
+fi/dy/masa/litematica/schematic/placement/SubRegionPlacement$1.class
+fi/dy/masa/litematica/render/schematic/ChunkRendererSchematicVbo.class
+fi/dy/masa/litematica/schematic/placement/SchematicPlacement.class
+fi/dy/masa/litematica/selection/BoxSliced.class
+fi/dy/masa/litematica/schematic/placement/SubRegionPlacement.class
+fi/dy/masa/litematica/selection/Box$1.class
+fi/dy/masa/litematica/schematic/placement/SubRegionPlacement$RequiredEnabled.class
+fi/dy/masa/litematica/schematic/placement/SchematicPlacementManager.class
+===== javap fi/dy/masa/litematica/data/EntityDataManager.class
+public class fi.dy.masa.litematica.data.EntityDataManager implements fi.dy.masa.malilib.interfaces.IClientTickHandler,fi.dy.masa.malilib.interfaces.IDataSyncer {
+  public static fi.dy.masa.litematica.data.EntityDataManager getInstance();
+  public net.minecraft.world.World getBestWorld();
+  public net.minecraft.client.world.ClientWorld getClientWorld();
+  public void onClientTick(net.minecraft.client.MinecraftClient);
+  public net.minecraft.util.Identifier getNetworkChannel();
+  public fi.dy.masa.malilib.network.IPluginClientPlayHandler<fi.dy.masa.litematica.network.ServuxLitematicaPacket$Payload> getNetworkHandler();
+  public void reset(boolean);
+  public void resetOpCheck();
+  public fi.dy.masa.malilib.util.data_syncer.EntityDataCache getCache();
+  public fi.dy.masa.malilib.util.data_syncer.EntityDataRequestTracker getRequestTracker();
+  public boolean isEnabled();
+  public boolean isBackupEnabled();
+  public boolean loadContainerBlockEntities();
+  public long getRefreshTime();
+  public long getCacheTimeout();
+  public void setIsServuxServer();
+  public boolean hasServuxServer();
+  public boolean hasBackupStatus();
+  public boolean hasOperatorStatus();
+  public void setServuxVersion(java.lang.String);
+  public java.lang.String getServuxVersion();
+  public int getPendingBlockEntitiesCount();
+  public int getPendingEntitiesCount();
+  public int getBlockEntityCacheCount();
+  public int getEntityCacheCount();
+  public boolean getIfReceivedBackupPackets();
+  public void onGameInit();
+  public void onWorldPre();
+  public void onWorldJoin();
+  public void requestMetadata();
+  public boolean receiveServuxMetadata(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public void onPacketFailure();
+  public void onEntityDataSyncToggled(fi.dy.masa.malilib.config.options.ConfigBoolean);
+  public void sendServuxTaskRequest(fi.dy.masa.malilib.util.data.tag.CompoundData, fi.dy.masa.litematica.scheduler.info_hud.InfoHudSync);
+  public void setInfoHudSync(fi.dy.masa.litematica.scheduler.info_hud.InfoHudSync);
+  public void receiveServuxTaskStatusSync(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public org.apache.commons.lang3.tuple.Pair<net.minecraft.block.entity.BlockEntity, fi.dy.masa.malilib.util.data.tag.CompoundData> requestBlockEntityWrapped(net.minecraft.world.World, net.minecraft.util.math.BlockPos);
+  public org.apache.commons.lang3.tuple.Pair<net.minecraft.entity.Entity, fi.dy.masa.malilib.util.data.tag.CompoundData> requestEntityWrapped(net.minecraft.world.World, int);
+  public net.minecraft.inventory.Inventory getBlockInventoryWrapped(net.minecraft.world.World, net.minecraft.util.math.BlockPos, boolean);
+  public net.minecraft.inventory.Inventory getEntityInventoryWrapped(net.minecraft.world.World, int, boolean);
+  public void requestServuxBulkEntityData(net.minecraft.util.math.ChunkPos, int, int);
+  public void requestBackupBulkEntityData(net.minecraft.util.math.ChunkPos, int, int);
+  public net.minecraft.block.entity.BlockEntity handleBlockEntityData(net.minecraft.util.math.BlockPos, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public net.minecraft.entity.Entity handleEntityData(int, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public void handleBulkEntityData(int, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public void handleVanillaQueryNbt(int, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public void handleVanillaQueryNbt(int, net.minecraft.nbt.NbtCompound);
+  public boolean hasPendingChunk(net.minecraft.util.math.ChunkPos);
+  public boolean hasCompletedChunk(net.minecraft.util.math.ChunkPos);
+  public void markCompletedChunkDirty(net.minecraft.util.math.ChunkPos);
+  public com.google.gson.JsonObject toJson();
+  public void fromJson(com.google.gson.JsonObject);
+===== javap fi/dy/masa/litematica/world/SchematicWorldHandler.class
+public class fi.dy.masa.litematica.world.SchematicWorldHandler {
+  public static final fi.dy.masa.litematica.world.SchematicWorldHandler INSTANCE;
+  public fi.dy.masa.litematica.world.SchematicWorldHandler(java.util.function.Supplier<fi.dy.masa.litematica.render.IWorldSchematicRenderer>);
+  public static fi.dy.masa.litematica.world.WorldSchematic getSchematicWorld();
+  public fi.dy.masa.litematica.world.WorldSchematic getWorld();
+  public void setDynamicRegistryManager(net.minecraft.registry.DynamicRegistryManager$Immutable);
+  public net.minecraft.registry.DynamicRegistryManager getRegistryManager();
+  public static fi.dy.masa.litematica.world.WorldSchematic createSchematicWorld(fi.dy.masa.litematica.render.IWorldSchematicRenderer);
+  public void recreateSchematicWorld(boolean);
+===== javap fi/dy/masa/litematica/data/DataManager.class
+public class fi.dy.masa.litematica.data.DataManager implements fi.dy.masa.malilib.gui.interfaces.IDirectoryCache {
+  public static final net.minecraft.util.Identifier CARPET_HELLO;
+  public static fi.dy.masa.litematica.data.DataManager getInstance();
+  public void reset(boolean);
+  public static fi.dy.masa.malilib.gui.interfaces.IDirectoryCache getDirectoryCache();
+  public static void onClientTickStart();
+  public static long getClientTickStartTime();
+  public void onWorldPre(net.minecraft.registry.DynamicRegistryManager);
+  public static net.minecraft.item.ItemStack getToolItem();
+  public boolean hasToolItemComponents();
+  public net.minecraft.item.ItemStack getToolItemComponents();
+  public static void setIsCarpetServer(boolean);
+  public static boolean isCarpetServer();
+  public static void setHasServuxServer(boolean);
+  public static boolean hasServuxServer();
+  public boolean hasIntegratedServer();
+  public void setHasIntegratedServer(boolean);
+  public static void addChatListener(fi.dy.masa.litematica.util.ToBooleanFunction<net.minecraft.text.Text>);
+  public static void removeChatListener(fi.dy.masa.litematica.util.ToBooleanFunction<net.minecraft.text.Text>);
+  public static void clearChatListeners();
+  public static boolean onChatMessage(net.minecraft.text.Text);
+  public static boolean getCreatePlacementOnLoad();
+  public static void setCreatePlacementOnLoad(boolean);
+  public static fi.dy.masa.litematica.gui.GuiConfigs$ConfigGuiTab getConfigGuiTab();
+  public static void setConfigGuiTab(fi.dy.masa.litematica.gui.GuiConfigs$ConfigGuiTab);
+  public static fi.dy.masa.litematica.selection.SelectionManager getSelectionManager();
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager getSchematicPlacementManager();
+  public static fi.dy.masa.litematica.schematic.projects.SchematicProjectsManager getSchematicProjectsManager();
+  public static fi.dy.masa.litematica.schematic.transmit.SchematicBufferManager getSchematicBufferManager();
+  public static fi.dy.masa.litematica.materials.MaterialListBase getMaterialList();
+  public static void setMaterialList(fi.dy.masa.litematica.materials.MaterialListBase);
+  public static fi.dy.masa.litematica.tool.ToolMode getToolMode();
+  public static void setToolMode(fi.dy.masa.litematica.tool.ToolMode);
+  public static fi.dy.masa.malilib.util.LayerRange getRenderLayerRange();
+  public static fi.dy.masa.litematica.selection.AreaSelectionSimple getSimpleArea();
+  public java.nio.file.Path getCurrentDirectoryForContext(java.lang.String);
+  public void setCurrentDirectoryForContext(java.lang.String, java.nio.file.Path);
+  public static void load();
+  public static void save();
+  public static void save(boolean);
+  public static void clear();
+  public static java.nio.file.Path getDefaultBaseSchematicDirectory();
+  public static java.nio.file.Path getCurrentConfigDirectory();
+  public static java.nio.file.Path getSchematicsBaseDirectory();
+  public static java.nio.file.Path getSchematicTransmitDirectory();
+  public static java.nio.file.Path getAreaSelectionsBaseDirectory();
+  public static void setToolItem(java.lang.String);
+  public void setToolItemComponents(java.lang.String, net.minecraft.registry.DynamicRegistryManager);
+===== javap fi/dy/masa/litematica/render/schematic/ChunkRendererSchematicVbo.class
+public class fi.dy.masa.litematica.render.schematic.ChunkRendererSchematicVbo implements java.lang.AutoCloseable {
+  public boolean hasOverlay();
+  public boolean isEmpty();
+  public java.util.EnumSet<fi.dy.masa.litematica.render.schematic.OverlayRenderType> getOverlayTypes();
+  public net.minecraft.util.math.BlockPos getOrigin();
+  public net.minecraft.util.math.Box getBoundingBox();
+  public void close() throws java.lang.Exception;
+===== javap fi/dy/masa/litematica/schematic/placement/SchematicPlacement.class
+public class fi.dy.masa.litematica.schematic.placement.SchematicPlacement {
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, java.util.UUID);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager, java.util.UUID);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFor(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFor(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, java.util.UUID);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createForSchematicConversion(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createTemporary(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createTemporary(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.util.UUID);
+  public boolean isEnabled();
+  public boolean isRenderingEnabled();
+  public boolean isLocked();
+  public boolean shouldRenderEnclosingBox();
+  public boolean shouldBeSaved();
+  public void setShouldBeSaved(boolean);
+  public boolean matchesRequirement(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public boolean isRegionPlacementModified();
+  public boolean ignoreEntities();
+  public void toggleIgnoreEntities(fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void toggleRenderEnclosingBox();
+  public void toggleLocked();
+  public void setCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType, boolean);
+  public boolean isCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType);
+  public java.lang.String getName();
+  public fi.dy.masa.litematica.schematic.LitematicaSchematic getSchematic();
+  public java.nio.file.Path getSchematicFile();
+  public fi.dy.masa.litematica.selection.Box getEclosingBox();
+  public void setName(java.lang.String);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement setBoxesBBColor(int);
+  public java.util.UUID getHashId();
+  public net.minecraft.util.math.BlockPos getOrigin();
+  public net.minecraft.util.BlockRotation getRotation();
+  public net.minecraft.util.BlockMirror getMirror();
+  public fi.dy.masa.malilib.util.data.Color4f getBoxesBBColor();
+  public int getSubRegionCount();
+  public fi.dy.masa.litematica.util.BlockInfoListType getSchematicVerifierType();
+  public void setSchematicVerifierType(fi.dy.masa.litematica.util.BlockInfoListType);
+  public fi.dy.masa.litematica.materials.MaterialListBase getMaterialList();
+  public boolean hasVerifier();
+  public fi.dy.masa.litematica.schematic.verifier.SchematicVerifier getSchematicVerifier();
+  public net.minecraft.structure.StructurePlacementData getPlacementSettings();
+  public java.lang.String getSelectedSubRegionName();
+  public void setSelectedSubRegionName(java.lang.String);
+  public fi.dy.masa.litematica.schematic.placement.SubRegionPlacement getSelectedSubRegionPlacement();
+  public fi.dy.masa.litematica.schematic.placement.SubRegionPlacement getRelativeSubRegionPlacement(java.lang.String);
+  public java.util.Collection<fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> getAllSubRegionsPlacements();
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> getEnabledRelativeSubRegionPlacements();
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box> getSubRegionBoxes(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box> getSubRegionBoxFor(java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<java.lang.String> getRegionsTouchingChunk(int, int);
+  public java.util.Set<java.lang.String> getRegionsTouchingChunk(int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox> getBoxesWithinChunk(int, int);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox> getBoxesWithinChunk(int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public fi.dy.masa.malilib.util.IntBoundingBox getBoxWithinChunkForRegion(java.lang.String, int, int);
+  public fi.dy.masa.malilib.util.IntBoundingBox getBoxWithinChunkForRegion(java.lang.String, int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunks();
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunks(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunksForRegion(java.lang.String);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunksForRegion(java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+grep: write error: Broken pipe
+===== javap fi/dy/masa/litematica/schematic/placement/SchematicPlacementManager.class
+public class fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager {
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager();
+  public void setVisibleSubChunksNeedsUpdate();
+  public void onWorldJoin();
+  public void onClientTick(net.minecraft.client.MinecraftClient);
+  public void onToggleMainRendering(boolean);
+  public void onClientChunkLoad(int, int);
+  public void onClientChunkUnload(int, int);
+  public boolean checkIfChunkShouldRender(net.minecraft.util.math.ChunkPos);
+  public boolean checkIfChunkShouldRender(int, int);
+  public int getLastVisibleChunksCount();
+  public java.util.List<net.minecraft.util.math.ChunkPos> getAndUpdateVisibleChunks(net.minecraft.util.math.ChunkPos);
+  public java.util.List<fi.dy.masa.litematica.schematic.placement.SchematicPlacement> getAllSchematicsPlacements();
+  public java.util.List<fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager$PlacementPart> getPlacementPartsInChunk(int, int);
+  public java.util.List<fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager$PlacementPart> getAllPlacementsTouchingChunk(net.minecraft.util.math.BlockPos);
+  public int getPlacementPartsInChunkCount(int, int);
+  public int getTouchedChunksCount();
+  public void addSchematicPlacement(fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean);
+  public boolean removeSchematicPlacement(fi.dy.masa.litematica.schematic.placement.SchematicPlacement);
+  public boolean removeSchematicPlacement(fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean);
+  public java.util.List<fi.dy.masa.litematica.schematic.placement.SchematicPlacement> getAllPlacementsOfSchematic(fi.dy.masa.litematica.schematic.LitematicaSchematic);
+  public void removeAllPlacementsOfSchematic(fi.dy.masa.litematica.schematic.LitematicaSchematic);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement getSelectedSchematicPlacement();
+  public void setSelectedSchematicPlacement(fi.dy.masa.litematica.schematic.placement.SchematicPlacement);
+  public void markAllPlacementsOfSchematicForRebuild(fi.dy.masa.litematica.schematic.LitematicaSchematic);
+  public void markChunksForRebuild(fi.dy.masa.litematica.schematic.placement.SchematicPlacement);
+  public void markChunkForUnload(net.minecraft.util.math.ChunkPos);
+  public void markChunkForUnload(int, int);
+  public void markChunkForRebuild(net.minecraft.util.math.ChunkPos);
+  public void markChunkForRebuild(int, int);
+  public boolean changeSelection(net.minecraft.world.World, net.minecraft.entity.Entity, int);
+  public void setPositionOfCurrentSelectionToRayTrace(net.minecraft.client.MinecraftClient, double);
+  public void setPositionOfCurrentSelectionTo(net.minecraft.util.math.BlockPos, net.minecraft.client.MinecraftClient);
+  public void nudgePositionOfCurrentSelection(net.minecraft.util.math.Direction, int);
+  public void pasteCurrentPlacementToWorld(net.minecraft.client.MinecraftClient);
+  public void pastePlacementToWorld(fi.dy.masa.litematica.schematic.placement.SchematicPlacement, net.minecraft.client.MinecraftClient);
+  public void pastePlacementToWorld(fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean, net.minecraft.client.MinecraftClient);
+  public void displayChunkDebugCmd(int, int, net.minecraft.client.gui.hud.ChatHud);
+  public void markChunkForRebuildCmd(int, int, net.minecraft.client.gui.hud.ChatHud);
+  public void pastePlacementToWorld(fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean, boolean, net.minecraft.client.MinecraftClient);
+  public void clear();
+  public com.google.gson.JsonObject toJson();
+  public void loadFromJson(com.google.gson.JsonObject);
+===== javap fi/dy/masa/malilib/util/LayerMode.class
+public final class fi.dy.masa.malilib.util.LayerMode extends java.lang.Enum<fi.dy.masa.malilib.util.LayerMode> implements fi.dy.masa.malilib.config.IConfigOptionListEntry, net.minecraft.util.StringIdentifiable {
+  public static final fi.dy.masa.malilib.util.LayerMode ALL;
+  public static final fi.dy.masa.malilib.util.LayerMode SINGLE_LAYER;
+  public static final fi.dy.masa.malilib.util.LayerMode LAYER_RANGE;
+  public static final fi.dy.masa.malilib.util.LayerMode ALL_BELOW;
+  public static final fi.dy.masa.malilib.util.LayerMode ALL_ABOVE;
+  public static final net.minecraft.util.StringIdentifiable$EnumCodec<fi.dy.masa.malilib.util.LayerMode> CODEC;
+  public static final java.util.function.IntFunction<fi.dy.masa.malilib.util.LayerMode> INDEX_TO_VALUE;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, fi.dy.masa.malilib.util.LayerMode> PACKET_CODEC;
+  public static final com.google.common.collect.ImmutableList<fi.dy.masa.malilib.util.LayerMode> VALUES;
+  public static fi.dy.masa.malilib.util.LayerMode[] values();
+  public static fi.dy.masa.malilib.util.LayerMode valueOf(java.lang.String);
+  public int getIndex();
+  public java.lang.String getStringValue();
+  public java.lang.String getDisplayName();
+  public java.lang.String asString();
+  public fi.dy.masa.malilib.config.IConfigOptionListEntry cycle(boolean);
+  public fi.dy.masa.malilib.util.LayerMode fromString(java.lang.String);
+  public static fi.dy.masa.malilib.util.LayerMode fromStringStatic(java.lang.String);
+  public fi.dy.masa.malilib.config.IConfigOptionListEntry fromString(java.lang.String);
+===== javap fi/dy/masa/malilib/util/LayerRange.class
+public class fi.dy.masa.malilib.util.LayerRange {
+  public static final com.mojang.serialization.Codec<fi.dy.masa.malilib.util.LayerRange> CODEC;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, fi.dy.masa.malilib.util.LayerRange> PACKET_CODEC;
+  public fi.dy.masa.malilib.util.LayerRange(fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+  public fi.dy.masa.malilib.util.LayerRange setRefresher(fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+  public fi.dy.masa.malilib.util.LayerMode getLayerMode();
+  public net.minecraft.util.math.Direction$Axis getAxis();
+  public boolean getMoveLayerRangeMin();
+  public boolean getMoveLayerRangeMax();
+  public void toggleHotkeyMoveRangeMin();
+  public void toggleHotkeyMoveRangeMax();
+  public int getLayerSingle();
+  public int getLayerAbove();
+  public int getLayerBelow();
+  public int getLayerRangeMin();
+  public int getLayerRangeMax();
+  public int getLayerMin();
+  public int getLayerMax();
+  public int getCurrentLayerValue(boolean);
+  public void setLayerMode(fi.dy.masa.malilib.util.LayerMode);
+  public void setLayerMode(fi.dy.masa.malilib.util.LayerMode, boolean);
+  public void setAxis(net.minecraft.util.math.Direction$Axis);
+  public void setLayerSingle(int);
+  public void setLayerAbove(int);
+  public void setLayerBelow(int);
+  public boolean setLayerRangeMin(int);
+  public boolean setLayerRangeMax(int);
+  public void setSingleBoundaryToPosition(net.minecraft.entity.Entity);
+  public void setToPosition(net.minecraft.entity.Entity);
+  public boolean moveLayer(int);
+  public java.lang.String getCurrentLayerString();
+  public boolean isPositionWithinRange(net.minecraft.util.math.BlockPos);
+  public boolean isPositionWithinRange(long);
+  public boolean isPositionWithinRange(int, int, int);
+  public boolean isPositionAtRenderEdgeOnSide(net.minecraft.util.math.BlockPos, net.minecraft.util.math.Direction);
+  public boolean intersects(fi.dy.masa.malilib.util.SubChunkPos);
+  public boolean intersects(fi.dy.masa.malilib.util.IntBoundingBox);
+  public boolean intersectsBox(net.minecraft.util.math.BlockPos, net.minecraft.util.math.BlockPos);
+  public boolean intersectsBox(int, int, int, int, int, int);
+  public int getClampedValue(int, net.minecraft.util.math.Direction$Axis);
+  public fi.dy.masa.malilib.util.IntBoundingBox getClampedRenderBoundingBox(fi.dy.masa.malilib.util.IntBoundingBox);
+  public fi.dy.masa.malilib.util.IntBoundingBox getExpandedBox(net.minecraft.world.World, int);
+  public fi.dy.masa.malilib.util.IntBoundingBox getClampedArea(net.minecraft.util.math.BlockPos, net.minecraft.util.math.BlockPos);
+  public fi.dy.masa.malilib.util.IntBoundingBox getClampedArea(int, int, int, int, int, int);
+  public com.google.gson.JsonObject toJson();
+  public static fi.dy.masa.malilib.util.LayerRange createFromJson(com.google.gson.JsonObject, fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+  public void fromJson(com.google.gson.JsonObject);
+===== javap fi/dy/masa/malilib/util/position/LayerRange.class
+public class fi.dy.masa.malilib.util.position.LayerRange {
+  public static final com.mojang.serialization.Codec<fi.dy.masa.malilib.util.position.LayerRange> CODEC;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, fi.dy.masa.malilib.util.position.LayerRange> PACKET_CODEC;
+  public static final int WORLD_VERTICAL_SIZE_MAX;
+  public static final int WORLD_VERTICAL_SIZE_MIN;
+  public fi.dy.masa.malilib.util.position.LayerRange(fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+  public fi.dy.masa.malilib.util.position.LayerRange setRefresher(fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+  public fi.dy.masa.malilib.util.LayerMode getLayerMode();
+  public net.minecraft.util.math.Direction$Axis getAxis();
+  public boolean shouldFollowPlayer();
+  public boolean getMoveLayerRangeMin();
+  public boolean getMoveLayerRangeMax();
+  public void toggleHotkeyMoveRangeMin();
+  public void toggleHotkeyMoveRangeMax();
+  public void toggleShouldFollowPlayer();
+  public int getPlayerFollowOffset();
+  public int getLayerSingle();
+  public int getLayerAbove();
+  public int getLayerBelow();
+  public int getLayerRangeMin();
+  public int getLayerRangeMax();
+  public int getMinLayerBoundary();
+  public int getMaxLayerBoundary();
+  public int getCurrentLayerValue(boolean);
+  public void setLayerMode(fi.dy.masa.malilib.util.LayerMode);
+  public void setLayerMode(fi.dy.masa.malilib.util.LayerMode, boolean);
+  public void setAxis(net.minecraft.util.math.Direction$Axis);
+  public void setPlayerFollowOffset(int);
+  public void setLayerSingle(int);
+  public void setLayerAbove(int);
+  public void setLayerBelow(int);
+  public boolean setLayerRangeMin(int);
+  public boolean setLayerRangeMax(int);
+  public void setToPosition(net.minecraft.entity.Entity);
+  public void setSingleBoundaryToPosition(net.minecraft.entity.Entity);
+  public void setLayerRangeToPosition(net.minecraft.entity.Entity);
+  public void setLayerRangeToPosition(int);
+  public void followPlayerIfEnabled(net.minecraft.entity.Entity);
+  public boolean moveLayer(int);
+  public java.lang.String getCurrentLayerString();
+  public boolean isPositionWithinRange(net.minecraft.util.math.BlockPos);
+  public boolean isPositionWithinRange(long);
+  public boolean isPositionWithinRange(int, int, int);
+  public boolean isPositionAtRenderEdgeOnSide(net.minecraft.util.math.BlockPos, net.minecraft.util.math.Direction);
+  public boolean intersects(net.minecraft.util.math.ChunkSectionPos);
+  public boolean intersects(fi.dy.masa.malilib.util.position.IntBoundingBox);
+  public boolean intersectsBox(net.minecraft.util.math.BlockPos, net.minecraft.util.math.BlockPos);
+  public boolean intersectsBox(int, int, int, int, int, int);
+  public int getClampedValue(int, net.minecraft.util.math.Direction$Axis);
+  public fi.dy.masa.malilib.util.position.IntBoundingBox getClampedBox(fi.dy.masa.malilib.util.position.IntBoundingBox);
+  public fi.dy.masa.malilib.util.position.IntBoundingBox getClampedArea(net.minecraft.util.math.BlockPos, net.minecraft.util.math.BlockPos);
+  public fi.dy.masa.malilib.util.position.IntBoundingBox getClampedArea(int, int, int, int, int, int);
+  public fi.dy.masa.malilib.util.position.IntBoundingBox getClampedRenderBoundingBox(fi.dy.masa.malilib.util.position.IntBoundingBox);
+  public fi.dy.masa.malilib.util.position.IntBoundingBox getExpandedBox(net.minecraft.world.World, int);
+  public fi.dy.masa.malilib.util.position.LayerRange copy();
+  public com.google.gson.JsonObject toJson();
+  public void fromJson(com.google.gson.JsonObject);
+  public static fi.dy.masa.malilib.util.position.LayerRange createFromJson(com.google.gson.JsonObject, fi.dy.masa.malilib.interfaces.IRangeChangeListener);
+===== FULL fi.dy.masa.litematica.schematic.LitematicaSchematic
+Compiled from "LitematicaSchematic.java"
+public class fi.dy.masa.litematica.schematic.LitematicaSchematic {
+  public static final java.lang.String FILE_EXTENSION;
+  public static final int SCHEMATIC_VERSION_1_13_2;
+  public static final int MINECRAFT_DATA_VERSION_1_12;
+  public static final int MINECRAFT_DATA_VERSION_1_13_2;
+  public static final int MINECRAFT_DATA_VERSION_1_20_4;
+  public static final int MINECRAFT_DATA_VERSION;
+  public static final int SCHEMATIC_VERSION;
+  public static final int SCHEMATIC_VERSION_SUB;
+  public fi.dy.masa.litematica.schematic.LitematicaSchematic(java.nio.file.Path, net.minecraft.nbt.NbtCompound, fi.dy.masa.litematica.util.FileType);
+  public fi.dy.masa.litematica.schematic.LitematicaSchematic(java.nio.file.Path, fi.dy.masa.malilib.util.data.tag.CompoundData, fi.dy.masa.litematica.util.FileType);
+  public java.nio.file.Path getFile();
+  public net.minecraft.util.math.Vec3i getTotalSize();
+  public int getTotalBlocksReadFromWorld();
+  public fi.dy.masa.litematica.schematic.SchematicMetadata getMetadata();
+  public int getSubRegionCount();
+  public net.minecraft.util.math.BlockPos getSubRegionPosition(java.lang.String);
+  public java.util.Map<java.lang.String, net.minecraft.util.math.BlockPos> getAreaPositions();
+  public java.util.Map<java.lang.String, net.minecraft.util.math.BlockPos> getAreaSizes();
+  public net.minecraft.util.math.BlockPos getAreaSize(java.lang.String);
+  public net.minecraft.util.math.Vec3i getAreaSizeAsVec3i(java.lang.String);
+  public java.util.Map<java.lang.String, fi.dy.masa.litematica.selection.Box> getAreas();
+  public static fi.dy.masa.litematica.schematic.LitematicaSchematic createFromWorld(net.minecraft.world.World, fi.dy.masa.litematica.selection.AreaSelection, fi.dy.masa.litematica.schematic.LitematicaSchematic$SchematicSaveInfo, java.lang.String, fi.dy.masa.malilib.interfaces.IStringConsumer);
+  public static fi.dy.masa.litematica.schematic.LitematicaSchematic createEmptySchematic(fi.dy.masa.litematica.selection.AreaSelection, java.lang.String);
+  public static fi.dy.masa.litematica.schematic.LitematicaSchematic createEmptySchematicFromExisting(fi.dy.masa.litematica.schematic.LitematicaSchematic, java.lang.String);
+  public boolean downgradeV7toV6Schematic(fi.dy.masa.litematica.schematic.LitematicaSchematic);
+  public void takeEntityDataFromSchematicaSchematic(fi.dy.masa.litematica.schematic.SchematicaSchematic, java.lang.String);
+  public boolean placeToWorld(net.minecraft.world.World, fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean);
+  public boolean placeToWorld(net.minecraft.world.World, fi.dy.masa.litematica.schematic.placement.SchematicPlacement, boolean, boolean);
+  public void takeEntitiesFromWorldWithinChunk(net.minecraft.world.World, int, int, com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox>, com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box>, java.util.Set<java.util.UUID>, net.minecraft.util.math.BlockPos);
+  public static boolean isExposed(net.minecraft.world.World, net.minecraft.util.math.BlockPos);
+  public static boolean isGravityBlock(net.minecraft.block.BlockState);
+  public static boolean isGravityBlock(net.minecraft.world.World, net.minecraft.util.math.BlockPos);
+  public static boolean supportsExposedBlocks(net.minecraft.world.World, net.minecraft.util.math.BlockPos);
+  public static boolean needsSupportNonGravity(net.minecraft.block.BlockState);
+  public static boolean isSupport(net.minecraft.world.World, net.minecraft.util.math.BlockPos);
+  public void takeBlocksFromWorldWithinChunk(net.minecraft.world.World, com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox>, com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box>, fi.dy.masa.litematica.schematic.LitematicaSchematic$SchematicSaveInfo);
+  public fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer getSubRegionContainer(java.lang.String);
+  public java.util.Map<net.minecraft.util.math.BlockPos, fi.dy.masa.malilib.util.data.tag.CompoundData> getBlockEntityMapForRegion(java.lang.String);
+  public java.util.List<fi.dy.masa.litematica.schematic.LitematicaSchematic$EntityInfo> getEntityListForRegion(java.lang.String);
+  public java.util.Map<net.minecraft.util.math.BlockPos, net.minecraft.world.tick.OrderedTick<net.minecraft.block.Block>> getScheduledBlockTicksForRegion(java.lang.String);
+  public java.util.Map<net.minecraft.util.math.BlockPos, net.minecraft.world.tick.OrderedTick<net.minecraft.fluid.Fluid>> getScheduledFluidTicksForRegion(java.lang.String);
+  public net.minecraft.nbt.NbtCompound writeToNBT();
+  public fi.dy.masa.malilib.util.data.tag.CompoundData writeToData();
+  public net.minecraft.nbt.NbtCompound writeToNBT_v6();
+  public fi.dy.masa.malilib.util.data.tag.CompoundData writeToData_v6();
+  public void sendTransmitFile(fi.dy.masa.malilib.util.data.tag.CompoundData, long, boolean);
+  public static org.apache.commons.lang3.tuple.Pair<fi.dy.masa.litematica.schematic.LitematicaSchematic, fi.dy.masa.malilib.util.data.tag.CompoundData> receiveFileTransmit(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public static boolean isSizeValid(net.minecraft.util.math.Vec3i);
+  public static net.minecraft.util.math.BlockPos readBlockPosFromNbtList(net.minecraft.nbt.NbtCompound, java.lang.String);
+  protected boolean readPaletteFromLitematicaFormatTag(net.minecraft.nbt.NbtList, fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette);
+  protected boolean readPaletteFromLitematicaFormatTag(fi.dy.masa.malilib.util.data.tag.ListData, fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette);
+  public static boolean isValidSpongeSchematic(net.minecraft.nbt.NbtCompound);
+  public static boolean isValidSpongeSchematic(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public static boolean isValidSpongeSchematicv3(net.minecraft.nbt.NbtCompound);
+  public static boolean isValidSpongeSchematicv3(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public static net.minecraft.util.math.Vec3i readSizeFromTagSponge(net.minecraft.nbt.NbtCompound);
+  public static net.minecraft.util.math.Vec3i readSizeFromDataSponge(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  protected boolean readSpongePaletteFromTag(net.minecraft.nbt.NbtCompound, fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette, int);
+  protected boolean readSpongePaletteFromData(fi.dy.masa.malilib.util.data.tag.CompoundData, fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette, int);
+  protected boolean readSpongeBlocksFromTagMetadataOnly(net.minecraft.nbt.NbtCompound, java.lang.String, net.minecraft.util.math.Vec3i, int, int);
+  protected boolean readSpongeBlocksFromDataMetadataOnly(fi.dy.masa.malilib.util.data.tag.CompoundData, java.lang.String, net.minecraft.util.math.Vec3i, int, int);
+  protected boolean readSpongeBlocksFromTag(net.minecraft.nbt.NbtCompound, java.lang.String, net.minecraft.util.math.Vec3i, int, int);
+  protected boolean readSpongeBlocksFromData(fi.dy.masa.malilib.util.data.tag.CompoundData, java.lang.String, net.minecraft.util.math.Vec3i, int, int);
+  protected java.util.Map<net.minecraft.util.math.BlockPos, net.minecraft.nbt.NbtCompound> readSpongeBlockEntitiesFromTag(net.minecraft.nbt.NbtCompound, int);
+  protected java.util.Map<net.minecraft.util.math.BlockPos, fi.dy.masa.malilib.util.data.tag.CompoundData> readSpongeBlockEntitiesFromData(fi.dy.masa.malilib.util.data.tag.CompoundData, int);
+  protected java.util.List<fi.dy.masa.litematica.schematic.LitematicaSchematic$EntityInfo> readSpongeEntitiesFromTag(net.minecraft.nbt.NbtCompound, net.minecraft.util.math.Vec3i, int);
+  protected java.util.List<fi.dy.masa.litematica.schematic.LitematicaSchematic$EntityInfo> readSpongeEntitiesFromData(fi.dy.masa.malilib.util.data.tag.CompoundData, net.minecraft.util.math.Vec3i, int);
+  public boolean readFromSpongeSchematicMetadataOnly(java.lang.String, net.minecraft.nbt.NbtCompound);
+  public boolean readFromSpongeSchematicMetadataOnly(java.lang.String, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public boolean readFromSpongeSchematic(java.lang.String, net.minecraft.nbt.NbtCompound);
+  public boolean readFromSpongeSchematic(java.lang.String, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public boolean readFromVanillaStructureMetadataOnly(java.lang.String, net.minecraft.nbt.NbtCompound);
+  public boolean readFromVanillaStructureMetadataOnly(java.lang.String, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public boolean readFromVanillaStructure(java.lang.String, net.minecraft.nbt.NbtCompound);
+  public boolean readFromVanillaStructure(java.lang.String, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  protected java.util.List<fi.dy.masa.litematica.schematic.LitematicaSchematic$EntityInfo> readEntitiesFromVanillaStructure(net.minecraft.nbt.NbtCompound, int);
+  protected java.util.List<fi.dy.masa.litematica.schematic.LitematicaSchematic$EntityInfo> readEntitiesFromVanillaStructure(fi.dy.masa.malilib.util.data.tag.CompoundData, int);
+  public static net.minecraft.util.math.Vec3d readVec3dFromNbtList(net.minecraft.nbt.NbtCompound, java.lang.String);
+  public static java.util.List<net.minecraft.block.BlockState> getStatesFromPaletteTag(net.minecraft.nbt.NbtList);
+  public static java.util.List<net.minecraft.block.BlockState> getStatesFromPaletteData(fi.dy.masa.malilib.util.data.tag.ListData);
+  public boolean writeToFile(java.nio.file.Path, java.lang.String, boolean);
+  public boolean writeToFile(java.nio.file.Path, java.lang.String, boolean, boolean);
+  public boolean readFromFile();
+  public static net.minecraft.nbt.NbtCompound readNbtFromFile(java.nio.file.Path);
+  public static fi.dy.masa.malilib.util.data.tag.CompoundData readDataFromFile(java.nio.file.Path);
+  public static java.nio.file.Path fileFromDirAndName(java.nio.file.Path, java.lang.String, fi.dy.masa.litematica.util.FileType);
+  public static void updateMetadataWithFileTime(java.nio.file.Path, fi.dy.masa.litematica.schematic.SchematicMetadata);
+  public static fi.dy.masa.litematica.schematic.SchematicMetadata readMetadataFromFile(java.nio.file.Path, java.lang.String);
+  public static org.apache.commons.lang3.tuple.Pair<fi.dy.masa.litematica.schematic.SchematicSchema, fi.dy.masa.litematica.schematic.SchematicMetadata> readMetadataAndVersionFromFile(java.nio.file.Path, java.lang.String);
+  public static fi.dy.masa.litematica.schematic.SchematicSchema readDataVersionFromFile(java.nio.file.Path, java.lang.String);
+  public static fi.dy.masa.litematica.schematic.LitematicaSchematic createFromFile(java.nio.file.Path, java.lang.String);
+  public static fi.dy.masa.litematica.schematic.LitematicaSchematic createFromFile(java.nio.file.Path, java.lang.String, fi.dy.masa.litematica.util.FileType);
+  public java.lang.String toString();
+  static {};
+}
+===== FULL fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer
+Compiled from "LitematicaBlockStateContainer.java"
+public class fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer implements fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePaletteResizer {
+  public static final com.mojang.serialization.Codec<fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer> CODEC;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer> PACKET_CODEC;
+  public static final net.minecraft.block.BlockState AIR_BLOCK_STATE;
+  protected fi.dy.masa.litematica.schematic.container.LitematicaBitArray storage;
+  protected fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette palette;
+  protected final net.minecraft.util.math.Vec3i size;
+  protected final int sizeX;
+  protected final int sizeY;
+  protected final int sizeZ;
+  protected final int sizeLayer;
+  protected final long totalVolume;
+  protected int bits;
+  protected long[] blockCounts;
+  public fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer(int, int, int);
+  public fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer(net.minecraft.util.math.Vec3i, int, long[]);
+  public fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer(int, int, int, int, long[]);
+  public net.minecraft.util.math.Vec3i getSize();
+  public fi.dy.masa.litematica.schematic.container.LitematicaBitArray getArray();
+  public long[] getBlockCounts();
+  public net.minecraft.block.BlockState get(int, int, int);
+  public void set(int, int, int, net.minecraft.block.BlockState);
+  protected void set(int, net.minecraft.block.BlockState);
+  protected int getIndex(int, int, int);
+  protected void setBits(int, long[]);
+  public int onResize(int, net.minecraft.block.BlockState);
+  public long[] getBackingLongArray();
+  public fi.dy.masa.litematica.schematic.container.ILitematicaBlockStatePalette getPalette();
+  public static fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer createFrom(net.minecraft.nbt.NbtList, long[], net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer createFrom(fi.dy.masa.malilib.util.data.tag.ListData, long[], net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer createContainer(int, byte[], net.minecraft.util.math.Vec3i);
+  public static fi.dy.masa.litematica.schematic.container.LitematicaBlockStateContainer$SpongeBlockstateConverterResults convertVarIntByteArrayToPackedLongArray(net.minecraft.util.math.Vec3i, int, byte[]);
+  static {};
+}
+===== FULL fi.dy.masa.litematica.schematic.placement.SchematicPlacement
+Compiled from "SchematicPlacement.java"
+public class fi.dy.masa.litematica.schematic.placement.SchematicPlacement {
+  protected final fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager placementManager;
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, java.util.UUID);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager, java.util.UUID);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFor(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFor(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.lang.String, boolean, boolean, java.util.UUID);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createForSchematicConversion(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createTemporary(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createTemporary(fi.dy.masa.litematica.schematic.LitematicaSchematic, net.minecraft.util.math.BlockPos, java.util.UUID);
+  public boolean isEnabled();
+  public boolean isRenderingEnabled();
+  public boolean isLocked();
+  public boolean shouldRenderEnclosingBox();
+  public boolean shouldBeSaved();
+  public void setShouldBeSaved(boolean);
+  public boolean matchesRequirement(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public boolean isRegionPlacementModified();
+  public boolean ignoreEntities();
+  public void toggleIgnoreEntities(fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void toggleRenderEnclosingBox();
+  public void toggleLocked();
+  public void setCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType, boolean);
+  public boolean isCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType);
+  public java.lang.String getName();
+  public fi.dy.masa.litematica.schematic.LitematicaSchematic getSchematic();
+  public java.nio.file.Path getSchematicFile();
+  public fi.dy.masa.litematica.selection.Box getEclosingBox();
+  public void setName(java.lang.String);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement setBoxesBBColor(int);
+  public java.util.UUID getHashId();
+  public net.minecraft.util.math.BlockPos getOrigin();
+  public net.minecraft.util.BlockRotation getRotation();
+  public net.minecraft.util.BlockMirror getMirror();
+  public fi.dy.masa.malilib.util.data.Color4f getBoxesBBColor();
+  public int getSubRegionCount();
+  public fi.dy.masa.litematica.util.BlockInfoListType getSchematicVerifierType();
+  public void setSchematicVerifierType(fi.dy.masa.litematica.util.BlockInfoListType);
+  public fi.dy.masa.litematica.materials.MaterialListBase getMaterialList();
+  public boolean hasVerifier();
+  public fi.dy.masa.litematica.schematic.verifier.SchematicVerifier getSchematicVerifier();
+  public net.minecraft.structure.StructurePlacementData getPlacementSettings();
+  public java.lang.String getSelectedSubRegionName();
+  public void setSelectedSubRegionName(java.lang.String);
+  public fi.dy.masa.litematica.schematic.placement.SubRegionPlacement getSelectedSubRegionPlacement();
+  public fi.dy.masa.litematica.schematic.placement.SubRegionPlacement getRelativeSubRegionPlacement(java.lang.String);
+  public java.util.Collection<fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> getAllSubRegionsPlacements();
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> getEnabledRelativeSubRegionPlacements();
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box> getSubRegionBoxes(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.litematica.selection.Box> getSubRegionBoxFor(java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<java.lang.String> getRegionsTouchingChunk(int, int);
+  public java.util.Set<java.lang.String> getRegionsTouchingChunk(int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox> getBoxesWithinChunk(int, int);
+  public com.google.common.collect.ImmutableMap<java.lang.String, fi.dy.masa.malilib.util.IntBoundingBox> getBoxesWithinChunk(int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public fi.dy.masa.malilib.util.IntBoundingBox getBoxWithinChunkForRegion(java.lang.String, int, int);
+  public fi.dy.masa.malilib.util.IntBoundingBox getBoxWithinChunkForRegion(java.lang.String, int, int, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunks();
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunks(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunksForRegion(java.lang.String);
+  public java.util.Set<net.minecraft.util.math.ChunkPos> getTouchedChunksForRegion(java.lang.String, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public void moveSubRegionTo(java.lang.String, net.minecraft.util.math.BlockPos, fi.dy.masa.malilib.interfaces.IStringConsumer);
+  public void setSubRegionRotation(java.lang.String, net.minecraft.util.BlockRotation, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void setSubRegionMirror(java.lang.String, net.minecraft.util.BlockMirror, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void setSubRegionsEnabledState(boolean, java.util.Collection<fi.dy.masa.litematica.schematic.placement.SubRegionPlacement>, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void toggleSubRegionEnabled(java.lang.String, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void toggleSubRegionIgnoreEntities(java.lang.String, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void resetAllSubRegionsToSchematicValues(fi.dy.masa.malilib.interfaces.IStringConsumer);
+  public void resetAllSubRegionsToSchematicValues(fi.dy.masa.malilib.interfaces.IStringConsumer, boolean);
+  public void resetSubRegionToSchematicValues(java.lang.String, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public void setEnabled(boolean);
+  public void toggleEnabled();
+  public void setRenderSchematic(boolean);
+  public void toggleSubRegionRenderingEnabled(java.lang.String);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement setOrigin(net.minecraft.util.math.BlockPos, fi.dy.masa.malilib.interfaces.IStringConsumer);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement setRotation(net.minecraft.util.BlockRotation, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  public fi.dy.masa.litematica.schematic.placement.SchematicPlacement setMirror(net.minecraft.util.BlockMirror, fi.dy.masa.malilib.gui.interfaces.IMessageConsumer);
+  protected void onModified(fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager);
+  protected void onModified(java.lang.String, fi.dy.masa.litematica.schematic.placement.SchematicPlacementManager);
+  public void onRemoved();
+  public com.google.gson.JsonObject toJson();
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement fromJson(com.google.gson.JsonObject);
+  public fi.dy.masa.malilib.util.data.tag.CompoundData toData(boolean);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFromData(fi.dy.masa.malilib.util.data.tag.CompoundData);
+  public static fi.dy.masa.litematica.schematic.placement.SchematicPlacement createFromData(fi.dy.masa.litematica.schematic.LitematicaSchematic, fi.dy.masa.malilib.util.data.tag.CompoundData);
+  static {};
+}
+===== FULL fi.dy.masa.litematica.schematic.placement.SubRegionPlacement
+Compiled from "SubRegionPlacement.java"
+public class fi.dy.masa.litematica.schematic.placement.SubRegionPlacement {
+  public static final com.mojang.serialization.Codec<fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> CODEC;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, net.minecraft.util.BlockMirror> BLOCK_MIRROR_PACKET_CODEC;
+  public static final net.minecraft.network.codec.PacketCodec<io.netty.buffer.ByteBuf, fi.dy.masa.litematica.schematic.placement.SubRegionPlacement> PACKET_CODEC;
+  public fi.dy.masa.litematica.schematic.placement.SubRegionPlacement(net.minecraft.util.math.BlockPos, java.lang.String);
+  public boolean isEnabled();
+  public boolean isRenderingEnabled();
+  public boolean ignoreEntities();
+  public void setCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType, boolean);
+  public boolean isCoordinateLocked(fi.dy.masa.malilib.util.position.PositionUtils$CoordinateType);
+  public boolean matchesRequirement(fi.dy.masa.litematica.schematic.placement.SubRegionPlacement$RequiredEnabled);
+  public java.lang.String getName();
+  public net.minecraft.util.math.BlockPos getDefaultPos();
+  public net.minecraft.util.math.BlockPos getPos();
+  public net.minecraft.util.BlockRotation getRotation();
+  public net.minecraft.util.BlockMirror getMirror();
+  public void setRenderingEnabled(boolean);
+  public void toggleRenderingEnabled();
+  void setEnabled(boolean);
+  void toggleEnabled();
+  void toggleIgnoreEntities();
+  void setPos(net.minecraft.util.math.BlockPos);
+  void setRotation(net.minecraft.util.BlockRotation);
+  void setMirror(net.minecraft.util.BlockMirror);
+  void resetToOriginalValues();
+  public boolean isRegionPlacementModifiedFromDefault();
+  public boolean isRegionPlacementModified(net.minecraft.util.math.BlockPos);
+  public com.google.gson.JsonObject toJson();
+  public static fi.dy.masa.litematica.schematic.placement.SubRegionPlacement fromJson(com.google.gson.JsonObject);
+  static {};
+}
+===== FULL fi.dy.masa.litematica.materials.MaterialListBase
+Compiled from "MaterialListBase.java"
+public abstract class fi.dy.masa.litematica.materials.MaterialListBase implements fi.dy.masa.litematica.materials.IMaterialList {
+  protected final fi.dy.masa.litematica.materials.MaterialListHudRenderer hudRenderer;
+  protected final java.util.Set<fi.dy.masa.litematica.materials.MaterialListEntry> ignored;
+  protected final java.util.List<fi.dy.masa.litematica.materials.MaterialListEntry> materialListPreFiltered;
+  protected final java.util.List<fi.dy.masa.litematica.materials.MaterialListEntry> materialListFiltered;
+  protected com.google.common.collect.ImmutableList<fi.dy.masa.litematica.materials.MaterialListEntry> materialListAll;
+  protected fi.dy.masa.malilib.interfaces.ICompletionListener completionListener;
+  protected fi.dy.masa.litematica.materials.MaterialListBase$SortCriteria sortCriteria;
+  protected fi.dy.masa.litematica.util.BlockInfoListType materialListType;
+  protected boolean reverse;
+  protected boolean hideAvailable;
+  protected int multiplier;
+  protected long countTotal;
+  protected long countMissing;
+  protected long countMismatched;
+  public fi.dy.masa.litematica.materials.MaterialListBase();
+  public abstract java.lang.String getName();
+  public abstract java.lang.String getTitle();
+  public boolean supportsRenderLayers();
+  public fi.dy.masa.litematica.materials.MaterialListHudRenderer getHudRenderer();
+  public com.google.common.collect.ImmutableList<fi.dy.masa.litematica.materials.MaterialListEntry> getMaterialsAll();
+  public java.util.List<fi.dy.masa.litematica.materials.MaterialListEntry> getMaterialsFiltered(boolean);
+  public java.util.List<fi.dy.masa.litematica.materials.MaterialListEntry> getMaterialsMissingOnly(boolean);
+  public void setCompletionListener(fi.dy.masa.malilib.interfaces.ICompletionListener);
+  public void recreateFilteredList();
+  public void ignoreEntry(fi.dy.masa.litematica.materials.MaterialListEntry);
+  public void clearIgnored();
+  public abstract void reCreateMaterialList();
+  public void setMaterialListEntries(java.util.List<fi.dy.masa.litematica.materials.MaterialListEntry>);
+  public fi.dy.masa.litematica.util.BlockInfoListType getMaterialListType();
+  public void refreshPreFilteredList();
+  public fi.dy.masa.litematica.materials.MaterialListBase$SortCriteria getSortCriteria();
+  public boolean getSortInReverse();
+  public boolean getHideAvailable();
+  public int getMultiplier();
+  public void setSortCriteria(fi.dy.masa.litematica.materials.MaterialListBase$SortCriteria);
+  public void setHideAvailable(boolean);
+  public void setMultiplier(int);
+  public void updateCounts();
+  public long getCountTotal();
+  public long getCountMissing();
+  public long getCountMismatched();
+  public void setMaterialListType(fi.dy.masa.litematica.util.BlockInfoListType);
+  public com.google.gson.JsonObject toJson();
+  public void fromJson(com.google.gson.JsonObject);
+}
+===== FULL fi.dy.masa.litematica.data.SchematicHolder
+Compiled from "SchematicHolder.java"
+public class fi.dy.masa.litematica.data.SchematicHolder {
+  public fi.dy.masa.litematica.data.SchematicHolder();
+  public static fi.dy.masa.litematica.data.SchematicHolder getInstance();
+  public void clearLoadedSchematics();
+  public fi.dy.masa.litematica.schematic.LitematicaSchematic getOrLoad(java.nio.file.Path);
+  public void addSchematic(fi.dy.masa.litematica.schematic.LitematicaSchematic, boolean);
+  public boolean removeSchematic(fi.dy.masa.litematica.schematic.LitematicaSchematic);
+  public java.util.Collection<fi.dy.masa.litematica.schematic.LitematicaSchematic> getAllSchematics();
+  static {};
+}
+===== container classes
+fi/dy/masa/litematica/render/schematic/ChunkCacheSchematic.class
+fi/dy/masa/litematica/render/schematic/WorldRendererSchematic.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderTaskSchematic.class
+fi/dy/masa/litematica/data/SchematicHolder.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderGpuDispatcher.class
+fi/dy/masa/litematica/render/schematic/IBufferBuilderPatch.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderWorkerLitematica.class
+fi/dy/masa/litematica/render/schematic/ChunkMeshDataSchematic.class
+fi/dy/masa/litematica/render/schematic/ChunkMeshCache.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderBatchDraw.class
+fi/dy/masa/litematica/render/schematic/GpuBufferCache.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderDataSchematic.class
+fi/dy/masa/litematica/schematic/container/
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStateContainer$SpongeBlockstateConverterResults.class
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStatePaletteHashMap.class
+fi/dy/masa/litematica/render/schematic/BufferBuilderCache.class
+fi/dy/masa/litematica/schematic/SchematicMetadata.class
+fi/dy/masa/litematica/render/schematic/BlockModelRendererSchematic.class
+fi/dy/masa/litematica/schematic/LitematicaSchematic.class
+fi/dy/masa/litematica/schematic/SchematicaSchematic.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderGpuBuffers.class
+fi/dy/masa/litematica/schematic/container/ILitematicaBlockStatePalette.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderDispatcherSchematic.class
+fi/dy/masa/litematica/render/schematic/IChunkRendererFactory.class
+fi/dy/masa/litematica/render/schematic/OverlayRenderType.class
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStateContainer$1.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderGpuUploader.class
+fi/dy/masa/litematica/render/schematic/ChunkRendererSchematicVbo.class
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStatePaletteLinear.class
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStateContainer.class
+fi/dy/masa/litematica/schematic/container/ILitematicaBlockStatePaletteResizer.class
+fi/dy/masa/litematica/schematic/container/LitematicaBitArray$1.class
+fi/dy/masa/litematica/schematic/container/LitematicaBlockStatePaletteLinear$1.class
+fi/dy/masa/litematica/schematic/SchematicSchema.class
+fi/dy/masa/litematica/schematic/container/LitematicaBitArray.class
+fi/dy/masa/litematica/render/schematic/ByteBufferBuilderCache.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderDispatcherBuffers.class
+fi/dy/masa/litematica/render/schematic/SchematicRenderState.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderLayers.class
+fi/dy/masa/litematica/render/schematic/ChunkRenderDispatcherLitematica.class
+===== WHISPER ASSETS
+b5454 whisper-bin-ubuntu-x64.tar.gz
+b5454 whisper-bin-win-cuda-11.8.0-x64.zip
+b5454 whisper-bin-win-cuda-12.4.0-x64.zip
+b5454 whisper-bin-x64.zip
+b5454 whisper-blas-bin-x64.zip
+b5130 whisper-bin-ubuntu-x64.tar.gz
+b5130 whisper-bin-x64.zip
+b5130 whisper-blas-bin-x64.zip
+b5130 whisper-cublas-11.8.0-bin-x64.zip
+b5130 whisper-cublas-12.4.0-bin-x64.zip
+b5127 whisper-bin-ubuntu-x64.tar.gz
+b5127 whisper-bin-x64.zip
+b5127 whisper-blas-bin-x64.zip
+b5127 whisper-cublas-11.8.0-bin-x64.zip
+b5127 whisper-cublas-12.4.0-bin-x64.zip
+b4938 whisper-bin-ubuntu-x64.tar.gz
+b4938 whisper-bin-x64.zip
+b4938 whisper-blas-bin-x64.zip
+b4938 whisper-cublas-11.8.0-bin-x64.zip
+b4938 whisper-cublas-12.4.0-bin-x64.zip
+URL=https://github.com/ggml-org/whisper.cpp/releases/download/b5454/whisper-bin-x64.zip
+    27648  2026-10-06 14:32   Release/bench.exe
+    27648  2026-10-06 14:32   Release/command.exe
+    27648  2026-10-06 14:33   Release/main.exe
+   372224  2026-10-06 14:33   Release/parakeet-cli.exe
+   102912  2026-10-06 14:33   Release/parakeet-quantize.exe
+    27648  2026-10-06 14:33   Release/stream.exe
+   324608  2026-10-06 14:33   Release/test-common-utf8.exe
+   369664  2026-10-06 14:33   Release/test-parakeet-full-diffusion.exe
+   366080  2026-10-06 14:33   Release/test-parakeet-full-gb1.exe
+   366080  2026-10-06 14:33   Release/test-parakeet-full-jfk.exe
+   354816  2026-10-06 14:33   Release/test-parakeet.exe
+   355840  2026-10-06 14:33   Release/test-vad-full.exe
+   354304  2026-10-06 14:33   Release/test-vad.exe
+    11264  2026-10-06 14:33   Release/test-whisper-buffer-loader.exe
+    13312  2026-10-06 14:33   Release/test-whisper-lang-detect-abort.exe
+    11776  2026-10-06 14:33   Release/test-whisper-zero-samples.exe
+   178688  2026-10-06 14:33   Release/wchess.exe
+    20480  2026-10-06 14:33   Release/whisper-bench.exe
+   479744  2026-10-06 14:33   Release/whisper-cli.exe
+   176640  2026-10-06 14:33   Release/whisper-command.exe
+   180736  2026-10-06 14:33   Release/whisper-lsp.exe
+   111616  2026-10-06 14:33   Release/whisper-quantize.exe
+   726016  2026-10-06 14:33   Release/whisper-server.exe
+   378368  2026-10-06 14:33   Release/whisper-stream.exe
+   457728  2026-10-06 14:34   Release/whisper-talk-llama.exe
+   362496  2026-10-06 14:34   Release/whisper-vad-speech-segments.exe
