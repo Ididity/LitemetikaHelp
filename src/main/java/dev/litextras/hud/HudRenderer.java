@@ -107,11 +107,41 @@ public final class HudRenderer {
                     if (!r.diffs().isEmpty()) lines.add(HudPanel.Line.text(Template.segments(Cfg.str("templates.diff"), vars, text)));
                 }
                 case "compact" -> lines.add(HudPanel.Line.text(Template.segments(Cfg.str("templates.compact"), vars, stColor)));
+                case "zustand", "state" -> {
+                    HudPanel.Line l = stateLine(r.ist());
+                    if (l != null) lines.add(l);
+                }
                 case "pos" -> lines.add(HudPanel.Line.text(List.of(new Seg((String) vars.get("pos"), Cfg.color("colors.neutral")))));
                 default -> {}
             }
         }
         return lines;
+    }
+
+    /** Live-Zustand des echten Blocks: gepowert, ausgefahren, an, offen, Signalstärke usw. */
+    private static final List<String> STATE_PROPS = List.of("powered", "extended", "lit", "open", "triggered", "enabled",
+            "power", "locked", "inverted", "occupied", "has_book", "has_record", "unstable");
+
+    private static HudPanel.Line stateLine(BlockState ist) {
+        if (BlockComparator.isEmpty(ist)) return null;
+        int on = Cfg.color("colors.correct"), off = Cfg.color("colors.neutral"), text = Cfg.color("colors.text");
+        List<Seg> segs = new ArrayList<>();
+        for (String name : STATE_PROPS) {
+            var p = BlockComparator.findByName(ist, name);
+            if (p == null) continue;
+            String v = BlockComparator.valueName(ist, p);
+            String label = Lang.opt("state." + name);
+            if (label == null) label = name;
+            segs.add(new Seg(segs.isEmpty() ? Lang.get("state.prefix") : ", ", text));
+            if (v.equals("true") || v.equals("false")) {
+                boolean b = v.equals("true");
+                segs.add(new Seg(label + " " + (b ? "✔" : "✘"), b ? on : off));
+            } else {
+                boolean b = !v.equals("0");
+                segs.add(new Seg(label + " " + v, b ? on : off));
+            }
+        }
+        return segs.isEmpty() ? null : HudPanel.Line.text(segs);
     }
 
     private static HudPanel.Line lineMaybeColored(List<Seg> segs, boolean onlyProps, int color) {

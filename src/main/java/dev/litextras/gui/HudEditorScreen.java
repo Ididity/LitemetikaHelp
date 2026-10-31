@@ -64,7 +64,8 @@ public class HudEditorScreen extends Screen {
             case "lookedAt" -> List.of(
                     HudPanel.Line.text(List.of(new Seg("Typ ok, Richtung falsch", r))),
                     HudPanel.Line.text(List.of(new Seg("Soll: Eichentreppe, Richtung: Norden", w))),
-                    HudPanel.Line.text(List.of(new Seg("Ist: Eichentreppe, Richtung: ", w), new Seg("Osten", r))));
+                    HudPanel.Line.text(List.of(new Seg("Ist: Eichentreppe, Richtung: ", w), new Seg("Osten", r))),
+                    HudPanel.Line.text(List.of(new Seg("Zustand: ", w), new Seg("gepowert ✔", g), new Seg(", ", w), new Seg("ausgefahren ✘", n))));
             case "preview" -> List.of(HudPanel.Line.text(List.of(new Seg("Vorschau: ", w), new Seg("würde richtig sitzen ✔", g))));
             case "neededItem" -> List.of(new HudPanel.Line(new ItemStack(Items.OAK_STAIRS), List.of(new Seg("Eichentreppe (Inventar, Slot 14)", Cfg.color("colors.warning")))));
             case "layerList" -> List.of(

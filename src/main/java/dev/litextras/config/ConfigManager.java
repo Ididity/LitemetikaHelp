@@ -193,6 +193,17 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 9 -> 10: Zustandszeile (gepowert/ausgefahren/…) im Soll/Ist-HUD.
+        if (fromVersion < 10) {
+            try {
+                JsonObject la = root.getAsJsonObject("hud").getAsJsonObject("lookedAt");
+                com.google.gson.JsonArray arr = la.getAsJsonArray("lines");
+                boolean has = false;
+                for (com.google.gson.JsonElement e : arr) if (e.getAsString().equals("zustand") || e.getAsString().equals("state")) has = true;
+                if (!has) arr.add("zustand");
+            } catch (Exception ignored) {
+            }
+        }
         // Version 8 -> 9: neue Gruppen (Schilder, Hängeschilder, Holzknöpfe, Holzdruckplatten; Zäune nur aus Holz).
         if (fromVersion < 9) {
             com.google.gson.JsonElement cmp = root.get("compare");

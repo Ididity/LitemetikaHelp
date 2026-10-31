@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 9;
+    public static final int CONFIG_VERSION = 10;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -213,7 +213,7 @@ public final class ConfigSpec {
         bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
         integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);
-        list("hud.lookedAt.lines", "Reihenfolge/Sichtbarkeit der Zeilen: status, soll, ist, diff, compact, pos", "status", "soll", "ist", "diff");
+        list("hud.lookedAt.lines", "Reihenfolge/Sichtbarkeit der Zeilen: status, soll, ist, diff, zustand (gepowert/ausgefahren/an …), compact, pos", "status", "soll", "ist", "diff", "zustand");
         bool("hud.lookedAt.onlyInSchematic", true, "Nur anzeigen, wenn der Block zur Schematic gehört (oder dort stört).");
         bool("hud.lookedAt.onlyWrongPropsRed", true, "Nur falsche Properties rot färben (sonst ganze Zeile).");
         bool("hud.lookedAt.showAllProps", false, "Auch ignorierte Properties anzeigen.");

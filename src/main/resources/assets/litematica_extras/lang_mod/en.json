@@ -180,5 +180,19 @@
   "hud.name.layerList": "Layer list",
   "hud.name.status": "Status",
   "hud.name.aiAnswer": "AI answer",
-  "needed.similarSuffix": " (similar)"
+  "needed.similarSuffix": " (similar)",
+  "state.prefix": "State: ",
+  "state.powered": "powered",
+  "state.extended": "extended",
+  "state.lit": "lit",
+  "state.open": "open",
+  "state.triggered": "triggered",
+  "state.enabled": "enabled",
+  "state.power": "power",
+  "state.locked": "locked",
+  "state.inverted": "inverted",
+  "state.occupied": "occupied",
+  "state.has_book": "book",
+  "state.has_record": "record",
+  "state.unstable": "unstable"
 }

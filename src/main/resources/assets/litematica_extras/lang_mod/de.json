@@ -234,5 +234,19 @@
   "hud.name.layerList": "Ebenenliste",
   "hud.name.status": "Status",
   "hud.name.aiAnswer": "KI-Antwort",
-  "needed.similarSuffix": " (ähnlich)"
+  "needed.similarSuffix": " (ähnlich)",
+  "state.prefix": "Zustand: ",
+  "state.powered": "gepowert",
+  "state.extended": "ausgefahren",
+  "state.lit": "an",
+  "state.open": "offen",
+  "state.triggered": "ausgelöst",
+  "state.enabled": "aktiv",
+  "state.power": "Stärke",
+  "state.locked": "gesperrt",
+  "state.inverted": "invertiert",
+  "state.occupied": "belegt",
+  "state.has_book": "Buch",
+  "state.has_record": "Platte",
+  "state.unstable": "instabil"
 }
