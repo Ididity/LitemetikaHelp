@@ -170,7 +170,10 @@ public final class CommandRegistry {
             MinecraftClient mc = MinecraftClient.getInstance();
             mc.send(() -> mc.setScreen(new dev.litextras.gui.BlockPickerScreen(null)));
             return 1;
-        }));
+        }).then(literal("erlauben").executes(c -> { allowServer(true); return 1; }))
+          .then(literal("allow").executes(c -> { allowServer(true); return 1; }))
+          .then(literal("verbieten").executes(c -> { allowServer(false); return 1; }))
+          .then(literal("disallow").executes(c -> { allowServer(false); return 1; })));
         sub(root, "listscope", n -> n
                 .executes(c -> { dev.litextras.LitematicaExtras.setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); return 1; })
                 .then(literal("ebene").executes(c -> { dev.litextras.LitematicaExtras.setListScope("layer"); return 1; }))
@@ -327,4 +330,18 @@ public final class CommandRegistry {
     private static int noop(CommandContext<FabricClientCommandSource> c) { return 1; }
 
     static MinecraftClient mc() { return MinecraftClient.getInstance(); }
+
+    /** Aktuellen Server für den Welt-Modus freigeben bzw. wieder sperren. */
+    private static void allowServer(boolean allow) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        String addr = dev.litextras.render.BlockHighlighter.currentServer(mc);
+        if (addr.isEmpty()) { ChatOut.info(Lang.get("highlight.notOnServer")); return; }
+        java.util.LinkedHashSet<String> cur = new java.util.LinkedHashSet<>(dev.litextras.config.Cfg.list("highlight.worldAllowedServers"));
+        if (allow) cur.add(addr); else cur.remove(addr);
+        com.google.gson.JsonArray arr = new com.google.gson.JsonArray();
+        for (String s : cur) arr.add(s);
+        dev.litextras.config.Cfg.manager().setPersistent("highlight.worldAllowedServers", arr);
+        if (allow && !dev.litextras.render.BlockHighlighter.worldModeAllowed(mc)) ChatOut.info(Lang.get("highlight.blockedServer"));
+        else ChatOut.info(Lang.get(allow ? "highlight.serverAllowed" : "highlight.serverDisallowed", "server", addr));
+    }
 }

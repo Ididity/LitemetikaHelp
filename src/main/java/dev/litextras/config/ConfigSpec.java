@@ -302,6 +302,8 @@ public final class ConfigSpec {
         bool("highlight.active", false, "Leuchten an/aus (Hotkey Standard Alt+G).");
         list("highlight.planBlocks", "Plan-Blöcke (Block-IDs), deren Stellen im Litematica-Plan leuchten: blau = fehlt, rot = falsch, grün = richtig.");
         list("highlight.worldBlocks", "Echte Blöcke in der Welt, die leuchten. Wirkt NUR in Einzelspieler-Welten (auf Servern wäre das X-Ray).");
+        list("highlight.worldAllowedServers", "Server-Adressen (z. B. \"meinserver.de\"), auf denen der Welt-Modus erlaubt ist, weil es dort ausdrücklich erlaubt ist.\n"
+                + "Große öffentliche Server (DonutSMP, Hypixel usw.) bleiben immer gesperrt. Hinzufügen geht auch mit /lx leuchten erlauben.");
         enm("highlight.pickerMode", "plan", "Zuletzt gewählter Modus im Auswahlfenster.", "plan", "world");
         bool("highlight.showCorrect", false, "Plan-Modus: auch schon richtig gesetzte Blöcke (grün) leuchten lassen.");
         integer("highlight.range", 48, 4, 128, "Reichweite in Blöcken.");

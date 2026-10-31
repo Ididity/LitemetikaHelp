@@ -259,14 +259,18 @@
   "gui.highlight": "Blöcke leuchten lassen …",
   "highlight.active": "Leuchten",
   "highlight.modePlan": "Modus: Plan (Schematic)",
-  "highlight.modeWorld": "Modus: Welt (nur Einzelspieler)",
+  "highlight.modeWorld": "Modus: Welt",
   "highlight.clear": "Alle abwählen",
   "highlight.loading": "Blöcke werden geladen …",
   "highlight.noPlan": "Keine Schematic geladen oder nichts gefunden.",
   "highlight.noMatch": "Nichts gefunden.",
   "highlight.page": "Seite {page}/{pages} – {n} ausgewählt",
-  "highlight.worldOnlySp": "Welt-Modus wirkt nur in Einzelspieler-Welten – auf Servern ist er aus.",
+  "highlight.worldOnlySp": "Welt-Modus wirkt hier nicht: nur Einzelspieler oder freigegebene Server (/lx leuchten erlauben).",
   "highlight.nowOn": "Blöcke leuchten: an",
   "highlight.nowOff": "Blöcke leuchten: aus",
-  "help.highlight": "Blöcke auswählen, die durch Wände leuchten"
+  "help.highlight": "Blöcke auswählen, die durch Wände leuchten",
+  "highlight.notOnServer": "Du bist gerade auf keinem Server.",
+  "highlight.blockedServer": "Auf diesem Server bleibt der Welt-Modus gesperrt (großer öffentlicher Server).",
+  "highlight.serverAllowed": "Welt-Modus auf {server} erlaubt.",
+  "highlight.serverDisallowed": "Welt-Modus auf {server} wieder gesperrt."
 }

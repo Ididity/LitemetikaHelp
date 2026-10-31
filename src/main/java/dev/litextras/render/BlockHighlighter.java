@@ -49,9 +49,33 @@ public final class BlockHighlighter {
 
     public static boolean active() { return Cfg.bool("highlight.active"); }
 
-    /** Welt-Modus ist nur in Einzelspieler-Welten erlaubt. */
+    /**
+     * Welt-Modus: in Einzelspieler-Welten immer, auf Servern nur, wenn deren Adresse in
+     * highlight.worldAllowedServers steht (eigener Server, auf dem das erlaubt ist).
+     * DonutSMP und andere große öffentliche Server bleiben immer gesperrt.
+     */
     public static boolean worldModeAllowed(MinecraftClient mc) {
-        return mc != null && mc.isInSingleplayer();
+        if (mc == null) return false;
+        if (mc.isInSingleplayer()) return true;
+        String addr = currentServer(mc);
+        if (addr.isEmpty()) return false;
+        for (String blocked : BLOCKED) if (addr.contains(blocked)) return false;
+        for (String s : Cfg.list("highlight.worldAllowedServers")) {
+            String a = s.trim().toLowerCase(java.util.Locale.ROOT);
+            if (!a.isEmpty() && (addr.equals(a) || addr.startsWith(a + ":"))) return true;
+        }
+        return false;
+    }
+
+    private static final List<String> BLOCKED = List.of("donutsmp", "hypixel", "minemen", "cubecraft", "mineplex", "gommehd", "griefergames");
+
+    public static String currentServer(MinecraftClient mc) {
+        try {
+            var e = mc.getCurrentServerEntry();
+            return e == null || e.address == null ? "" : e.address.trim().toLowerCase(java.util.Locale.ROOT);
+        } catch (Throwable t) {
+            return "";
+        }
     }
 
     public static int count() { return hits.size(); }
