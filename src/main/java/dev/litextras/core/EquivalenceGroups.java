@@ -181,6 +181,8 @@ public final class EquivalenceGroups {
                 // Schleim/Honig kleben an Kolben, Sand/Kies/Trockenbeton fallen – nie "gleich" wie Stein.
                 if (st.isOf(Blocks.SLIME_BLOCK) || st.isOf(Blocks.HONEY_BLOCK)) return false;
                 if (st.getBlock() instanceof FallingBlock) return false;
+                // Rutschige Blöcke (Packeis, Blaueis …) sind nie "gleich" wie Stein – Eis muss Eis sein.
+                if (Math.abs(st.getBlock().getSlipperiness() - 0.6f) > 0.001f) return false;
                 for (Matcher m : solidBlacklist) if (m.matches(st)) return false;
                 return true;
             } catch (Throwable t) {

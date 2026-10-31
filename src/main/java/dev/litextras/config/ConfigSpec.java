@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 10;
+    public static final int CONFIG_VERSION = 11;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -281,7 +281,8 @@ public final class ConfigSpec {
                   {"name": "Glas", "members": ["#minecraft:impermeable"], "propertyMode": "strict"},
                   {"name": "Glasscheiben", "members": [GLASS_PANES], "propertyMode": "strict"},
                   {"name": "Beton", "members": [CONCRETE], "propertyMode": "strict"},
-                  {"name": "Laub", "members": ["#minecraft:leaves"], "propertyMode": "strict"}
+                  {"name": "Laub", "members": ["#minecraft:leaves"], "propertyMode": "strict"},
+                  {"name": "Eis", "members": ["minecraft:ice", "minecraft:packed_ice", "minecraft:blue_ice"], "propertyMode": "strict"}
                 ]""".replace("GLASS_PANES", glassPanes()).replace("CONCRETE", concrete()),
                 "Äquivalenzgruppen für Feature 1. members: Block-IDs oder Tags (#minecraft:stairs).\n"
                         + "propertyMode: strict (alle Properties außer Ignorierliste), orientation_only (nur Ausrichtung/Position), ignore (keine).\n"

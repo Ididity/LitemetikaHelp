@@ -205,7 +205,7 @@ public final class ConfigManager {
             }
         }
         // Version 8 -> 9: neue Gruppen (Schilder, Hängeschilder, Holzknöpfe, Holzdruckplatten; Zäune nur aus Holz).
-        if (fromVersion < 9) {
+        if (fromVersion < 9 || fromVersion < 11) { // v11: Gruppe "Eis" dazu
             com.google.gson.JsonElement cmp = root.get("compare");
             if (cmp != null && cmp.isJsonObject()) cmp.getAsJsonObject().add("groups", ConfigSpec.get("compare.groups").def().deepCopy());
         }
