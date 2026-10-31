@@ -109,7 +109,7 @@ public final class SeeThroughRenderer {
     private static final int[][] EDGES = {
             {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7}};
 
-    private static boolean drawBox(DrawContext ctx, Projector pr, BlockPos p, int color, float lw, String style) {
+    static boolean drawBox(DrawContext ctx, Projector pr, BlockPos p, int color, float lw, String style) {
         double inset = 0.02;
         float[][] s = new float[8][];
         float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE, maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
@@ -158,7 +158,7 @@ public final class SeeThroughRenderer {
     }
 
     /** Einfache Perspektiv-Projektion passend zu Minecrafts Kamera (Yaw/Pitch in Grad, vertikales FOV). */
-    private static final class Projector {
+    static final class Projector {
         final double ex, ey, ez;
         final double fx, fy, fz, rx, ry, rz, ux, uy, uz;
         final double tanHalf, aspect;

@@ -139,6 +139,7 @@ public final class ConfigSpec {
                   "voice": ["stimme", "voice"],
                   "hudedit": ["hud", "hudedit"],
                   "listscope": ["liste", "list"],
+                  "highlight": ["leuchten", "highlight"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -170,6 +171,7 @@ public final class ConfigSpec {
         hotkey("pushToTalk", "LEFT_ALT+V", "hold", "Gedrückt halten und sprechen – die KI bekommt deine Frage per Stimme");
         hotkey("hudEditor", "LEFT_ALT+U", "toggle", "HUD-Editor öffnen (Anzeigen verschieben und vergrößern)");
         hotkey("toggleListScope", "LEFT_ALT+B", "toggle", "Materialliste umschalten: aktuelle Ebene <-> ganze Schematic");
+        hotkey("toggleHighlight", "LEFT_ALT+G", "toggle", "Blöcke leuchten lassen an/aus");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
@@ -296,6 +298,22 @@ public final class ConfigSpec {
         integer("scan.fullRescanSeconds", 10, 1, 600, "Zusätzlich spätestens nach so vielen Sekunden neu prüfen (falls eine Änderung nicht gemeldet wurde).");
 
         // =================================================================== FEATURE 5
+        section("highlight", "Blöcke leuchten lassen (durch Wände). Auswahl im Menü: Alt+O -> 'Blöcke leuchten lassen …' oder /lx leuchten");
+        bool("highlight.active", false, "Leuchten an/aus (Hotkey Standard Alt+G).");
+        list("highlight.planBlocks", "Plan-Blöcke (Block-IDs), deren Stellen im Litematica-Plan leuchten: blau = fehlt, rot = falsch, grün = richtig.");
+        list("highlight.worldBlocks", "Echte Blöcke in der Welt, die leuchten. Wirkt NUR in Einzelspieler-Welten (auf Servern wäre das X-Ray).");
+        enm("highlight.pickerMode", "plan", "Zuletzt gewählter Modus im Auswahlfenster.", "plan", "world");
+        bool("highlight.showCorrect", false, "Plan-Modus: auch schon richtig gesetzte Blöcke (grün) leuchten lassen.");
+        integer("highlight.range", 48, 4, 128, "Reichweite in Blöcken.");
+        integer("highlight.maxBoxes", 400, 1, 5000, "Höchstens so viele Kästen (die nächsten zuerst).");
+        integer("highlight.updateIntervalMs", 500, 100, 60000, "Wie oft neu gesucht wird.");
+        dbl("highlight.lineWidth", 1.5, 0.5, 6.0, "Linienstärke.");
+        enm("highlight.style", "wire", "wire = Umrisslinien, box = 2D-Rahmen, marker = kleines Quadrat", "wire", "box", "marker");
+        color("highlight.colorMissing", "#FF55AAFF", "Plan: fehlt");
+        color("highlight.colorWrong", "#FFFF5555", "Plan: falsch");
+        color("highlight.colorCorrect", "#FF55FF55", "Plan: richtig");
+        color("highlight.colorWorld", "#FFFFFF55", "Welt-Modus (Einzelspieler)");
+
         section("seeThrough", "Feature 5: Fehler durch Blöcke hindurch sehen");
         bool("seeThrough.active", false, "Modus beim Start aktiv (umschalten per Hotkey).");
         enm("seeThrough.backend", "own", "own = eigener Renderer (nur Fehler, mit Reichweite/Fade/Limit), litematica = Litematicas eigene\n"

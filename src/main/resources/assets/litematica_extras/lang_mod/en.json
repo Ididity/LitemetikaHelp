@@ -201,5 +201,18 @@
   "list.nowAll": "Material list now shows: whole schematic.",
   "list.nowLayer": "Material list now shows: current layer.",
   "gui.listScope": "Material list",
-  "help.listscope": "Switch material list: layer or total"
+  "help.listscope": "Switch material list: layer or total",
+  "gui.highlight": "Highlight blocks …",
+  "highlight.active": "Highlight",
+  "highlight.modePlan": "Mode: plan (schematic)",
+  "highlight.modeWorld": "Mode: world (singleplayer only)",
+  "highlight.clear": "Clear all",
+  "highlight.loading": "Loading blocks …",
+  "highlight.noPlan": "No schematic loaded or nothing found.",
+  "highlight.noMatch": "Nothing found.",
+  "highlight.page": "Page {page}/{pages} – {n} selected",
+  "highlight.worldOnlySp": "World mode only works in singleplayer worlds – off on servers.",
+  "highlight.nowOn": "Block highlight: on",
+  "highlight.nowOff": "Block highlight: off",
+  "help.highlight": "Pick blocks that glow through walls"
 }

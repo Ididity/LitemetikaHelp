@@ -59,6 +59,7 @@ public class LitematicaExtras implements ClientModInitializer {
                 SeeThroughRenderer.tick();
                 LookTarget.tick(mc);
                 HudRenderer.tick(mc);
+                dev.litextras.render.BlockHighlighter.tick(mc);
                 ErrorScanner.tick(mc);
             } catch (Throwable t) {
                 debug("Tick-Fehler: " + t);
@@ -125,6 +126,12 @@ public class LitematicaExtras implements ClientModInitializer {
             if (down) { MinecraftClient mc = MinecraftClient.getInstance(); mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null))); }
         });
         Hotkeys.register("toggleListScope", down -> { if (down) setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); });
+        Hotkeys.register("toggleHighlight", down -> {
+            if (!down) return;
+            boolean on = !Cfg.bool("highlight.active");
+            Cfg.manager().setPersistent("highlight.active", new com.google.gson.JsonPrimitive(on));
+            ChatOut.info(Lang.get(on ? "highlight.nowOn" : "highlight.nowOff"));
+        });
         Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
         Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {

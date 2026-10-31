@@ -115,7 +115,10 @@ public class ConfigScreen extends Screen {
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.listScope") + ": " + Lang.get(allScope ? "list.all" : "list.layer")), b -> {
             dev.litextras.LitematicaExtras.setListScope(allScope ? "layer" : "all");
             clearAndInit();
-        }).dimensions(left, by, colW * 2 + gap, 20).build());
+        }).dimensions(left, by, colW, 20).build());
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.highlight")), b -> {
+            if (this.client != null) this.client.setScreen(new BlockPickerScreen(this));
+        }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.openFolder")), b ->
                 Util.getOperatingSystem().open(Cfg.manager().dir().toFile())).dimensions(left, by, colW, 20).build());

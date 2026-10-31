@@ -53,6 +53,7 @@ public final class HudRenderer {
         try {
             if (Cfg.bool("hud.realtime")) LookTarget.refreshNow(mc); // jedes Bild neu = keine Verzögerung
             SeeThroughRenderer.render(ctx, counter.getTickProgress(false));
+            dev.litextras.render.BlockHighlighter.render(ctx, counter.getTickProgress(false));
             if (HudPanel.enabled("lookedAt")) HudPanel.draw(ctx, "lookedAt", lookedAtLines());
             if (HudPanel.enabled("preview")) HudPanel.draw(ctx, "preview", previewLines());
             if (HudPanel.enabled("neededItem")) neededItem(ctx);

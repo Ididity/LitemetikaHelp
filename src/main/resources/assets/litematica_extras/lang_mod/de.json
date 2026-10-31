@@ -255,5 +255,18 @@
   "list.nowAll": "Materialliste zeigt jetzt: ganze Schematic (insgesamt).",
   "list.nowLayer": "Materialliste zeigt jetzt: aktuelle Ebene.",
   "gui.listScope": "Materialliste",
-  "help.listscope": "Materialliste umschalten: ebene oder gesamt"
+  "help.listscope": "Materialliste umschalten: ebene oder gesamt",
+  "gui.highlight": "Blöcke leuchten lassen …",
+  "highlight.active": "Leuchten",
+  "highlight.modePlan": "Modus: Plan (Schematic)",
+  "highlight.modeWorld": "Modus: Welt (nur Einzelspieler)",
+  "highlight.clear": "Alle abwählen",
+  "highlight.loading": "Blöcke werden geladen …",
+  "highlight.noPlan": "Keine Schematic geladen oder nichts gefunden.",
+  "highlight.noMatch": "Nichts gefunden.",
+  "highlight.page": "Seite {page}/{pages} – {n} ausgewählt",
+  "highlight.worldOnlySp": "Welt-Modus wirkt nur in Einzelspieler-Welten – auf Servern ist er aus.",
+  "highlight.nowOn": "Blöcke leuchten: an",
+  "highlight.nowOff": "Blöcke leuchten: aus",
+  "help.highlight": "Blöcke auswählen, die durch Wände leuchten"
 }

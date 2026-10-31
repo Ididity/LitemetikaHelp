@@ -166,6 +166,11 @@ public final class CommandRegistry {
             mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null)));
             return 1;
         }));
+        sub(root, "highlight", n -> n.executes(c -> {
+            MinecraftClient mc = MinecraftClient.getInstance();
+            mc.send(() -> mc.setScreen(new dev.litextras.gui.BlockPickerScreen(null)));
+            return 1;
+        }));
         sub(root, "listscope", n -> n
                 .executes(c -> { dev.litextras.LitematicaExtras.setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); return 1; })
                 .then(literal("ebene").executes(c -> { dev.litextras.LitematicaExtras.setListScope("layer"); return 1; }))
@@ -301,6 +306,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("profile").get(0) + " <name> – " + Lang.get("help.profile"));
         ChatOut.info("/" + p + " " + subNames("voice").get(0) + " – " + Lang.get("help.voice"));
         ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
+        ChatOut.info("/" + p + " " + subNames("highlight").get(0) + " – " + Lang.get("help.highlight"));
         ChatOut.info("/" + p + " " + subNames("listscope").get(0) + " ebene|gesamt – " + Lang.get("help.listscope"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));
         if (!Cfg.list("commands.missing.names").isEmpty())
