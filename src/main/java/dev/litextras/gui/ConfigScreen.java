@@ -27,6 +27,8 @@ public class ConfigScreen extends Screen {
     private record Toggle(String key, String langKey) {}
 
     private static final List<Toggle> TOGGLES = List.of(
+            new Toggle("tracers.active", "gui.tracers"),
+            new Toggle("highlight.active", "gui.highlightToggle"),
             new Toggle("hud.enabled", "gui.hud"),
             new Toggle("compare.similar.enabled", "gui.similar"),
             new Toggle("compare.similar.solidBlocks", "gui.solid"),

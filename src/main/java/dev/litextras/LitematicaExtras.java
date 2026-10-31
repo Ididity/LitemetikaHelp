@@ -132,6 +132,12 @@ public class LitematicaExtras implements ClientModInitializer {
             Cfg.manager().setPersistent("highlight.active", new com.google.gson.JsonPrimitive(on));
             ChatOut.info(Lang.get(on ? "highlight.nowOn" : "highlight.nowOff"));
         });
+        Hotkeys.register("toggleTracers", down -> {
+            if (!down) return;
+            boolean on = !Cfg.bool("tracers.active");
+            Cfg.manager().setPersistent("tracers.active", new com.google.gson.JsonPrimitive(on));
+            ChatOut.info(Lang.get(on ? "tracers.nowOn" : "tracers.nowOff"));
+        });
         Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
         Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {

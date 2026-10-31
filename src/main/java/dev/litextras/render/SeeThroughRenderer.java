@@ -143,7 +143,7 @@ public final class SeeThroughRenderer {
     }
 
     /** Linie als gedrehtes, dünnes Rechteck (DrawContext respektiert die 2D-Matrix). */
-    private static void line(DrawContext ctx, float x1, float y1, float x2, float y2, float w, int color) {
+    static void line(DrawContext ctx, float x1, float y1, float x2, float y2, float w, int color) {
         float dx = x2 - x1, dy = y2 - y1;
         float len = (float) Math.sqrt(dx * dx + dy * dy);
         if (len < 0.5f) return;
@@ -189,6 +189,18 @@ public final class SeeThroughRenderer {
             double sx = (dx * rx + dy * ry + dz * rz) / (depth * tanHalf * aspect);
             double sy = (dx * ux + dy * uy + dz * uz) / (depth * tanHalf);
             return new float[]{(float) ((1 + sx) / 2 * sw), (float) ((1 - sy) / 2 * sh)};
+        }
+
+        /** Wie project(), aber Punkte hinter der Kamera landen am Bildschirmrand in der richtigen Richtung. */
+        float[] projectOrEdge(double x, double y, double z) {
+            float[] p = project(x, y, z);
+            if (p != null) return p;
+            double dx = x - ex, dy = y - ey, dz = z - ez;
+            double r = dx * rx + dy * ry + dz * rz, u = dx * ux + dy * uy + dz * uz;
+            double len = Math.sqrt(r * r + u * u);
+            if (len < 1e-6) { r = 0; u = -1; len = 1; }
+            double k = Math.max(sw, sh) * 2.0 / len;
+            return new float[]{(float) (sw / 2.0 + r * k), (float) (sh / 2.0 - u * k)};
         }
     }
 }

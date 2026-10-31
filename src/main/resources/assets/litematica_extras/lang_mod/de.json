@@ -272,5 +272,9 @@
   "highlight.notOnServer": "Du bist gerade auf keinem Server.",
   "highlight.blockedServer": "Auf diesem Server bleibt der Welt-Modus gesperrt (großer öffentlicher Server).",
   "highlight.serverAllowed": "Welt-Modus auf {server} erlaubt.",
-  "highlight.serverDisallowed": "Welt-Modus auf {server} wieder gesperrt."
+  "highlight.serverDisallowed": "Welt-Modus auf {server} wieder gesperrt.",
+  "tracers.nowOn": "Tracer: an",
+  "tracers.nowOff": "Tracer: aus",
+  "gui.tracers": "Tracer",
+  "gui.highlightToggle": "Blöcke leuchten"
 }

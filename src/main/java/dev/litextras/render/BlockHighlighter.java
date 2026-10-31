@@ -79,6 +79,7 @@ public final class BlockHighlighter {
     }
 
     public static int count() { return hits.size(); }
+    public static List<Hit> hits() { return hits; }
 
     private static Set<Block> blocks(String key) {
         Set<Block> out = new HashSet<>();

@@ -218,5 +218,9 @@
   "highlight.notOnServer": "You are not on a server.",
   "highlight.blockedServer": "World mode stays blocked on this server (large public server).",
   "highlight.serverAllowed": "World mode allowed on {server}.",
-  "highlight.serverDisallowed": "World mode blocked again on {server}."
+  "highlight.serverDisallowed": "World mode blocked again on {server}.",
+  "tracers.nowOn": "Tracers: on",
+  "tracers.nowOff": "Tracers: off",
+  "gui.tracers": "Tracers",
+  "gui.highlightToggle": "Block highlight"
 }

@@ -172,6 +172,7 @@ public final class ConfigSpec {
         hotkey("hudEditor", "LEFT_ALT+U", "toggle", "HUD-Editor öffnen (Anzeigen verschieben und vergrößern)");
         hotkey("toggleListScope", "LEFT_ALT+B", "toggle", "Materialliste umschalten: aktuelle Ebene <-> ganze Schematic");
         hotkey("toggleHighlight", "LEFT_ALT+G", "toggle", "Blöcke leuchten lassen an/aus");
+        hotkey("toggleTracers", "LEFT_ALT+T", "toggle", "Tracer an/aus");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
@@ -315,6 +316,17 @@ public final class ConfigSpec {
         color("highlight.colorWrong", "#FFFF5555", "Plan: falsch");
         color("highlight.colorCorrect", "#FF55FF55", "Plan: richtig");
         color("highlight.colorWorld", "#FFFFFF55", "Welt-Modus (Einzelspieler)");
+
+        section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
+        bool("tracers.active", false, "Tracer an/aus.");
+        bool("tracers.blocks", true, "Linien zu leuchtenden Blöcken (Blöcke leuchten lassen muss an sein).");
+        bool("tracers.players", true, "Linien zu Spielern – nur Einzelspieler oder freigegebene Server (/lx leuchten erlauben).");
+        bool("tracers.mobs", false, "Linien zu Monstern – nur Einzelspieler oder freigegebene Server.");
+        integer("tracers.range", 96, 8, 512, "Reichweite in Blöcken.");
+        integer("tracers.max", 100, 1, 2000, "Höchstens so viele Linien.");
+        dbl("tracers.lineWidth", 1.0, 0.5, 6.0, "Linienstärke.");
+        color("tracers.colorPlayer", "#FFFF5555", "Farbe Spieler");
+        color("tracers.colorMob", "#FFFFAA00", "Farbe Monster");
 
         section("seeThrough", "Feature 5: Fehler durch Blöcke hindurch sehen");
         bool("seeThrough.active", false, "Modus beim Start aktiv (umschalten per Hotkey).");
