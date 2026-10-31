@@ -138,6 +138,7 @@ public final class ConfigSpec {
                   "replace": ["tausch", "replace"],
                   "voice": ["stimme", "voice"],
                   "hudedit": ["hud", "hudedit"],
+                  "listscope": ["liste", "list"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -168,6 +169,7 @@ public final class ConfigSpec {
         hotkey("missingList", "LEFT_ALT+M", "toggle", "Fehlliste (Ebene oder Umgebung) im Chat anzeigen");
         hotkey("pushToTalk", "LEFT_ALT+V", "hold", "Gedrückt halten und sprechen – die KI bekommt deine Frage per Stimme");
         hotkey("hudEditor", "LEFT_ALT+U", "toggle", "HUD-Editor öffnen (Anzeigen verschieben und vergrößern)");
+        hotkey("toggleListScope", "LEFT_ALT+B", "toggle", "Materialliste umschalten: aktuelle Ebene <-> ganze Schematic");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
@@ -226,6 +228,11 @@ public final class ConfigSpec {
         bool("hud.neededItem.autoSwitch", false, "Automatisch auf den passenden Hotbar-Slot wechseln.");
         integer("hud.neededItem.autoSwitchDelayTicks", 0, 0, 40, "Wartezeit in Ticks (1 Tick = 50 ms), bevor automatisch gewechselt wird. 0 = sofort.");
         hudElement("layerList", "Feature 4: Fehlliste der aktuellen Ebene", true, "top_left", 4, 40, 12);
+        enm("hud.layerList.scope", "layer", "Was die Liste zeigt: layer = nur die aktuelle Litematica-Ebene, all = die ganze Schematic (insgesamt).\n"
+                + "Umschalten: Hotkey (Standard Alt+B), /lx liste ebene|gesamt oder Knopf in den Einstellungen.", "layer", "all");
+        integer("hud.layerList.allUpdateIntervalMs", 1000, 200, 60000, "Neuberechnung im Modus 'insgesamt' (größer, weil mehr Blöcke).");
+        bool("litematica.autoRefreshMaterialList", true, "Litematicas eigene Materialliste automatisch neu zählen, wenn du in der Schematic Blöcke setzt oder abbaust.");
+        integer("litematica.materialListRefreshMs", 1000, 250, 60000, "Wartezeit nach der letzten Blockänderung, bevor Litematicas Materialliste neu gezählt wird.");
         bool("hud.layerList.onlyInLayerMode", true, "Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.");
         enm("hud.layerList.sort", "shortfall", "Sortierung: shortfall (Fehlbetrag), amount (Menge), name", "shortfall", "amount", "name");
         integer("hud.layerList.updateIntervalMs", 400, 100, 60000, "Gedrosselte Neuberechnung in Millisekunden.");

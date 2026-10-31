@@ -248,5 +248,12 @@
   "state.occupied": "belegt",
   "state.has_book": "Buch",
   "state.has_record": "Platte",
-  "state.unstable": "instabil"
+  "state.unstable": "instabil",
+  "list.all": "Insgesamt",
+  "list.layer": "Aktuelle Ebene",
+  "list.loadedOnly": "(nur geladene Chunks)",
+  "list.nowAll": "Materialliste zeigt jetzt: ganze Schematic (insgesamt).",
+  "list.nowLayer": "Materialliste zeigt jetzt: aktuelle Ebene.",
+  "gui.listScope": "Materialliste",
+  "help.listscope": "Materialliste umschalten: ebene oder gesamt"
 }

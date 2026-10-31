@@ -86,7 +86,9 @@ public final class ErrorScanner {
     private static List<LitematicaBridge.PlacementInfo> placements = List.of();
     private static LitematicaBridge.LayerInfo layer = new LitematicaBridge.LayerInfo("all", net.minecraft.util.math.Direction.Axis.Y, 0, 0, false);
     private static int tickCounter = 0;
-    private static boolean dirtyLayer = true, dirtyNear = true;
+    private static boolean dirtyLayer = true, dirtyNear = true, dirtyAll = true;
+    private static volatile long lastBlockChangeAt = 0;
+    private static volatile boolean materialDirty = false;
 
     // ------------------------------------------------------------------ öffentliche API
     public static synchronized ScanResult latest(Scope s) { return LATEST.get(s); }
@@ -96,11 +98,16 @@ public final class ErrorScanner {
     /** Vom Block-Änderungs-Mixin aufgerufen (beliebiger Thread). */
     public static void onBlockChanged(BlockPos pos) {
         blockChanged = true;
+        lastBlockChangeAt = System.currentTimeMillis();
+        materialDirty = true;
     }
+
+    public static boolean listShowsAll() { return "all".equals(Cfg.str("hud.layerList.scope")); }
 
     public static void invalidateAll() {
         dirtyLayer = true;
         dirtyNear = true;
+        dirtyAll = true;
         synchronized (ErrorScanner.class) { LATEST.clear(); }
     }
 
@@ -117,16 +124,19 @@ public final class ErrorScanner {
             lastStateHash = h;
             dirtyLayer = true;
             dirtyNear = true;
+            dirtyAll = true;
         }
         if (Cfg.generation() != lastConfigGen) {
             lastConfigGen = Cfg.generation();
             dirtyLayer = true;
             dirtyNear = true;
+            dirtyAll = true;
         }
         if (blockChanged) {
             blockChanged = false;
             dirtyLayer = true;
             dirtyNear = true;
+            dirtyAll = true;
         }
         long now = System.currentTimeMillis();
         long fullRescan = Cfg.integer("scan.fullRescanSeconds") * 1000L;
@@ -139,6 +149,20 @@ public final class ErrorScanner {
             if ((dirtyLayer && since >= interval) || since >= fullRescan) {
                 if (start(Scope.LAYER, mc, false)) dirtyLayer = false;
             }
+        }
+        // ---- Insgesamt (Materialliste im Modus "ganze Schematic")
+        if (Cfg.bool("hud.layerList.enabled") && listShowsAll()) {
+            long interval = Math.max(Cfg.integer("hud.layerList.allUpdateIntervalMs"), Cfg.integer("scan.minIntervalMs"));
+            long since = now - LAST_START.get(Scope.ALL);
+            if ((dirtyAll && since >= interval) || since >= fullRescan) {
+                if (start(Scope.ALL, mc, false)) dirtyAll = false;
+            }
+        }
+        // ---- Litematicas eigene Materialliste nach Blockänderungen neu zählen
+        if (materialDirty && Cfg.bool("litematica.autoRefreshMaterialList")
+                && now - lastBlockChangeAt >= Cfg.integer("litematica.materialListRefreshMs")) {
+            materialDirty = false;
+            LitematicaBridge.refreshMaterialLists();
         }
         // ---- Umgebung (Feature 5)
         boolean needNear = dev.litextras.render.SeeThroughRenderer.ownRendererActive() && !seeThroughUsesLayer();

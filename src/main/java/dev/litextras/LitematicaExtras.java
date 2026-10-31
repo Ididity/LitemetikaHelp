@@ -124,11 +124,19 @@ public class LitematicaExtras implements ClientModInitializer {
         Hotkeys.register("hudEditor", down -> {
             if (down) { MinecraftClient mc = MinecraftClient.getInstance(); mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null))); }
         });
+        Hotkeys.register("toggleListScope", down -> { if (down) setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); });
         Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
         Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {
             if (down) Actions.run(ErrorScanner.layer().restricting() ? "missing_layer" : "missing_near");
         });
+    }
+
+    /** Materialliste: "layer" (aktuelle Ebene) oder "all" (ganze Schematic). */
+    public static void setListScope(String scope) {
+        Cfg.manager().setPersistent("hud.layerList.scope", new com.google.gson.JsonPrimitive(scope));
+        ErrorScanner.invalidateAll();
+        ChatOut.info(Lang.get("all".equals(scope) ? "list.nowAll" : "list.nowLayer"));
     }
 
     /** /lx reload bzw. Hotkey: Config ohne Neustart übernehmen. */

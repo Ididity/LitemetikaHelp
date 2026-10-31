@@ -247,4 +247,14 @@ public final class LitematicaBridge {
             return false;
         }
     }
+
+    /** Litematicas Materiallisten (offene und die der Platzierungen) neu zählen lassen. Nur Haupt-Thread. */
+    public static void refreshMaterialLists() {
+        try {
+            fi.dy.masa.litematica.materials.MaterialListBase global = fi.dy.masa.litematica.data.DataManager.getMaterialList();
+            if (global != null) global.reCreateMaterialList();
+        } catch (Throwable t) {
+            dev.litextras.LitematicaExtras.debug("Materialliste neu zählen fehlgeschlagen: " + t);
+        }
+    }
 }

@@ -255,7 +255,8 @@ public final class HudRenderer {
         }
         if (Cfg.bool("hud.neededItem.highlightLayerNeeds")) {
             LitematicaBridge.LayerInfo li = ErrorScanner.layer();
-            ErrorScanner.ScanResult r = li.restricting() ? ErrorScanner.latest(ErrorScanner.Scope.LAYER) : null;
+            ErrorScanner.ScanResult r = ErrorScanner.listShowsAll() ? ErrorScanner.latest(ErrorScanner.Scope.ALL)
+                    : li.restricting() ? ErrorScanner.latest(ErrorScanner.Scope.LAYER) : null;
             if (r != null) {
                 for (ErrorScanner.NeedEntry n : r.needs().values()) if (n.sample() != null) mark(out, inv, n.sample());
             }
@@ -312,6 +313,15 @@ public final class HudRenderer {
     private static List<HudPanel.Line> layerLines() {
         LitematicaBridge.LayerInfo li = ErrorScanner.layer();
         int text = Cfg.color("colors.text");
+        boolean all = ErrorScanner.listShowsAll();
+        if (all) {
+            ErrorScanner.ScanResult ra = ErrorScanner.latest(ErrorScanner.Scope.ALL);
+            if (ErrorScanner.placements().isEmpty()) return List.of();
+            if (ra == null || ra.configGeneration() != Cfg.generation()) {
+                return List.of(HudPanel.Line.text(List.of(new Seg(Lang.get("list.all") + ": " + Lang.get("layer.calculating"), Cfg.color("colors.neutral")))));
+            }
+            return needLines(ra, Lang.get("list.all") + (ra.unloaded() > 0 ? " " + Lang.get("list.loadedOnly") : ""));
+        }
         if (!li.restricting()) {
             if (Cfg.bool("hud.layerList.onlyInLayerMode")) return List.of();
             return List.of(HudPanel.Line.text(List.of(new Seg(Lang.get("layer.notActive"), Cfg.color("colors.neutral")))));
@@ -321,10 +331,13 @@ public final class HudRenderer {
             // Ergebnis gehört zu einer anderen Ebene/Einstellung -> nicht anzeigen, sondern auf neuen Scan warten
             return List.of(HudPanel.Line.text(List.of(new Seg(li.label() + ": " + Lang.get("layer.calculating"), Cfg.color("colors.neutral")))));
         }
+        return needLines(r, r.label());
+    }
 
+    private static List<HudPanel.Line> needLines(ErrorScanner.ScanResult r, String label) {
         List<HudPanel.Line> lines = new ArrayList<>();
         Map<String, Object> hv = new HashMap<>();
-        hv.put("layer", r.label());
+        hv.put("layer", label);
         hv.put("count", r.errorCount());
         hv.put("percent", String.format("%.0f", r.progressPercent()));
         lines.add(HudPanel.Line.text(Template.segments(Cfg.str("templates.layerHeader"), hv,

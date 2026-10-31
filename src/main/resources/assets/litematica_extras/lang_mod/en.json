@@ -194,5 +194,12 @@
   "state.occupied": "occupied",
   "state.has_book": "book",
   "state.has_record": "record",
-  "state.unstable": "unstable"
+  "state.unstable": "unstable",
+  "list.all": "Total",
+  "list.layer": "Current layer",
+  "list.loadedOnly": "(loaded chunks only)",
+  "list.nowAll": "Material list now shows: whole schematic.",
+  "list.nowLayer": "Material list now shows: current layer.",
+  "gui.listScope": "Material list",
+  "help.listscope": "Switch material list: layer or total"
 }
