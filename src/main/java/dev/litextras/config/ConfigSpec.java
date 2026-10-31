@@ -186,6 +186,7 @@ public final class ConfigSpec {
         color("colors.similarItemHighlight", "#C0FFFF55", "Rahmen um Slots mit nur ähnlichem Item (gelb)");
         color("colors.similarItemHighlightFill", "#40FFFF55", "Hintergrund von Slots mit nur ähnlichem Item");
         bool("hud.neededItem.highlightInventory", true, "Passende Slots auch im geöffneten Inventar markieren (grün = exakt, gelb = ähnlich).");
+        bool("hud.neededItem.highlightLayerNeeds", true, "Im Inventar zusätzlich alle Items markieren, die in der aktuellen Ebene noch fehlen.");
 
         section("templates", "Textvorlagen. Platzhalter in geschweiften Klammern.\n"
                 + "Allgemein: {soll}, {ist}, {abweichungen}, {block}, {props}, {status}, {item}, {slot}, {need}, {have}, {fehl}, {layer}, {count}, {result}, {pos}");

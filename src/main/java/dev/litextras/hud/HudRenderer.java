@@ -236,16 +236,38 @@ public final class HudRenderer {
         }
     }
 
-    /** Slot-Index -> exakt(true)/ähnlich(false) für die Inventar-Markierung (leer = nichts markieren). */
+    /** Zähler, ob die Inventar-Markierung wirklich gezeichnet wird (für /lx status). */
+    public static final java.util.concurrent.atomic.AtomicLong INV_RENDERS = new java.util.concurrent.atomic.AtomicLong();
+
+    /**
+     * Slot-Index -> exakt(true)/ähnlich(false) für die Inventar-Markierung (leer = nichts markieren).
+     * Markiert wird: das Item für den angeschauten Block UND alle Items, die in der aktuellen Litematica-Ebene
+     * noch fehlen. Exakt richtig = grün, nur ähnlich = gelb (grün gewinnt).
+     */
     public static Map<Integer, Boolean> inventoryMarks() {
-        if (!Cfg.bool("hud.neededItem.enabled") || !Cfg.bool("hud.neededItem.highlightInventory")) return Map.of();
-        LookTarget.Target t = LookTarget.current();
-        if (t == null || BlockComparator.isEmpty(t.result().soll())) return Map.of();
-        if (Cfg.bool("hud.neededItem.onlyWhenIncorrect") && !t.result().isError()) return Map.of();
-        BlockState soll = t.result().soll();
+        if (!Cfg.bool("hud.neededItem.highlightInventory")) return Map.of();
+        InventoryIndex inv = InventoryIndex.capture(MinecraftClient.getInstance());
         Map<Integer, Boolean> out = new HashMap<>();
-        for (InventoryIndex.SlotStack s : inventory.matchingSlots(soll)) out.put(s.slot(), ItemMapping.isExact(soll, s.item()));
+        LookTarget.Target t = LookTarget.current();
+        if (t != null && !BlockComparator.isEmpty(t.result().soll())
+                && (!Cfg.bool("hud.neededItem.onlyWhenIncorrect") || t.result().isError())) {
+            mark(out, inv, t.result().soll());
+        }
+        if (Cfg.bool("hud.neededItem.highlightLayerNeeds")) {
+            LitematicaBridge.LayerInfo li = ErrorScanner.layer();
+            ErrorScanner.ScanResult r = li.restricting() ? ErrorScanner.latest(ErrorScanner.Scope.LAYER) : null;
+            if (r != null) {
+                for (ErrorScanner.NeedEntry n : r.needs().values()) if (n.sample() != null) mark(out, inv, n.sample());
+            }
+        }
         return out;
+    }
+
+    private static void mark(Map<Integer, Boolean> out, InventoryIndex inv, BlockState soll) {
+        for (InventoryIndex.SlotStack s : inv.matchingSlots(soll)) {
+            boolean exact = ItemMapping.isExact(soll, s.item());
+            out.merge(s.slot(), exact, Boolean::logicalOr);
+        }
     }
 
     public static int[] markColors(boolean exact) {

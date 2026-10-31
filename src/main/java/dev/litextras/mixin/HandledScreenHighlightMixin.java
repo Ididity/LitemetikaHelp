@@ -28,6 +28,7 @@ public abstract class HandledScreenHighlightMixin {
     @Inject(method = "render", at = @At("TAIL"), require = 0)
     private void litextras$highlight(DrawContext ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         try {
+            HudRenderer.INV_RENDERS.incrementAndGet();
             Map<Integer, Boolean> marks = HudRenderer.inventoryMarks();
             if (marks.isEmpty() || handler == null) return;
             for (Slot s : handler.slots) {
