@@ -50,6 +50,13 @@ jobs:
             echo "===== FULL $c"
             javap -cp "$J:$M" "$c" 2>&1 | head -120
           done
+          echo "===== MINECRAFT HOPPER"
+          MC=$(find ~/.gradle/caches .gradle -name "*.jar" 2>/dev/null | grep -iE "minecraft" | grep -iE "named|mapped|merged" | grep -viE "sources|intermediary" | head -1)
+          echo "MCJAR=$MC"
+          echo "--- signatures ---"
+          javap -p -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | head -80
+          echo "--- bytecode insert/extract (removeStack/getStack/transfer calls) ---"
+          javap -p -c -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | grep -nE "^(  )?(private|public|protected|static).*(insert|extract|transfer)|removeStack|getStack|setTransferCooldown|TransferCooldown|InvokeDynamic|canMergeItems" | head -200
           echo "===== container classes"
           unzip -l "$J" | awk '{print $4}' | grep -iE "container/|SchematicHolder|schematic/[A-Za-z]+\.class" | head -40
           echo "===== WHISPER ASSETS"
