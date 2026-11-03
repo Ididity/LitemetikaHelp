@@ -276,5 +276,18 @@
   "tracers.nowOn": "Tracer: an",
   "tracers.nowOff": "Tracer: aus",
   "gui.tracers": "Tracer",
-  "gui.highlightToggle": "Blöcke leuchten"
+  "gui.highlightToggle": "Blöcke leuchten",
+  "counter.header": "Zähler: {perhour}/h  gesamt {total}  ({time})",
+  "counter.needSet": "Zähler: Behälter anschauen und /lx zaehler hier",
+  "counter.waiting": "wartet auf erstes Item",
+  "counter.open": "Behälter öffnen zum Zählen",
+  "counter.set": "Zähler gesetzt. Öffne den Behälter – ab dem ersten Item wird gezählt.",
+  "counter.lookAt": "Schau einen Behälter (Kiste, Barrel, Trichter …) an und gib /lx zaehler hier ein.",
+  "counter.infoSet": "Zähler ist gesetzt. /lx zaehler reset zum Nullstellen, /lx zaehler aus zum Abschalten.",
+  "counter.reset": "Zähler zurückgesetzt.",
+  "counter.on": "Zähler an.",
+  "counter.off": "Zähler aus.",
+  "gui.counter": "Zähler",
+  "hud.name.counter": "Durchsatz-Zähler",
+  "help.counter": "Durchsatz-Zähler (Items pro Stunde)"
 }

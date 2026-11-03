@@ -174,6 +174,14 @@ public final class CommandRegistry {
           .then(literal("allow").executes(c -> { allowServer(true); return 1; }))
           .then(literal("verbieten").executes(c -> { allowServer(false); return 1; }))
           .then(literal("disallow").executes(c -> { allowServer(false); return 1; })));
+        sub(root, "counter", n -> n
+                .executes(c -> { counterInfo(); return 1; })
+                .then(literal("hier").executes(c -> { counterSetHere(); return 1; }))
+                .then(literal("here").executes(c -> { counterSetHere(); return 1; }))
+                .then(literal("an").executes(c -> { dev.litextras.core.Counter.setActive(true); ChatOut.info(Lang.get("counter.on")); return 1; }))
+                .then(literal("aus").executes(c -> { dev.litextras.core.Counter.setActive(false); ChatOut.info(Lang.get("counter.off")); return 1; }))
+                .then(literal("reset").executes(c -> { dev.litextras.core.Counter.reset(); ChatOut.info(Lang.get("counter.reset")); return 1; }))
+                .then(literal("start").executes(c -> { dev.litextras.core.Counter.reset(); ChatOut.info(Lang.get("counter.reset")); return 1; })));
         sub(root, "listscope", n -> n
                 .executes(c -> { dev.litextras.LitematicaExtras.setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); return 1; })
                 .then(literal("ebene").executes(c -> { dev.litextras.LitematicaExtras.setListScope("layer"); return 1; }))
@@ -310,6 +318,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("voice").get(0) + " – " + Lang.get("help.voice"));
         ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
         ChatOut.info("/" + p + " " + subNames("highlight").get(0) + " – " + Lang.get("help.highlight"));
+        ChatOut.info("/" + p + " " + subNames("counter").get(0) + " hier|reset|aus – " + Lang.get("help.counter"));
         ChatOut.info("/" + p + " " + subNames("listscope").get(0) + " ebene|gesamt – " + Lang.get("help.listscope"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));
         if (!Cfg.list("commands.missing.names").isEmpty())
@@ -343,5 +352,16 @@ public final class CommandRegistry {
         dev.litextras.config.Cfg.manager().setPersistent("highlight.worldAllowedServers", arr);
         if (allow && !dev.litextras.render.BlockHighlighter.worldModeAllowed(mc)) ChatOut.info(Lang.get("highlight.blockedServer"));
         else ChatOut.info(Lang.get(allow ? "highlight.serverAllowed" : "highlight.serverDisallowed", "server", addr));
+    }
+
+    private static void counterSetHere() {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (dev.litextras.core.Counter.setHere(mc)) ChatOut.info(Lang.get("counter.set"));
+        else ChatOut.info(Lang.get("counter.lookAt"));
+    }
+
+    private static void counterInfo() {
+        if (!dev.litextras.core.Counter.isSet()) { ChatOut.info(Lang.get("counter.lookAt")); return; }
+        ChatOut.info(Lang.get("counter.infoSet"));
     }
 }

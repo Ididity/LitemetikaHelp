@@ -222,5 +222,18 @@
   "tracers.nowOn": "Tracers: on",
   "tracers.nowOff": "Tracers: off",
   "gui.tracers": "Tracers",
-  "gui.highlightToggle": "Block highlight"
+  "gui.highlightToggle": "Block highlight",
+  "counter.header": "Counter: {perhour}/h  total {total}  ({time})",
+  "counter.needSet": "Counter: look at a container and /lx counter here",
+  "counter.waiting": "waiting for first item",
+  "counter.open": "open the container to count",
+  "counter.set": "Counter set. Open the container – counting starts with the first item.",
+  "counter.lookAt": "Look at a container (chest, barrel, hopper …) and run /lx counter here.",
+  "counter.infoSet": "Counter is set. /lx counter reset to zero it, /lx counter aus to turn it off.",
+  "counter.reset": "Counter reset.",
+  "counter.on": "Counter on.",
+  "counter.off": "Counter off.",
+  "gui.counter": "Counter",
+  "hud.name.counter": "Throughput counter",
+  "help.counter": "Throughput counter (items per hour)"
 }

@@ -41,6 +41,7 @@ public final class HudRenderer {
     /** Haupt-Thread, jeden Tick. */
     public static void tick(MinecraftClient mc) {
         inventory = InventoryIndex.capture(mc);
+        dev.litextras.core.Counter.tick(mc);
         handleAutoSwitch(mc);
     }
 
@@ -61,6 +62,7 @@ public final class HudRenderer {
             if (HudPanel.enabled("layerList")) HudPanel.draw(ctx, "layerList", layerLines());
             if (HudPanel.enabled("status")) HudPanel.draw(ctx, "status", statusLines());
             if (HudPanel.enabled("aiAnswer")) HudPanel.draw(ctx, "aiAnswer", aiLines(mc));
+            if (HudPanel.enabled("counter")) HudPanel.draw(ctx, "counter", counterLines());
         } catch (Throwable t) {
             // HUD darf das Spiel nie abstürzen lassen
             dev.litextras.LitematicaExtras.debug("HUD-Fehler: " + t);
@@ -403,6 +405,45 @@ public final class HudRenderer {
     }
 
     // ================================================================== Status
+    // ================================================================== Durchsatz-Zähler (Counter)
+    private static List<HudPanel.Line> counterLines() {
+        if (!dev.litextras.core.Counter.enabled()) return List.of();
+        int text = Cfg.color("colors.text"), n = Cfg.color("colors.neutral"), warn = Cfg.color("colors.warning");
+        List<HudPanel.Line> lines = new ArrayList<>();
+        if (!dev.litextras.core.Counter.isSet()) {
+            lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("counter.needSet"), n))));
+            return lines;
+        }
+        long total = dev.litextras.core.Counter.total();
+        double perH = dev.litextras.core.Counter.perHour();
+        String state = !dev.litextras.core.Counter.running() ? Lang.get("counter.waiting") : fmtTime(dev.litextras.core.Counter.elapsedSeconds());
+        String header = Lang.get("counter.header", "perhour", fmtNum(perH), "total", total, "time", state);
+        lines.add(HudPanel.Line.text(List.of(new Seg(header, total > 0 ? Cfg.color("colors.correct") : n))));
+        int max = Cfg.integer("hud.counter.maxLines") - 1;
+        int shown = 0;
+        for (Map.Entry<Item, Long> e : dev.litextras.core.Counter.topItems(Math.max(1, max))) {
+            Map<String, Object> iv = new HashMap<>();
+            iv.put("item", Describe.itemName(e.getKey()));
+            iv.put("count", e.getValue());
+            iv.put("perhour", fmtNum(dev.litextras.core.Counter.perHour(e.getKey())));
+            lines.add(new HudPanel.Line(new ItemStack(e.getKey()), Template.segments(Cfg.str("templates.counterLine"), iv, text)));
+            shown++;
+        }
+        if (shown == 0 && total == 0) lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("counter.open"), n))));
+        return lines;
+    }
+
+    private static String fmtNum(double v) {
+        if (v >= 100000) return String.format("%.0f", v);
+        if (v >= 1000) return String.format("%.1fk", v / 1000.0).replace(".0k", "k");
+        return String.format("%.0f", v);
+    }
+
+    private static String fmtTime(long sec) {
+        long h = sec / 3600, m = (sec % 3600) / 60, s = sec % 60;
+        return h > 0 ? String.format("%d:%02d:%02d", h, m, s) : String.format("%d:%02d", m, s);
+    }
+
     private static List<HudPanel.Line> statusLines() {
         List<HudPanel.Line> lines = new ArrayList<>();
         int n = Cfg.color("colors.neutral");

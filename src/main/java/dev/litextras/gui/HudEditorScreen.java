@@ -74,6 +74,10 @@ public class HudEditorScreen extends Screen {
                     new HudPanel.Line(new ItemStack(Items.OAK_PLANKS), List.of(new Seg("Eichenbretter 64/40", g))));
             case "status" -> List.of(HudPanel.Line.text(List.of(new Seg("Profil: bauen", n))), HudPanel.Line.text(List.of(new Seg("≈ Ähnliche Blöcke", Cfg.color("colors.similar")))));
             case "aiAnswer" -> List.of(HudPanel.Line.text(List.of(new Seg("[KI] Dir fehlen noch 12 Steinziegel.", w))));
+            case "counter" -> List.of(
+                    HudPanel.Line.text(List.of(new Seg("Zähler: 5,4k/h", g), new Seg("  gesamt 1203  (12:34)", w))),
+                    new HudPanel.Line(new ItemStack(Items.STONE_BRICKS), List.of(new Seg("Steinziegel: 800 (3,6k/h)", w))),
+                    new HudPanel.Line(new ItemStack(Items.OAK_PLANKS), List.of(new Seg("Eichenbretter: 403 (1,8k/h)", w))));
             default -> List.of(HudPanel.Line.text(List.of(new Seg(id, w))));
         };
     }

@@ -140,6 +140,7 @@ public final class ConfigSpec {
                   "hudedit": ["hud", "hudedit"],
                   "listscope": ["liste", "list"],
                   "highlight": ["leuchten", "highlight"],
+                  "counter": ["zaehler", "counter"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -173,6 +174,7 @@ public final class ConfigSpec {
         hotkey("toggleListScope", "LEFT_ALT+B", "toggle", "Materialliste umschalten: aktuelle Ebene <-> ganze Schematic");
         hotkey("toggleHighlight", "LEFT_ALT+G", "toggle", "Blöcke leuchten lassen an/aus");
         hotkey("toggleTracers", "LEFT_ALT+T", "toggle", "Tracer an/aus");
+        hotkey("counterReset", "LEFT_ALT+Z", "toggle", "Durchsatz-Zähler zurücksetzen");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
 
         // =================================================================== FARBEN & TEXTE
@@ -211,6 +213,7 @@ public final class ConfigSpec {
         str("templates.layerLine", "{item} {have}/{need}{fehltext}", "Feature 4: Zeile. {fehltext} wird nur bei Fehlbetrag gefüllt.");
         str("templates.layerShortfall", " (-{fehl})", "Feature 4: Text für Fehlbetrag.");
         str("templates.chatMissingLine", "{need}x {item} (hast {have}){fehltext}", "Fehlliste im Chat (/missing).");
+        str("templates.counterLine", "{item}: {count} ({perhour}/h)", "Durchsatz-Zähler: Zeile pro Item.");
 
         // =================================================================== HUD
         section("hud", "HUD-Grundeinstellungen");
@@ -243,6 +246,7 @@ public final class ConfigSpec {
         bool("hud.layerList.includeWrongType", true, "Falsche Blöcke mitzählen.");
         hudElement("status", "Kleine Statusanzeige (aktive Modi, Profil)", true, "top_right", -4, 4, 4);
         hudElement("aiAnswer", "Feature 6: KI-Antwort im HUD", true, "middle_right", -4, 0, 14);
+        hudElement("counter", "Durchsatz-Zähler (Counter)", true, "middle_left", 4, 0, 10);
         integer("hud.aiAnswer.showSeconds", 30, 3, 600, "Wie lange die Antwort sichtbar bleibt.");
         integer("hud.aiAnswer.wrapWidth", 220, 80, 600, "Zeilenumbruch-Breite in Pixeln.");
 
@@ -316,6 +320,11 @@ public final class ConfigSpec {
         color("highlight.colorWrong", "#FFFF5555", "Plan: falsch");
         color("highlight.colorCorrect", "#FF55FF55", "Plan: richtig");
         color("highlight.colorWorld", "#FFFFFF55", "Welt-Modus (Einzelspieler)");
+
+        section("counter", "Durchsatz-Zähler (wie Carpet): zählt, was in einen Behälter geht, und rechnet auf pro Stunde hoch.\n"
+                + "Festlegen: Behälter anschauen und /lx zaehler hier. Zählt, solange der Behälter geöffnet ist (Client kann\n"
+                + "den Inhalt eines geschlossenen Behälters auf einem Server nicht lesen). Startet automatisch beim ersten Item.");
+        bool("counter.enabled", false, "Zähler an/aus.");
 
         section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
         bool("tracers.active", false, "Tracer an/aus.");

@@ -28,6 +28,7 @@ public class ConfigScreen extends Screen {
 
     private static final List<Toggle> TOGGLES = List.of(
             new Toggle("tracers.active", "gui.tracers"),
+            new Toggle("counter.enabled", "gui.counter"),
             new Toggle("highlight.active", "gui.highlightToggle"),
             new Toggle("hud.enabled", "gui.hud"),
             new Toggle("compare.similar.enabled", "gui.similar"),

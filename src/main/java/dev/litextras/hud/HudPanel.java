@@ -24,7 +24,7 @@ public final class HudPanel {
     /** Zuletzt gezeichnete Position/Größe je HUD-Element (für den HUD-Editor). x, y, Breite, Höhe. */
     public static final java.util.Map<String, float[]> LAST_RECT = new java.util.concurrent.ConcurrentHashMap<>();
 
-    public static final List<String> IDS = List.of("lookedAt", "preview", "neededItem", "layerList", "status", "aiAnswer");
+    public static final List<String> IDS = List.of("lookedAt", "preview", "neededItem", "layerList", "status", "aiAnswer", "counter");
 
     private static final int TEXT_H = 10;
     private static final int ICON_H = 18;
