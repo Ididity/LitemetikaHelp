@@ -58,8 +58,12 @@ jobs:
           echo "MCJAR=$MC"
           echo "--- signatures ---"
           javap -p -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | head -80
-          echo "--- bytecode insert/extract (removeStack/getStack/transfer calls) ---"
-          javap -p -c -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | grep -nE "^(  )?(private|public|protected|static).*(insert|extract|transfer)|removeStack|getStack|setTransferCooldown|TransferCooldown|InvokeDynamic|canMergeItems" | head -200
+          echo "--- FULL bytecode insert ---"
+          javap -p -c -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | awk '/private static boolean insert\(net.minecraft.world.World/{f=1} f{print} /private static int\[\] getAvailableSlots/{if(f)exit}'
+          echo "--- FULL bytecode extract(Hopper,Inventory,int,Direction) + insertAndExtract setTransferCooldown ---"
+          javap -p -c -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | awk '/private static boolean extract\(net.minecraft.block.entity.Hopper/{f=1} f{print} /public static boolean extract\(net.minecraft.inventory.Inventory/{if(f)exit}'
+          echo "--- insertAndExtract ---"
+          javap -p -c -cp "$MC" net.minecraft.block.entity.HopperBlockEntity 2>&1 | awk '/private static boolean insertAndExtract/{f=1} f{print} /private boolean isFull/{if(f)exit}'
           echo "===== container classes"
           unzip -l "$J" | awk '{print $4}' | grep -iE "container/|SchematicHolder|schematic/[A-Za-z]+\.class" | head -40
           echo "===== WHISPER ASSETS"
