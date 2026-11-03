@@ -235,7 +235,11 @@
   "counter.off": "Counter off.",
   "gui.counter": "Counter",
   "hud.name.counter": "Throughput counter",
-  "help.counter": "Throughput counter (items per hour)",
+  "help.counter": "Throughput counter (items & money per hour)",
   "gui.counterClear": "Counter empties box (SP)",
-  "gui.fastHopper": "Fast hoppers (SP)"
+  "gui.fastHopper": "Fast hoppers (SP)",
+  "counter.money": "≈ {perhour}$/h  (total {total}$, x{multi})",
+  "counter.valueSet": "Value set: {item} = {preis}$",
+  "counter.multiSet": "Sell multiplier: x{faktor}",
+  "counter.holdItem": "Hold the item and run /lx counter wert <price>."
 }

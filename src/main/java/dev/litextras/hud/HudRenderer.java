@@ -419,6 +419,13 @@ public final class HudRenderer {
         String state = !dev.litextras.core.Counter.running() ? Lang.get("counter.waiting") : fmtTime(dev.litextras.core.Counter.elapsedSeconds());
         String header = Lang.get("counter.header", "perhour", fmtNum(perH), "total", total, "time", state);
         lines.add(HudPanel.Line.text(List.of(new Seg(header, total > 0 ? Cfg.color("colors.correct") : n))));
+        if (dev.litextras.core.Counter.anyValueSet()) {
+            String money = Lang.get("counter.money",
+                    "perhour", fmtNum(dev.litextras.core.Counter.moneyPerHour()),
+                    "total", fmtNum(dev.litextras.core.Counter.moneyTotal()),
+                    "multi", trimNum(dev.litextras.core.Counter.sellMultiplier()));
+            lines.add(HudPanel.Line.text(List.of(new Seg(money, Cfg.color("colors.warning")))));
+        }
         int max = Cfg.integer("hud.counter.maxLines") - 1;
         int shown = 0;
         for (Map.Entry<Item, Long> e : dev.litextras.core.Counter.topItems(Math.max(1, max))) {
@@ -437,6 +444,10 @@ public final class HudRenderer {
         if (v >= 100000) return String.format("%.0f", v);
         if (v >= 1000) return String.format("%.1fk", v / 1000.0).replace(".0k", "k");
         return String.format("%.0f", v);
+    }
+
+    private static String trimNum(double v) {
+        return v == Math.floor(v) ? String.format("%.0f", v) : String.format("%.2f", v);
     }
 
     private static String fmtTime(long sec) {

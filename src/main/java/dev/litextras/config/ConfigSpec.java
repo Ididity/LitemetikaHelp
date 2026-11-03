@@ -325,6 +325,8 @@ public final class ConfigSpec {
                 + "Festlegen: Behälter anschauen und /lx zaehler hier. Zählt, solange der Behälter geöffnet ist (Client kann\n"
                 + "den Inhalt eines geschlossenen Behälters auf einem Server nicht lesen). Startet automatisch beim ersten Item.");
         bool("counter.enabled", false, "Zähler an/aus.");
+        dbl("counter.sellMultiplier", 1.0, 0.0, 10000.0, "Verkaufs-Multiplikator (z. B. Sell-Multi-Event). Wird auf den Geldwert multipliziert. Setzen mit /lx zaehler multi <zahl>.");
+        json("counter.itemValues", "{}", "Verkaufswert pro Item: { \"minecraft:diamond\": 100 }. Setzen im Spiel: Item in die Hand nehmen und /lx zaehler wert <preis>.");
         bool("counter.clearContainer", false, "NUR EINZELSPIELER: Behälter dauerhaft leeren und dabei alles zählen (wie der Carpet-Counter). Der Behälter läuft so nie voll und zählt auch bei geschlossener Tür. Auf Servern ohne Wirkung.");
 
         section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");

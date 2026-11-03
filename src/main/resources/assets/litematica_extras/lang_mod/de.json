@@ -289,7 +289,11 @@
   "counter.off": "Zähler aus.",
   "gui.counter": "Zähler",
   "hud.name.counter": "Durchsatz-Zähler",
-  "help.counter": "Durchsatz-Zähler (Items pro Stunde)",
+  "help.counter": "Durchsatz-Zähler (Items & Geld pro Stunde)",
   "gui.counterClear": "Zähler leert Behälter (SP)",
-  "gui.fastHopper": "Schnelle Trichter (SP)"
+  "gui.fastHopper": "Schnelle Trichter (SP)",
+  "counter.money": "≈ {perhour}$/h  (gesamt {total}$, x{multi})",
+  "counter.valueSet": "Wert gesetzt: {item} = {preis}$",
+  "counter.multiSet": "Verkaufs-Multiplikator: x{faktor}",
+  "counter.holdItem": "Nimm das Item in die Hand und gib /lx zaehler wert <preis> ein."
 }

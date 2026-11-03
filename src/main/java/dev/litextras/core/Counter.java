@@ -62,6 +62,59 @@ public final class Counter {
 
     public static Map<Item, Long> counted() { return counted; }
 
+    // ---------------------------------------------------------------- Verkaufswert / Geld
+    public static double sellMultiplier() {
+        double m = Cfg.dbl("counter.sellMultiplier");
+        return m <= 0 ? 1.0 : m;
+    }
+
+    public static double itemValue(Item item) {
+        try {
+            String id = net.minecraft.registry.Registries.ITEM.getId(item).toString();
+            com.google.gson.JsonObject o = Cfg.jsonObject("counter.itemValues");
+            if (o.has(id)) return o.get(id).getAsDouble();
+        } catch (Throwable ignored) {
+        }
+        return 0;
+    }
+
+    public static boolean anyValueSet() {
+        try {
+            return Cfg.jsonObject("counter.itemValues").size() > 0;
+        } catch (Throwable t) {
+            return false;
+        }
+    }
+
+    /** Verkaufswert der bisher gezählten Items (mit Multiplikator). */
+    public static double moneyTotal() {
+        double sum = 0;
+        for (Map.Entry<Item, Long> e : counted.entrySet()) sum += e.getValue() * itemValue(e.getKey());
+        return sum * sellMultiplier();
+    }
+
+    /** Verkaufswert pro Stunde, wenn es so weitergeht. */
+    public static double moneyPerHour() {
+        if (elapsedTicks <= 0) return 0;
+        return moneyTotal() * 72000.0 / elapsedTicks;
+    }
+
+    /** Preis pro Item für das angegebene Item setzen (0 = entfernen). */
+    public static void setItemValue(Item item, double value) {
+        try {
+            String id = net.minecraft.registry.Registries.ITEM.getId(item).toString();
+            com.google.gson.JsonObject o = Cfg.jsonObject("counter.itemValues").deepCopy();
+            if (value <= 0) o.remove(id);
+            else o.addProperty(id, value);
+            Cfg.manager().setPersistent("counter.itemValues", o);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    public static void setSellMultiplier(double m) {
+        Cfg.manager().setPersistent("counter.sellMultiplier", new com.google.gson.JsonPrimitive(Math.max(0, m)));
+    }
+
     /** Zähler auf den gerade angeschauten Block setzen. */
     public static boolean setHere(MinecraftClient mc) {
         BlockPos p = lookedBlock(mc);
