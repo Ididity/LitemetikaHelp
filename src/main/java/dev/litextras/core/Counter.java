@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.hit.BlockHitResult;
@@ -90,6 +91,13 @@ public final class Counter {
         return null;
     }
 
+    /** Leeren-Modus nur im Einzelspieler möglich (dort ist dein Spiel selbst der Server). */
+    public static boolean clearMode(MinecraftClient mc) {
+        return Cfg.bool("counter.clearContainer") && mc.getServer() != null;
+    }
+
+    public static boolean clearModeConfigured() { return Cfg.bool("counter.clearContainer"); }
+
     /** Haupt-Thread, jeden Tick (nur wenn die Welt geladen ist – dadurch pausiert alles im Esc-Menü). */
     public static void tick(MinecraftClient mc) {
         if (!enabled() || mc.player == null) return;
@@ -100,18 +108,61 @@ public final class Counter {
             if (look != null) lastLookedPos = look;
         }
 
-        boolean open = counterPos != null
-                && mc.currentScreen instanceof HandledScreen<?> hs
-                && !(hs.getScreenHandler() == null)
-                && counterPos.equals(lastLookedPos);
-
-        if (open) {
-            if (!counterOpen) haveBaseline = false; // frisch geöffnet -> erst Grundstand merken
-            sample(((HandledScreen<?>) mc.currentScreen).getScreenHandler(), mc.player.getInventory());
+        if (clearMode(mc) && counterPos != null) {
+            // Einzelspieler: Behälter direkt am integrierten Server lesen, ALLES zählen und leeren (wie Carpet).
+            sampleAndClearServer(mc);
+        } else {
+            // Mehrspieler / Leeren aus: zählen, solange der Behälter geöffnet ist.
+            boolean open = counterPos != null
+                    && mc.currentScreen instanceof HandledScreen<?> hs
+                    && !(hs.getScreenHandler() == null)
+                    && counterPos.equals(lastLookedPos);
+            if (open) {
+                if (!counterOpen) haveBaseline = false; // frisch geöffnet -> erst Grundstand merken
+                sample(((HandledScreen<?>) mc.currentScreen).getScreenHandler(), mc.player.getInventory());
+            }
+            counterOpen = open;
         }
-        counterOpen = open;
 
         if (running) elapsedTicks++;
+    }
+
+    /** Einzelspieler: Inhalt des Behälters am Server-Thread lesen, zählen und löschen. */
+    private static void sampleAndClearServer(MinecraftClient mc) {
+        var server = mc.getServer();
+        if (server == null || mc.world == null) return;
+        final BlockPos pos = counterPos;
+        server.execute(() -> {
+            try {
+                var world = server.getWorld(mc.world.getRegistryKey());
+                if (world == null) return;
+                var be = world.getBlockEntity(pos);
+                if (!(be instanceof Inventory inv)) return;
+                Map<Item, Integer> got = new HashMap<>();
+                int size = inv.size();
+                for (int i = 0; i < size; i++) {
+                    ItemStack st = inv.getStack(i);
+                    if (st == null || st.isEmpty()) continue;
+                    got.merge(st.getItem(), st.getCount(), Integer::sum);
+                }
+                if (got.isEmpty()) return;
+                inv.clear();
+                inv.markDirty();
+                be.markDirty();
+                // Zählung auf dem Hauptthread anwenden
+                mc.execute(() -> addCounts(got));
+            } catch (Throwable ignored) {
+            }
+        });
+    }
+
+    /** Alles Gezählte dazurechnen (im Leeren-Modus kommt alles als Zuwachs). */
+    private static synchronized void addCounts(Map<Item, Integer> got) {
+        for (Map.Entry<Item, Integer> e : got.entrySet()) {
+            if (!running) running = true;
+            counted.merge(e.getKey(), (long) e.getValue(), Long::sum);
+            totalCounted += e.getValue();
+        }
     }
 
     /** Behälter-Slots lesen (alle Slots, die NICHT zum Spielerinventar gehören) und Zuwächse zählen. */

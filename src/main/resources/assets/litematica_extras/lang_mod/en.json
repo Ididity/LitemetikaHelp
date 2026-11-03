@@ -235,5 +235,7 @@
   "counter.off": "Counter off.",
   "gui.counter": "Counter",
   "hud.name.counter": "Throughput counter",
-  "help.counter": "Throughput counter (items per hour)"
+  "help.counter": "Throughput counter (items per hour)",
+  "gui.counterClear": "Counter empties box (SP)",
+  "gui.fastHopper": "Fast hoppers (SP)"
 }

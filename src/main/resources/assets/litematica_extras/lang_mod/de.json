@@ -289,5 +289,7 @@
   "counter.off": "Zähler aus.",
   "gui.counter": "Zähler",
   "hud.name.counter": "Durchsatz-Zähler",
-  "help.counter": "Durchsatz-Zähler (Items pro Stunde)"
+  "help.counter": "Durchsatz-Zähler (Items pro Stunde)",
+  "gui.counterClear": "Zähler leert Behälter (SP)",
+  "gui.fastHopper": "Schnelle Trichter (SP)"
 }

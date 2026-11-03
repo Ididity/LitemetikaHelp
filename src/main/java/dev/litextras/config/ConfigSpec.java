@@ -325,6 +325,11 @@ public final class ConfigSpec {
                 + "Festlegen: Behälter anschauen und /lx zaehler hier. Zählt, solange der Behälter geöffnet ist (Client kann\n"
                 + "den Inhalt eines geschlossenen Behälters auf einem Server nicht lesen). Startet automatisch beim ersten Item.");
         bool("counter.enabled", false, "Zähler an/aus.");
+        bool("counter.clearContainer", false, "NUR EINZELSPIELER: Behälter dauerhaft leeren und dabei alles zählen (wie der Carpet-Counter). Der Behälter läuft so nie voll und zählt auch bei geschlossener Tür. Auf Servern ohne Wirkung.");
+
+        section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");
+        bool("hopper.fastTransfer", false, "Trichter bewegen mehrere Items pro Transfer statt nur 1.");
+        integer("hopper.itemsPerTransfer", 10, 1, 64, "Wie viele Items ein Trichter pro Transfer bewegt (Standard-Vanilla ist 1).");
 
         section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
         bool("tracers.active", false, "Tracer an/aus.");
