@@ -328,8 +328,9 @@ public final class ConfigSpec {
         bool("counter.clearContainer", false, "NUR EINZELSPIELER: Behälter dauerhaft leeren und dabei alles zählen (wie der Carpet-Counter). Der Behälter läuft so nie voll und zählt auch bei geschlossener Tür. Auf Servern ohne Wirkung.");
 
         section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");
-        bool("hopper.fastTransfer", false, "Trichter arbeiten schneller (kürzere Wartezeit zwischen den Transfers).");
-        integer("hopper.transferCooldown", 2, 0, 8, "Wartezeit in Ticks zwischen zwei Transfers. Vanilla = 8 (≈2,5 Items/s). 2 ≈ 10 Items/s, 1 ≈ 20 Items/s, 0 = jeden Tick.");
+        bool("hopper.fastTransfer", false, "Schnelle Trichter: pro Zyklus mehrere Items bewegen und/oder kürzere Wartezeit.");
+        integer("hopper.itemsPerTransfer", 10, 1, 64, "Wie viele Items ein Trichter pro Zyklus bewegt (Vanilla = 1). 10 = sichtbarer Stapel-Sprung. Dupe-sicher.");
+        integer("hopper.transferCooldown", 8, 0, 8, "Wartezeit in Ticks zwischen zwei Zyklen. Vanilla = 8. Kleiner = noch schneller (2 ≈ doppelt so oft, 0 = jeden Tick).");
 
         section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
         bool("tracers.active", false, "Tracer an/aus.");
