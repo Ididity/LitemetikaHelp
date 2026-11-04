@@ -132,6 +132,16 @@ public class LitematicaExtras implements ClientModInitializer {
             Cfg.manager().setPersistent("build.onlyCorrectPlacement", new com.google.gson.JsonPrimitive(on));
             ChatOut.info(Lang.get(on ? "build.guardOn" : "build.guardOff"));
         });
+        Hotkeys.register("toggleOnlyHeight", down -> {
+            if (!down) return;
+            boolean on = !Cfg.bool("build.onlyAtHeight");
+            MinecraftClient mc = MinecraftClient.getInstance();
+            if (on && mc.player != null) {
+                Cfg.manager().setPersistent("build.heightY", new com.google.gson.JsonPrimitive(mc.player.getBlockY()));
+            }
+            Cfg.manager().setPersistent("build.onlyAtHeight", new com.google.gson.JsonPrimitive(on));
+            ChatOut.info(Lang.get(on ? "build.heightOn" : "build.heightOff", "y", String.valueOf(Cfg.integer("build.heightY"))));
+        });
         Hotkeys.register("openTutorial", down -> {
             if (!down) return;
             MinecraftClient mc = MinecraftClient.getInstance();

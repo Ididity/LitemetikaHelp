@@ -301,5 +301,11 @@
   "gui.tutorial": "Tutorial / Hilfe …",
   "build.guardOn": "Platz-Sperre an: nur richtige Blöcke",
   "build.guardOff": "Platz-Sperre aus",
-  "build.blocked": "✗ Falscher Block – Platz-Sperre"
+  "build.blocked": "✗ Falscher Block – Platz-Sperre",
+  "build.heightOn": "Höhen-Sperre an: nur auf Y={y}",
+  "build.heightOff": "Höhen-Sperre aus",
+  "build.wrongHeight": "✗ Nur auf Y={y} setzbar",
+  "build.heightInfo": "Höhen-Sperre: {state}, Y={y}",
+  "gui.onlyHeight": "Höhen-Sperre",
+  "help.height": "Höhen-Sperre: nur auf einer Y-Höhe setzen"
 }

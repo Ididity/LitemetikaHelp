@@ -30,8 +30,19 @@ public abstract class PlacementGuardMixin {
                                        CallbackInfoReturnable<ActionResult> cir) {
         try {
             if (hand != Hand.MAIN_HAND) return;
-            if (!Cfg.bool("build.onlyCorrectPlacement")) return;
             if (player == null || !(player.getMainHandStack().getItem() instanceof BlockItem)) return;
+
+            // Höhen-Sperre: nur auf einer Y-Höhe setzen, sonst nirgends.
+            if (Cfg.bool("build.onlyAtHeight") && hitResult != null) {
+                int placeY = litextras$placeY(hitResult);
+                if (placeY != Integer.MIN_VALUE && placeY != Cfg.integer("build.heightY")) {
+                    cir.setReturnValue(ActionResult.FAIL);
+                    if (Cfg.bool("build.onlyCorrectMessage")) ChatOut.actionBar(Lang.get("build.wrongHeight", "y", String.valueOf(Cfg.integer("build.heightY"))));
+                    return;
+                }
+            }
+
+            if (!Cfg.bool("build.onlyCorrectPlacement")) return;
             LookTarget.Preview pv = LookTarget.preview();
             if (pv == null || pv.result() == null) return; // nicht Teil des Plans -> normal bauen
             boolean ok = Cfg.bool("build.onlyCorrectIncludeSimilar")
@@ -42,6 +53,20 @@ public abstract class PlacementGuardMixin {
                 if (Cfg.bool("build.onlyCorrectMessage")) ChatOut.actionBar(Lang.get("build.blocked"));
             }
         } catch (Throwable ignored) {
+        }
+    }
+
+    /** Y der Zelle, in die der Block gesetzt würde (ersetzbarer Block = dort, sonst eine Seite weiter). */
+    private static int litextras$placeY(BlockHitResult hit) {
+        try {
+            net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
+            if (mc.world == null) return Integer.MIN_VALUE;
+            net.minecraft.util.math.BlockPos clicked = hit.getBlockPos();
+            boolean replace = mc.world.getBlockState(clicked).isReplaceable();
+            net.minecraft.util.math.BlockPos place = replace ? clicked : clicked.offset(hit.getSide());
+            return place.getY();
+        } catch (Throwable t) {
+            return Integer.MIN_VALUE;
         }
     }
 }

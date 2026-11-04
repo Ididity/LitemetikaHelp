@@ -141,6 +141,7 @@ public final class ConfigSpec {
                   "listscope": ["liste", "list"],
                   "highlight": ["leuchten", "highlight"],
                   "counter": ["zaehler", "counter"],
+                  "height": ["hoehe", "height"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -175,6 +176,7 @@ public final class ConfigSpec {
         hotkey("toggleHighlight", "LEFT_ALT+G", "toggle", "Blöcke leuchten lassen an/aus");
         hotkey("toggleOnlyCorrect", "LEFT_ALT+N", "toggle", "Platz-Sperre (nur richtige Blöcke setzen) an/aus");
         hotkey("openTutorial", "LEFT_ALT+I", "toggle", "Tutorial / Hilfe öffnen");
+        hotkey("toggleOnlyHeight", "LEFT_ALT+Y", "toggle", "Höhen-Sperre (nur auf einer Y-Höhe setzen) an/aus");
         hotkey("toggleTracers", "LEFT_ALT+T", "toggle", "Tracer an/aus");
         hotkey("counterReset", "LEFT_ALT+Z", "toggle", "Durchsatz-Zähler zurücksetzen");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
@@ -230,6 +232,8 @@ public final class ConfigSpec {
         bool("build.onlyCorrectPlacement", false, "Platz-Sperre: Nur Blöcke setzen, die laut Plan hingehören. Falsche Platzierungen werden abgebrochen. Umschalten mit Hotkey (Standard Alt+N).");
         bool("build.onlyCorrectIncludeSimilar", true, "Auch ähnliche (akzeptierte) Blöcke zulassen. Aus = nur exakt richtig.");
         bool("build.onlyCorrectMessage", true, "Kurze Einblendung, wenn eine Platzierung gesperrt wurde.");
+        bool("build.onlyAtHeight", false, "Höhen-Sperre: Nur auf einer einzigen Y-Höhe setzen, sonst nirgends (auch bei Rechtsklick). Umschalten mit Hotkey (Standard Alt+Y). Höhe festlegen mit /lx hoehe hier oder /lx hoehe <y>.");
+        integer("build.heightY", 0, -64, 320, "Erlaubte Y-Höhe für die Höhen-Sperre.");
         bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
         integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);

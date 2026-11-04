@@ -247,5 +247,11 @@
   "gui.tutorial": "Tutorial / help …",
   "build.guardOn": "Placement lock on: only correct blocks",
   "build.guardOff": "Placement lock off",
-  "build.blocked": "✗ Wrong block – placement locked"
+  "build.blocked": "✗ Wrong block – placement locked",
+  "build.heightOn": "Height lock on: only at Y={y}",
+  "build.heightOff": "Height lock off",
+  "build.wrongHeight": "✗ Only placeable at Y={y}",
+  "build.heightInfo": "Height lock: {state}, Y={y}",
+  "gui.onlyHeight": "Height lock",
+  "help.height": "Height lock: place only at one Y"
 }

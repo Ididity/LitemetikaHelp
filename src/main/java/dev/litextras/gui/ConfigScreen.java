@@ -31,6 +31,7 @@ public class ConfigScreen extends Screen {
             new Toggle("counter.enabled", "gui.counter"),
             new Toggle("hud.crosshairOk.enabled", "gui.crosshairOk"),
             new Toggle("build.onlyCorrectPlacement", "gui.onlyCorrect"),
+            new Toggle("build.onlyAtHeight", "gui.onlyHeight"),
             new Toggle("counter.clearContainer", "gui.counterClear"),
             new Toggle("hopper.fastTransfer", "gui.fastHopper"),
             new Toggle("highlight.active", "gui.highlightToggle"),

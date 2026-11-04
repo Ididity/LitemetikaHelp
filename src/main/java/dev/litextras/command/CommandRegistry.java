@@ -166,6 +166,14 @@ public final class CommandRegistry {
             mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null)));
             return 1;
         }));
+        sub(root, "height", n -> n
+                .executes(c -> { heightInfo(); return 1; })
+                .then(literal("hier").executes(c -> { heightHere(); return 1; }))
+                .then(literal("here").executes(c -> { heightHere(); return 1; }))
+                .then(literal("an").executes(c -> { setHeightActive(true); return 1; }))
+                .then(literal("aus").executes(c -> { setHeightActive(false); return 1; }))
+                .then(argument("y", com.mojang.brigadier.arguments.IntegerArgumentType.integer(-64, 320))
+                        .executes(c -> { setHeight(com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "y")); return 1; })));
         sub(root, "highlight", n -> n.executes(c -> {
             MinecraftClient mc = MinecraftClient.getInstance();
             mc.send(() -> mc.setScreen(new dev.litextras.gui.BlockPickerScreen(null)));
@@ -327,6 +335,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("voice").get(0) + " – " + Lang.get("help.voice"));
         ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
         ChatOut.info("/" + p + " " + subNames("highlight").get(0) + " – " + Lang.get("help.highlight"));
+        ChatOut.info("/" + p + " " + subNames("height").get(0) + " hier|<y>|aus – " + Lang.get("help.height"));
         ChatOut.info("/" + p + " " + subNames("counter").get(0) + " hier|reset|aus|wert <preis>|multi <faktor> – " + Lang.get("help.counter"));
         ChatOut.info("/" + p + " " + subNames("listscope").get(0) + " ebene|gesamt – " + Lang.get("help.listscope"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));
@@ -367,6 +376,33 @@ public final class CommandRegistry {
         MinecraftClient mc = MinecraftClient.getInstance();
         if (dev.litextras.core.Counter.setHere(mc)) ChatOut.info(Lang.get("counter.set"));
         else ChatOut.info(Lang.get("counter.lookAt"));
+    }
+
+    private static void setHeight(int y) {
+        dev.litextras.config.Cfg.manager().setPersistent("build.heightY", new com.google.gson.JsonPrimitive(y));
+        dev.litextras.config.Cfg.manager().setPersistent("build.onlyAtHeight", new com.google.gson.JsonPrimitive(true));
+        ChatOut.info(Lang.get("build.heightOn", "y", String.valueOf(y)));
+    }
+
+    private static void heightHere() {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player == null) return;
+        int y = mc.player.getBlockY();
+        if (mc.crosshairTarget instanceof net.minecraft.util.hit.BlockHitResult bhr
+                && mc.crosshairTarget.getType() == net.minecraft.util.hit.HitResult.Type.BLOCK) {
+            y = bhr.getBlockPos().getY();
+        }
+        setHeight(y);
+    }
+
+    private static void setHeightActive(boolean on) {
+        dev.litextras.config.Cfg.manager().setPersistent("build.onlyAtHeight", new com.google.gson.JsonPrimitive(on));
+        ChatOut.info(Lang.get(on ? "build.heightOn" : "build.heightOff", "y", String.valueOf(dev.litextras.config.Cfg.integer("build.heightY"))));
+    }
+
+    private static void heightInfo() {
+        ChatOut.info(Lang.get("build.heightInfo", "y", String.valueOf(dev.litextras.config.Cfg.integer("build.heightY")),
+                "state", Lang.get(dev.litextras.config.Cfg.bool("build.onlyAtHeight") ? "msg.on" : "msg.off")));
     }
 
     private static void counterSetValue(double price) {

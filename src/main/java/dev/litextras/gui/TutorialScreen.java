@@ -73,6 +73,7 @@ public class TutorialScreen extends Screen {
         sec(l, "Platz-Sperre");
         txtln(l, "Nur richtige Blöcke setzbar, falsche werden abgebrochen. An/Aus: " + key("toggleOnlyCorrect"));
         txtln(l, "(Zum Kisten-Öffnen leere Hand/Werkzeug nehmen oder kurz ausschalten.)");
+        txtln(l, "Höhen-Sperre: nur auf einer Y-Höhe setzen. An/Aus: " + key("toggleOnlyHeight") + "   Höhe: /lx hoehe hier");
 
         sec(l, "Haken unterm Fadenkreuz");
         txtln(l, "Kleiner grüner Haken, wenn der Block richtig sitzen würde (einschaltbar).");
