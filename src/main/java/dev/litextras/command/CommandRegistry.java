@@ -172,6 +172,8 @@ public final class CommandRegistry {
                 .then(literal("here").executes(c -> { heightHere(); return 1; }))
                 .then(literal("an").executes(c -> { setHeightActive(true); return 1; }))
                 .then(literal("aus").executes(c -> { setHeightActive(false); return 1; }))
+                .then(literal("layer").executes(c -> { heightLayer(); return 1; }))
+                .then(literal("ebene").executes(c -> { heightLayer(); return 1; }))
                 .then(argument("y", com.mojang.brigadier.arguments.IntegerArgumentType.integer(-64, 320))
                         .executes(c -> { setHeight(com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "y")); return 1; })));
         sub(root, "highlight", n -> n.executes(c -> {
@@ -379,9 +381,21 @@ public final class CommandRegistry {
     }
 
     private static void setHeight(int y) {
+        dev.litextras.config.Cfg.manager().setPersistent("build.heightFollowLayer", new com.google.gson.JsonPrimitive(false));
         dev.litextras.config.Cfg.manager().setPersistent("build.heightY", new com.google.gson.JsonPrimitive(y));
         dev.litextras.config.Cfg.manager().setPersistent("build.onlyAtHeight", new com.google.gson.JsonPrimitive(true));
         ChatOut.info(Lang.get("build.heightOn", "y", String.valueOf(y)));
+    }
+
+    private static void heightLayer() {
+        dev.litextras.config.Cfg.manager().setPersistent("build.heightFollowLayer", new com.google.gson.JsonPrimitive(true));
+        dev.litextras.config.Cfg.manager().setPersistent("build.onlyAtHeight", new com.google.gson.JsonPrimitive(true));
+        dev.litextras.core.LitematicaBridge.LayerInfo li = dev.litextras.core.LitematicaBridge.layer();
+        if (!li.restricting() || li.axis() != net.minecraft.util.math.Direction.Axis.Y) {
+            ChatOut.warn(Lang.get("build.layerHint"));
+        } else {
+            ChatOut.info(Lang.get("build.layerOn"));
+        }
     }
 
     private static void heightHere() {

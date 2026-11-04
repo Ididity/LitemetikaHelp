@@ -234,6 +234,7 @@ public final class ConfigSpec {
         bool("build.onlyCorrectMessage", true, "Kurze Einblendung, wenn eine Platzierung gesperrt wurde.");
         bool("build.onlyAtHeight", false, "Höhen-Sperre: Nur auf einer einzigen Y-Höhe setzen, sonst nirgends (auch bei Rechtsklick). Umschalten mit Hotkey (Standard Alt+Y). Höhe festlegen mit /lx hoehe hier oder /lx hoehe <y>.");
         integer("build.heightY", 0, -64, 320, "Erlaubte Y-Höhe für die Höhen-Sperre.");
+        bool("build.heightFollowLayer", false, "Höhen-Sperre folgt der aktuellen Litematica-Ebene (nur in der sichtbaren Ebene bauen). Setzen mit /lx hoehe layer.");
         bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
         integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);

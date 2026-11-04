@@ -253,5 +253,7 @@
   "build.wrongHeight": "✗ Only placeable at Y={y}",
   "build.heightInfo": "Height lock: {state}, Y={y}",
   "gui.onlyHeight": "Height lock",
-  "help.height": "Height lock: place only at one Y"
+  "help.height": "Height lock: build only at one Y, or only in the layer",
+  "build.layerOn": "Height lock now follows the Litematica layer – build only there.",
+  "build.layerHint": "Height lock follows the layer. Set Litematica to single layer or layer range (Y), otherwise it has no effect."
 }

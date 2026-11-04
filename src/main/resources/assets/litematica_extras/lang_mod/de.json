@@ -307,5 +307,7 @@
   "build.wrongHeight": "✗ Nur auf Y={y} setzbar",
   "build.heightInfo": "Höhen-Sperre: {state}, Y={y}",
   "gui.onlyHeight": "Höhen-Sperre",
-  "help.height": "Höhen-Sperre: nur auf einer Y-Höhe setzen"
+  "help.height": "Höhen-Sperre: nur auf einer Y-Höhe oder nur in der Ebene (layer) bauen",
+  "build.layerOn": "Höhen-Sperre folgt jetzt der Litematica-Ebene – nur dort baubar.",
+  "build.layerHint": "Höhen-Sperre folgt der Ebene. Stell Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' (Y), sonst wirkt sie nicht."
 }

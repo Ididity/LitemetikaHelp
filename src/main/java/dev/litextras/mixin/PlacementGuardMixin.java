@@ -32,13 +32,30 @@ public abstract class PlacementGuardMixin {
             if (hand != Hand.MAIN_HAND) return;
             if (player == null || !(player.getMainHandStack().getItem() instanceof BlockItem)) return;
 
-            // Höhen-Sperre: nur auf einer Y-Höhe setzen, sonst nirgends.
+            // Höhen-Sperre: nur auf einer Y-Höhe (oder in der aktuellen Ebene) setzen, sonst nirgends.
             if (Cfg.bool("build.onlyAtHeight") && hitResult != null) {
                 int placeY = litextras$placeY(hitResult);
-                if (placeY != Integer.MIN_VALUE && placeY != Cfg.integer("build.heightY")) {
-                    cir.setReturnValue(ActionResult.FAIL);
-                    if (Cfg.bool("build.onlyCorrectMessage")) ChatOut.actionBar(Lang.get("build.wrongHeight", "y", String.valueOf(Cfg.integer("build.heightY"))));
-                    return;
+                if (placeY != Integer.MIN_VALUE) {
+                    boolean okHeight;
+                    String info;
+                    if (Cfg.bool("build.heightFollowLayer")) {
+                        dev.litextras.core.LitematicaBridge.LayerInfo li = dev.litextras.core.LitematicaBridge.layer();
+                        if (li.restricting() && li.axis() == net.minecraft.util.math.Direction.Axis.Y) {
+                            okHeight = placeY >= li.min() && placeY <= li.max();
+                            info = li.min() == li.max() ? String.valueOf(li.min()) : li.min() + "–" + li.max();
+                        } else {
+                            okHeight = true; // keine Y-Ebene aktiv -> nicht sperren
+                            info = "";
+                        }
+                    } else {
+                        okHeight = placeY == Cfg.integer("build.heightY");
+                        info = String.valueOf(Cfg.integer("build.heightY"));
+                    }
+                    if (!okHeight) {
+                        cir.setReturnValue(ActionResult.FAIL);
+                        if (Cfg.bool("build.onlyCorrectMessage")) ChatOut.actionBar(Lang.get("build.wrongHeight", "y", info));
+                        return;
+                    }
                 }
             }
 
