@@ -59,8 +59,12 @@ jobs:
           echo "URL=$U"; [ -n "$U" ] && curl -sL -o /tmp/w.zip "$U" && unzip -l /tmp/w.zip | grep -iE "\\.exe"
           } > classes.txt 2>&1 || true
 
-      - name: Prüfen, ob die Mod-Datei vollständig ist
-        run: unzip -l $(ls build/libs/*.jar | grep -v sources) | grep -E "fabric.mod.json|LitematicaExtras.class|icon.png"
+      - name: Prüfen, ob die Mod-Dateien vollständig sind
+        run: |
+          for j in $(ls build/libs/*.jar | grep -v sources); do
+            echo "== $j"
+            unzip -l "$j" | grep -E "fabric.mod.json|LitematicaExtras.class|icon.png|edition.txt" || { echo "FEHLT in $j"; exit 1; }
+          done
 
       - name: Fertige Mod-Datei hochladen
         uses: actions/upload-artifact@v4
