@@ -6,7 +6,8 @@
   "client": [
     "WorldBlockChangeMixin",
     "HandledScreenHighlightMixin",
-    "HopperSpeedMixin"
+    "HopperSpeedMixin",
+    "PlacementGuardMixin"
   ],
   "injectors": {
     "defaultRequire": 0

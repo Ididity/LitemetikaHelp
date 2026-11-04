@@ -296,5 +296,10 @@
   "counter.valueSet": "Wert gesetzt: {item} = {preis}$",
   "counter.multiSet": "Verkaufs-Multiplikator: x{faktor}",
   "counter.holdItem": "Nimm das Item in die Hand und gib /lx zaehler wert <preis> ein.",
-  "gui.crosshairOk": "Haken bei richtig"
+  "gui.crosshairOk": "Haken bei richtig",
+  "gui.onlyCorrect": "Platz-Sperre (nur richtig)",
+  "gui.tutorial": "Tutorial / Hilfe …",
+  "build.guardOn": "Platz-Sperre an: nur richtige Blöcke",
+  "build.guardOff": "Platz-Sperre aus",
+  "build.blocked": "✗ Falscher Block – Platz-Sperre"
 }

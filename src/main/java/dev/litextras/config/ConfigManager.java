@@ -193,6 +193,22 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 12 -> 13: Obsidian & unverschiebbare Blöcke nie 'ähnlich'; Gruppe 'ohne Hitbox' an.
+        if (fromVersion < 13) {
+            try {
+                JsonObject sim = root.getAsJsonObject("compare").getAsJsonObject("similar");
+                com.google.gson.JsonArray bl = sim.has("solidBlacklist") && sim.get("solidBlacklist").isJsonArray()
+                        ? sim.getAsJsonArray("solidBlacklist") : new com.google.gson.JsonArray();
+                java.util.Set<String> have = new java.util.HashSet<>();
+                for (com.google.gson.JsonElement e : bl) have.add(e.getAsString());
+                for (String add : new String[]{"#minecraft:wither_immune", "#minecraft:dragon_immune", "minecraft:obsidian",
+                        "minecraft:crying_obsidian", "minecraft:respawn_anchor", "minecraft:reinforced_deepslate", "minecraft:glazed_terracotta"}) {
+                    if (have.add(add)) bl.add(add);
+                }
+                sim.add("solidBlacklist", bl);
+                if (!sim.has("noCollisionBlocks")) sim.addProperty("noCollisionBlocks", true);
+            } catch (Exception ignored) {}
+        }
         // Version 11 -> 12: alles schneller erkennen (kürzere Intervalle).
         if (fromVersion < 12) {
             try {

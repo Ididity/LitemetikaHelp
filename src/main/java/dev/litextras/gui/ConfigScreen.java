@@ -30,6 +30,7 @@ public class ConfigScreen extends Screen {
             new Toggle("tracers.active", "gui.tracers"),
             new Toggle("counter.enabled", "gui.counter"),
             new Toggle("hud.crosshairOk.enabled", "gui.crosshairOk"),
+            new Toggle("build.onlyCorrectPlacement", "gui.onlyCorrect"),
             new Toggle("counter.clearContainer", "gui.counterClear"),
             new Toggle("hopper.fastTransfer", "gui.fastHopper"),
             new Toggle("highlight.active", "gui.highlightToggle"),
@@ -116,6 +117,10 @@ public class ConfigScreen extends Screen {
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.hudEditor")), b -> {
             if (this.client != null) this.client.setScreen(new HudEditorScreen(this));
         }).dimensions(left + colW + gap, by, colW, 20).build());
+        by += 24;
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.tutorial")), b -> {
+            if (this.client != null) this.client.setScreen(new TutorialScreen(this));
+        }).dimensions(left, by, colW * 2 + gap, 20).build());
         by += 24;
         boolean allScope = dev.litextras.core.ErrorScanner.listShowsAll();
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.listScope") + ": " + Lang.get(allScope ? "list.all" : "list.layer")), b -> {

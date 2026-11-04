@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 12;
+    public static final int CONFIG_VERSION = 13;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -173,6 +173,8 @@ public final class ConfigSpec {
         hotkey("hudEditor", "LEFT_ALT+U", "toggle", "HUD-Editor öffnen (Anzeigen verschieben und vergrößern)");
         hotkey("toggleListScope", "LEFT_ALT+B", "toggle", "Materialliste umschalten: aktuelle Ebene <-> ganze Schematic");
         hotkey("toggleHighlight", "LEFT_ALT+G", "toggle", "Blöcke leuchten lassen an/aus");
+        hotkey("toggleOnlyCorrect", "LEFT_ALT+N", "toggle", "Platz-Sperre (nur richtige Blöcke setzen) an/aus");
+        hotkey("openTutorial", "LEFT_ALT+I", "toggle", "Tutorial / Hilfe öffnen");
         hotkey("toggleTracers", "LEFT_ALT+T", "toggle", "Tracer an/aus");
         hotkey("counterReset", "LEFT_ALT+Z", "toggle", "Durchsatz-Zähler zurücksetzen");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
@@ -223,6 +225,11 @@ public final class ConfigSpec {
         bool("hud.crosshairOk.includeSimilar", false, "Auch bei nur ähnlichen (akzeptierten) Blöcken anzeigen. Standard: nur exakt richtig.");
         str("hud.crosshairOk.text", "✔", "Das Zeichen (z. B. ✔ oder 'ok').");
         integer("hud.crosshairOk.offsetY", 10, -100, 100, "Abstand unter dem Fadenkreuz in Pixeln.");
+
+        section("build", "Bau-Hilfen");
+        bool("build.onlyCorrectPlacement", false, "Platz-Sperre: Nur Blöcke setzen, die laut Plan hingehören. Falsche Platzierungen werden abgebrochen. Umschalten mit Hotkey (Standard Alt+N).");
+        bool("build.onlyCorrectIncludeSimilar", true, "Auch ähnliche (akzeptierte) Blöcke zulassen. Aus = nur exakt richtig.");
+        bool("build.onlyCorrectMessage", true, "Kurze Einblendung, wenn eine Platzierung gesperrt wurde.");
         bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
         integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);
@@ -262,8 +269,12 @@ public final class ConfigSpec {
                 "minecraft:observer", "minecraft:piston", "minecraft:sticky_piston", "minecraft:redstone_block", "minecraft:target",
                 "minecraft:dispenser", "minecraft:dropper", "minecraft:note_block", "minecraft:tnt", "minecraft:redstone_lamp",
                 "minecraft:slime_block", "minecraft:honey_block", "minecraft:crafter", "minecraft:spawner", "#minecraft:leaves",
-                "#minecraft:shulker_boxes", "minecraft:budding_amethyst");
+                "#minecraft:shulker_boxes", "minecraft:budding_amethyst",
+                "#minecraft:wither_immune", "#minecraft:dragon_immune", "minecraft:obsidian", "minecraft:crying_obsidian",
+                "minecraft:respawn_anchor", "minecraft:reinforced_deepslate", "minecraft:glazed_terracotta");
         list("compare.similar.solidAllowMissingProperties", "Properties, die beim Tausch zweier solider Blöcke fehlen dürfen (z. B. \"axis\" für Stamm -> Stein).");
+        bool("compare.similar.noCollisionBlocks", true, "Feature 1: Blöcke ganz ohne Hitbox (Schilder, Banner, Fackeln, Blumen, Glow Lichen, Sculk-Ranken, Harzklumpen …) gelten untereinander als gleichwertig. Hebel/Knöpfe/Druckplatten/Redstone bleiben außen vor.");
+        list("compare.similar.noCollisionAllowMissingProperties", "Properties, die bei der Gruppe 'ohne Hitbox' fehlen dürfen.", "*");
         list("compare.ignoredProperties", "Diese Properties werden NIE verglichen. waterlogged ist absichtlich NICHT drin, kann aber ergänzt werden.",
                 "powered", "lit", "age", "distance", "persistent", "snowy");
         bool("compare.ignoredPropertiesAlsoWhenExact", true, "Die Ignorierliste auch dann anwenden, wenn 'Ähnliche Blöcke' aus ist.");

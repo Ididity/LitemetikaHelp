@@ -43,10 +43,13 @@ public final class EquivalenceGroups {
     }
 
     public static final Group SOLID = new Group("Solide Blöcke", PropertyMode.STRICT, Set.of(), List.of());
+    public static final Group NO_COLLISION = new Group("Blöcke ohne Hitbox", PropertyMode.STRICT, Set.of(), List.of());
 
     private static volatile List<Group> groups = List.of();
     private static volatile List<Matcher> solidBlacklist = List.of();
     private static volatile Group solidGroup = SOLID;
+    private static volatile Group noCollisionGroup = NO_COLLISION;
+    private static final ConcurrentHashMap<BlockState, Boolean> NOCOLL_CACHE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Block, Integer> GROUP_CACHE = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<BlockState, Boolean> SOLID_CACHE = new ConcurrentHashMap<>();
     private static long builtGeneration = -1;
@@ -85,6 +88,8 @@ public final class EquivalenceGroups {
         solidGroup = new Group(SOLID.name(), SOLID.mode(), Set.copyOf(Cfg.list("compare.similar.solidAllowMissingProperties")), List.of());
         GROUP_CACHE.clear();
         SOLID_CACHE.clear();
+        NOCOLL_CACHE.clear();
+        noCollisionGroup = new Group(NO_COLLISION.name(), NO_COLLISION.mode(), Set.copyOf(Cfg.list("compare.similar.noCollisionAllowMissingProperties")), List.of());
         builtGeneration = Cfg.generation();
         return List.copyOf(problems);
     }
@@ -97,6 +102,7 @@ public final class EquivalenceGroups {
     public static void clearCaches() {
         GROUP_CACHE.clear();
         SOLID_CACHE.clear();
+        NOCOLL_CACHE.clear();
     }
 
     private static PropertyMode parseMode(String s, String group) {
@@ -152,6 +158,9 @@ public final class EquivalenceGroups {
         if (Cfg.bool("compare.similar.solidBlocks") && isPlainSolid(soll) && isPlainSolid(ist)) {
             return solidGroup;
         }
+        if (Cfg.bool("compare.similar.noCollisionBlocks") && isNoCollision(soll) && isNoCollision(ist)) {
+            return noCollisionGroup;
+        }
         return null;
     }
 
@@ -183,6 +192,26 @@ public final class EquivalenceGroups {
                 if (st.getBlock() instanceof FallingBlock) return false;
                 // Rutschige Blöcke (Packeis, Blaueis …) sind nie "gleich" wie Stein – Eis muss Eis sein.
                 if (Math.abs(st.getBlock().getSlipperiness() - 0.6f) > 0.001f) return false;
+                for (Matcher m : solidBlacklist) if (m.matches(st)) return false;
+                return true;
+            } catch (Throwable t) {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * Blöcke ohne Kollision (keine Hitbox für Items/Entities): Schilder, Banner, Fackeln, Blumen, Ranken,
+     * Glow Lichen, Sculk-Ranken, Harzklumpen usw. gelten untereinander als gleichwertig. Redstone-Teile
+     * (die Signal geben oder einen Comparator speisen – Hebel, Knöpfe, Druckplatten, Redstone) bleiben außen vor.
+     */
+    public static boolean isNoCollision(BlockState s) {
+        return NOCOLL_CACHE.computeIfAbsent(s, st -> {
+            try {
+                if (st.isAir()) return false;
+                if (!st.getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN).isEmpty()) return false;
+                if (st.emitsRedstonePower()) return false;
+                if (st.hasComparatorOutput()) return false;
                 for (Matcher m : solidBlacklist) if (m.matches(st)) return false;
                 return true;
             } catch (Throwable t) {

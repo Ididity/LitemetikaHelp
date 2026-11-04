@@ -242,5 +242,10 @@
   "counter.valueSet": "Value set: {item} = {preis}$",
   "counter.multiSet": "Sell multiplier: x{faktor}",
   "counter.holdItem": "Hold the item and run /lx counter wert <price>.",
-  "gui.crosshairOk": "Check when correct"
+  "gui.crosshairOk": "Check when correct",
+  "gui.onlyCorrect": "Placement lock (only correct)",
+  "gui.tutorial": "Tutorial / help …",
+  "build.guardOn": "Placement lock on: only correct blocks",
+  "build.guardOff": "Placement lock off",
+  "build.blocked": "✗ Wrong block – placement locked"
 }

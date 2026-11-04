@@ -31,6 +31,15 @@ public final class ChatOut {
         sendText(t);
     }
 
+    /** Kurze Einblendung über der Hotbar (Action Bar), nicht im Chat. */
+    public static void actionBar(String msg) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc == null) return;
+        mc.execute(() -> {
+            if (mc.inGameHud != null) mc.inGameHud.setOverlayMessage(Text.literal(msg), false);
+        });
+    }
+
     public static void segments(List<Template.Seg> segs) {
         MutableText t = Text.literal("[LX] ").styled(s -> s.withColor(PREFIX_COLOR));
         for (Template.Seg seg : segs) {

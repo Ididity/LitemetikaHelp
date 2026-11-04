@@ -126,6 +126,17 @@ public class LitematicaExtras implements ClientModInitializer {
             if (down) { MinecraftClient mc = MinecraftClient.getInstance(); mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null))); }
         });
         Hotkeys.register("toggleListScope", down -> { if (down) setListScope(ErrorScanner.listShowsAll() ? "layer" : "all"); });
+        Hotkeys.register("toggleOnlyCorrect", down -> {
+            if (!down) return;
+            boolean on = !Cfg.bool("build.onlyCorrectPlacement");
+            Cfg.manager().setPersistent("build.onlyCorrectPlacement", new com.google.gson.JsonPrimitive(on));
+            ChatOut.info(Lang.get(on ? "build.guardOn" : "build.guardOff"));
+        });
+        Hotkeys.register("openTutorial", down -> {
+            if (!down) return;
+            MinecraftClient mc = MinecraftClient.getInstance();
+            mc.send(() -> mc.setScreen(new dev.litextras.gui.TutorialScreen(null)));
+        });
         Hotkeys.register("toggleHighlight", down -> {
             if (!down) return;
             boolean on = !Cfg.bool("highlight.active");
