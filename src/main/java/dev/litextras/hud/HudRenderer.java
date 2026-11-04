@@ -283,22 +283,37 @@ public final class HudRenderer {
     /** Optional: automatisch auf den passenden Hotbar-Slot wechseln (wie Mausrad – nur Client-Auswahl). */
     private static void handleAutoSwitch(MinecraftClient mc) {
         if (!Cfg.bool("hud.neededItem.autoSwitch") || mc.player == null || mc.currentScreen != null) return;
-        LookTarget.Target t = LookTarget.current();
-        // Nur wechseln, wenn der Block FEHLT (Luft). Steht dort ein falscher Block, will man ihn abbauen –
-        // dann bleibt das Werkzeug in der Hand. Auch während man die Angriffstaste hält, nie wechseln.
-        if (t == null || t.result().status() != CompareResult.Status.MISSING || BlockComparator.isEmpty(t.result().soll())) { autoSwitchPos = null; return; }
+        // Während die Angriffstaste gedrückt ist (Abbauen), nie wechseln.
+        if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchPos = null; return; }
+
+        // Wichtig: Es zählt die Stelle, wohin ein Rechtsklick setzen würde (Vorschau), nicht der Block,
+        // den man anschaut. So wechselt er auf das Item, das an der Platzier-Stelle hingehört.
+        BlockState soll = null;
+        BlockPos keyPos = null;
+        LookTarget.Preview pv = LookTarget.preview();
+        if (pv != null && pv.result() != null && !BlockComparator.isEmpty(pv.result().soll())) {
+            soll = pv.result().soll();
+            keyPos = pv.pos();
+        } else {
+            // Kein Platzier-Vorschlag (z. B. direkt auf eine fehlende Zelle geschaut): alte Logik als Rückfall.
+            LookTarget.Target t = LookTarget.current();
+            if (t != null && t.result().status() == CompareResult.Status.MISSING && !BlockComparator.isEmpty(t.result().soll())) {
+                soll = t.result().soll();
+                keyPos = t.pos();
+            }
+        }
+        if (soll == null || keyPos == null) { autoSwitchPos = null; return; }
+
         long now = System.currentTimeMillis();
         long delay = Cfg.integer("hud.neededItem.autoSwitchDelayTicks") * 50L;
-        if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchPos = null; return; }
-        if (!t.pos().equals(autoSwitchPos)) {
-            autoSwitchPos = t.pos();
+        if (!keyPos.equals(autoSwitchPos)) {
+            autoSwitchPos = keyPos;
             autoSwitchDue = now + delay;
             autoSwitchDone = false;
         }
         if (autoSwitchDone || now < autoSwitchDue) return;
         var invObj = mc.player.getInventory();
         int selected = invObj.getSelectedSlot();
-        BlockState soll = t.result().soll();
         net.minecraft.item.Item held = invObj.getStack(selected).getItem();
         if (ItemMapping.isExact(soll, held)) { autoSwitchDone = true; return; }
         int target = -1;
