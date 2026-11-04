@@ -266,9 +266,7 @@ public final class ConfigManager {
             }
         }
         // Neue eingebaute Block-Gruppen ZUSAMMENFÜHREN statt überschreiben, damit eigene Gruppen/Änderungen erhalten bleiben.
-        if (fromVersion < 14) {
-            mergeDefaultGroups(root);
-        }
+        mergeDefaultGroups(root);
         // Version 7 -> 8: Auto-Switch sofort statt mit Verzögerung.
         if (fromVersion < 8) {
             JsonObject h = root.has("hud") && root.get("hud").isJsonObject() ? root.getAsJsonObject("hud") : null;
