@@ -456,8 +456,8 @@ public final class HudRenderer {
         lines.add(HudPanel.Line.text(List.of(new Seg(header, total > 0 ? Cfg.color("colors.correct") : n))));
         if (dev.litextras.core.Counter.anyValueSet()) {
             String money = Lang.get("counter.money",
-                    "perhour", fmtNum(dev.litextras.core.Counter.moneyPerHour()),
-                    "total", fmtNum(dev.litextras.core.Counter.moneyTotal()),
+                    "perhour", fmtMoney(dev.litextras.core.Counter.moneyPerHour()),
+                    "total", fmtMoney(dev.litextras.core.Counter.moneyTotal()),
                     "multi", trimNum(dev.litextras.core.Counter.sellMultiplier()));
             lines.add(HudPanel.Line.text(List.of(new Seg(money, Cfg.color("colors.warning")))));
         }
@@ -483,6 +483,22 @@ public final class HudRenderer {
 
     private static String trimNum(double v) {
         return v == Math.floor(v) ? String.format("%.0f", v) : String.format("%.2f", v);
+    }
+
+    /** Geldbeträge in k (Tausend) und M (Millionen). */
+    private static String fmtMoney(double v) {
+        if (v >= 1_000_000_000d) return trimDec(v / 1_000_000_000d) + "B";
+        if (v >= 1_000_000d) return trimDec(v / 1_000_000d) + "M";
+        if (v >= 1_000d) return trimDec(v / 1_000d) + "k";
+        return String.format("%.0f", v);
+    }
+
+    private static String trimDec(double v) {
+        String s = String.format("%.2f", v);
+        if (s.endsWith("0")) s = s.substring(0, s.length() - 1);
+        if (s.endsWith("0")) s = s.substring(0, s.length() - 2); // ".00" -> ohne Nachkomma
+        if (s.endsWith(".")) s = s.substring(0, s.length() - 1);
+        return s;
     }
 
     private static String fmtTime(long sec) {
