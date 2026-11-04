@@ -295,5 +295,6 @@
   "counter.money": "≈ {perhour}$/h  (gesamt {total}$, x{multi})",
   "counter.valueSet": "Wert gesetzt: {item} = {preis}$",
   "counter.multiSet": "Verkaufs-Multiplikator: x{faktor}",
-  "counter.holdItem": "Nimm das Item in die Hand und gib /lx zaehler wert <preis> ein."
+  "counter.holdItem": "Nimm das Item in die Hand und gib /lx zaehler wert <preis> ein.",
+  "gui.crosshairOk": "Haken bei richtig"
 }

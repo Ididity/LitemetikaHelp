@@ -219,6 +219,10 @@ public final class ConfigSpec {
         section("hud", "HUD-Grundeinstellungen");
         bool("hud.enabled", true, "Gesamtes HUD des Mods.");
         bool("hud.textShadow", true, "Text mit Schatten.");
+        bool("hud.crosshairOk.enabled", false, "Kleines Zeichen direkt unterm Fadenkreuz, wenn der Block an der Platzier-Stelle RICHTIG sitzen würde.");
+        bool("hud.crosshairOk.includeSimilar", false, "Auch bei nur ähnlichen (akzeptierten) Blöcken anzeigen. Standard: nur exakt richtig.");
+        str("hud.crosshairOk.text", "✔", "Das Zeichen (z. B. ✔ oder 'ok').");
+        integer("hud.crosshairOk.offsetY", 10, -100, 100, "Abstand unter dem Fadenkreuz in Pixeln.");
         bool("hud.realtime", true, "Anzeige jedes Bild aktualisieren (folgt dem Blick sofort). Aus = alle updateIntervalTicks.");
         integer("hud.updateIntervalTicks", 1, 1, 40, "Wie oft (in Ticks) der angeschaute Block neu bewertet wird. 20 Ticks = 1 Sekunde.");
         hudElement("lookedAt", "Feature 2: Soll/Ist des angeschauten Blocks", true, "bottom_left", 4, -4, 8);

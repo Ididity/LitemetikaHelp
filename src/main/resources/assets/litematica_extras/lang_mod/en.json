@@ -241,5 +241,6 @@
   "counter.money": "≈ {perhour}$/h  (total {total}$, x{multi})",
   "counter.valueSet": "Value set: {item} = {preis}$",
   "counter.multiSet": "Sell multiplier: x{faktor}",
-  "counter.holdItem": "Hold the item and run /lx counter wert <price>."
+  "counter.holdItem": "Hold the item and run /lx counter wert <price>.",
+  "gui.crosshairOk": "Check when correct"
 }

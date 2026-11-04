@@ -63,6 +63,7 @@ public final class HudRenderer {
             if (HudPanel.enabled("status")) HudPanel.draw(ctx, "status", statusLines());
             if (HudPanel.enabled("aiAnswer")) HudPanel.draw(ctx, "aiAnswer", aiLines(mc));
             if (HudPanel.enabled("counter")) HudPanel.draw(ctx, "counter", counterLines());
+            if (Cfg.bool("hud.crosshairOk.enabled")) crosshairOk(ctx);
         } catch (Throwable t) {
             // HUD darf das Spiel nie abstürzen lassen
             dev.litextras.LitematicaExtras.debug("HUD-Fehler: " + t);
@@ -420,6 +421,25 @@ public final class HudRenderer {
     }
 
     // ================================================================== Status
+    // ================================================================== Kleines Zeichen unterm Fadenkreuz
+    private static void crosshairOk(DrawContext ctx) {
+        LookTarget.Preview pv = LookTarget.preview();
+        boolean ok;
+        if (pv != null && pv.result() != null) {
+            ok = Cfg.bool("hud.crosshairOk.includeSimilar")
+                    ? pv.result().status().isOk()
+                    : pv.result().status() == CompareResult.Status.CORRECT;
+        } else {
+            ok = false;
+        }
+        if (!ok) return;
+        MinecraftClient mc = MinecraftClient.getInstance();
+        String txt = Cfg.str("hud.crosshairOk.text");
+        int off = Cfg.integer("hud.crosshairOk.offsetY");
+        int sw = ctx.getScaledWindowWidth(), sh = ctx.getScaledWindowHeight();
+        ctx.drawCenteredTextWithShadow(mc.textRenderer, net.minecraft.text.Text.literal(txt), sw / 2, sh / 2 + off, Cfg.color("colors.correct"));
+    }
+
     // ================================================================== Durchsatz-Zähler (Counter)
     private static List<HudPanel.Line> counterLines() {
         if (!dev.litextras.core.Counter.enabled()) return List.of();
