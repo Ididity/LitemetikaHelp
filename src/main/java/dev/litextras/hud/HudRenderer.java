@@ -198,29 +198,29 @@ public final class HudRenderer {
             v.put("item", Describe.itemName(need));
             lines.add(new HudPanel.Line(new ItemStack(need), Template.segments(Cfg.str("templates.neededMissing"), v, Cfg.color("colors.wrong"))));
         } else {
-            for (InventoryIndex.SlotStack s : matches) {
-                Map<String, Object> v = new HashMap<>();
-                v.put("item", Describe.itemName(s.item()));
-                String tpl;
-                if (s.slot() <= 8) {
-                    tpl = Cfg.str("templates.neededHotbar");
-                    v.put("slot", s.slot() + 1);
-                } else if (s.slot() == 40) {
-                    tpl = Cfg.str("templates.neededInventory");
-                    v.put("slot", Lang.get("slot.offhand"));
-                } else {
-                    tpl = Cfg.str("templates.neededInventory");
-                    v.put("slot", s.slot());
-                }
-                boolean exact = ItemMapping.isExact(soll, s.item());
-                if (!exact) tpl = tpl + Lang.get("needed.similarSuffix");
-                int c = !exact ? Cfg.color("colors.similarItem") : s.slot() <= 8 ? Cfg.color("colors.correct") : Cfg.color("colors.warning");
-                lines.add(new HudPanel.Line(new ItemStack(s.item()), Template.segments(tpl, v, c)));
+            // Nur EINE Zeile: der beste Treffer (exakt vor ähnlich, Hotbar vor Inventar) steht ganz vorn.
+            InventoryIndex.SlotStack s = matches.get(0);
+            Map<String, Object> v = new HashMap<>();
+            v.put("item", Describe.itemName(s.item()));
+            String tpl;
+            if (s.slot() <= 8) {
+                tpl = Cfg.str("templates.neededHotbar");
+                v.put("slot", s.slot() + 1);
+            } else if (s.slot() == 40) {
+                tpl = Cfg.str("templates.neededInventory");
+                v.put("slot", Lang.get("slot.offhand"));
+            } else {
+                tpl = Cfg.str("templates.neededInventory");
+                v.put("slot", s.slot());
             }
+            boolean exact = ItemMapping.isExact(soll, s.item());
+            if (!exact) tpl = tpl + Lang.get("needed.similarSuffix");
+            int c = !exact ? Cfg.color("colors.similarItem") : s.slot() <= 8 ? Cfg.color("colors.correct") : Cfg.color("colors.warning");
+            lines.add(new HudPanel.Line(new ItemStack(s.item()), Template.segments(tpl, v, c)));
         }
-        // Bei Hotbar-Treffern reicht die Markierung; Textkasten nur zeigen, wenn nicht alles in der Hotbar ist
-        boolean anyHotbar = matches.stream().anyMatch(s -> s.slot() <= 8);
-        if (!anyHotbar || matches.size() > 1 || !Cfg.bool("hud.neededItem.highlightHotbar")) {
+        // Liegt der beste Treffer schon in der Hotbar und wird er markiert, reicht die Markierung ohne Textkasten.
+        boolean bestInHotbar = !matches.isEmpty() && matches.get(0).slot() <= 8;
+        if (!bestInHotbar || !Cfg.bool("hud.neededItem.highlightHotbar")) {
             HudPanel.draw(ctx, "neededItem", lines);
         }
         if (Cfg.bool("hud.neededItem.highlightHotbar")) {
