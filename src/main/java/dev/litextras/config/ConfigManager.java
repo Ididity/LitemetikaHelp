@@ -143,6 +143,33 @@ public final class ConfigManager {
             API-Keys gehören NICHT hierher, sondern in secrets.json5 (wird nie exportiert).""";
 
     /** Platz für spätere Migrationen: alte Schlüssel umbenennen usw. */
+    /** Fügt eingebaute Standard-Gruppen (compare.groups) hinzu, die der Nutzer noch nicht hat (per "name"),
+     *  ohne vorhandene Gruppen oder eigene Änderungen zu überschreiben. */
+    private void mergeDefaultGroups(JsonObject root) {
+        try {
+            com.google.gson.JsonElement cmpEl = root.get("compare");
+            if (cmpEl == null || !cmpEl.isJsonObject()) return;
+            JsonObject cmp = cmpEl.getAsJsonObject();
+            com.google.gson.JsonArray user = cmp.has("groups") && cmp.get("groups").isJsonArray()
+                    ? cmp.getAsJsonArray("groups") : new com.google.gson.JsonArray();
+            java.util.Set<String> have = new java.util.HashSet<>();
+            for (com.google.gson.JsonElement e : user) {
+                if (e.isJsonObject() && e.getAsJsonObject().has("name")) have.add(e.getAsJsonObject().get("name").getAsString());
+            }
+            com.google.gson.JsonElement defEl = ConfigSpec.get("compare.groups").def();
+            if (defEl.isJsonArray()) {
+                for (com.google.gson.JsonElement e : defEl.getAsJsonArray()) {
+                    if (e.isJsonObject() && e.getAsJsonObject().has("name")
+                            && !have.contains(e.getAsJsonObject().get("name").getAsString())) {
+                        user.add(e.deepCopy());
+                    }
+                }
+            }
+            cmp.add("groups", user);
+        } catch (Exception ignored) {
+        }
+    }
+
     private void migrate(JsonObject root, int fromVersion) {
         // Version 0 -> 1: nichts umzubenennen (erste Version).
         // Version 1 -> 2: falsch gedrehte Blöcke zählen standardmäßig nicht mehr als Materialbedarf.
@@ -238,10 +265,9 @@ public final class ConfigManager {
             } catch (Exception ignored) {
             }
         }
-        // Version 8 -> 9: neue Gruppen (Schilder, Hängeschilder, Holzknöpfe, Holzdruckplatten; Zäune nur aus Holz).
-        if (fromVersion < 9 || fromVersion < 11) { // v11: Gruppe "Eis" dazu
-            com.google.gson.JsonElement cmp = root.get("compare");
-            if (cmp != null && cmp.isJsonObject()) cmp.getAsJsonObject().add("groups", ConfigSpec.get("compare.groups").def().deepCopy());
+        // Neue eingebaute Block-Gruppen ZUSAMMENFÜHREN statt überschreiben, damit eigene Gruppen/Änderungen erhalten bleiben.
+        if (fromVersion < 14) {
+            mergeDefaultGroups(root);
         }
         // Version 7 -> 8: Auto-Switch sofort statt mit Verzögerung.
         if (fromVersion < 8) {
