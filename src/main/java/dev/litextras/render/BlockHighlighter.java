@@ -47,7 +47,7 @@ public final class BlockHighlighter {
         return t;
     });
 
-    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("highlight.active"); }
+    public static boolean active() { return Cfg.bool("highlight.active"); }
 
     /**
      * Welt-Modus: in Einzelspieler-Welten immer, auf Servern nur, wenn deren Adresse in
@@ -105,7 +105,7 @@ public final class BlockHighlighter {
         lastStart = now;
 
         Set<Block> plan = blocks("highlight.planBlocks");
-        Set<Block> world = worldModeAllowed(mc) ? blocks("highlight.worldBlocks") : Set.of();
+        Set<Block> world = (!dev.litextras.Edition.LEGIT && worldModeAllowed(mc)) ? blocks("highlight.worldBlocks") : Set.of();
         if (plan.isEmpty() && world.isEmpty()) {
             hits = List.of();
             RUNNING.set(false);
@@ -114,7 +114,7 @@ public final class BlockHighlighter {
         BlockPos center = mc.player.getBlockPos();
         int r = Cfg.integer("highlight.range");
         int max = Cfg.integer("highlight.maxBoxes");
-        boolean showCorrect = Cfg.bool("highlight.showCorrect");
+        boolean showCorrect = !dev.litextras.Edition.LEGIT && Cfg.bool("highlight.showCorrect");
         int cMiss = Cfg.color("highlight.colorMissing"), cWrong = Cfg.color("highlight.colorWrong"),
                 cOk = Cfg.color("highlight.colorCorrect"), cWorld = Cfg.color("highlight.colorWorld");
         World schem = plan.isEmpty() ? null : LitematicaBridge.schematicWorld();

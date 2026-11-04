@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public final class Tracers {
     private Tracers() {}
 
-    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("tracers.active"); }
+    public static boolean active() { return Cfg.bool("tracers.active"); }
 
     public static void render(DrawContext ctx, float tickProgress) {
         if (!active()) return;
@@ -53,7 +53,7 @@ public final class Tracers {
 
         // ---- Spieler / Monster (nur wo erlaubt)
         boolean players = Cfg.bool("tracers.players"), mobs = Cfg.bool("tracers.mobs");
-        if ((players || mobs) && BlockHighlighter.worldModeAllowed(mc)) {
+        if ((players || mobs) && !dev.litextras.Edition.LEGIT && BlockHighlighter.worldModeAllowed(mc)) {
             int cP = Cfg.color("tracers.colorPlayer"), cM = Cfg.color("tracers.colorMob");
             for (Entity e : mc.world.getEntities()) {
                 if (drawn >= max) break;

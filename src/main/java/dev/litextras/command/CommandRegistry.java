@@ -157,7 +157,7 @@ public final class CommandRegistry {
         sub(root, "config", n -> n.executes(c -> { Actions.run("open_config"); return 1; }));
         sub(root, "status", n -> n.executes(c -> { Actions.status(); return 1; }));
         sub(root, "similar", n -> n.executes(c -> { Actions.run("toggle_similar"); return 1; }));
-        if (!dev.litextras.Edition.LEGIT) sub(root, "seethrough", n -> n.executes(c -> { Actions.run("toggle_seethrough"); return 1; }));
+        sub(root, "seethrough", n -> n.executes(c -> { Actions.run("toggle_seethrough"); return 1; }));
         sub(root, "layer", n -> n.executes(c -> { Actions.run("missing_layer"); return 1; }));
         sub(root, "help", n -> n.executes(c -> { help(); return 1; }));
         sub(root, "aiconfirm", n -> n.executes(c -> { AiService.confirmPrivacy(); return 1; }));
@@ -176,7 +176,7 @@ public final class CommandRegistry {
                 .then(literal("ebene").executes(c -> { heightLayer(); return 1; }))
                 .then(argument("y", com.mojang.brigadier.arguments.IntegerArgumentType.integer(-64, 320))
                         .executes(c -> { setHeight(com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "y")); return 1; })));
-        if (!dev.litextras.Edition.LEGIT) sub(root, "highlight", n -> n.executes(c -> {
+        sub(root, "highlight", n -> n.executes(c -> {
             MinecraftClient mc = MinecraftClient.getInstance();
             mc.send(() -> mc.setScreen(new dev.litextras.gui.BlockPickerScreen(null)));
             return 1;

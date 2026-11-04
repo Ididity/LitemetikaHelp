@@ -146,7 +146,7 @@ public final class Counter {
 
     /** Leeren-Modus nur im Einzelspieler möglich (dort ist dein Spiel selbst der Server). */
     public static boolean clearMode(MinecraftClient mc) {
-        return !dev.litextras.Edition.LEGIT && Cfg.bool("counter.clearContainer") && mc.getServer() != null;
+        return Cfg.bool("counter.clearContainer") && mc.getServer() != null;
     }
 
     public static boolean clearModeConfigured() { return Cfg.bool("counter.clearContainer"); }

@@ -44,7 +44,7 @@ public abstract class HopperSpeedMixin {
 
     private static boolean litextras$fast() {
         try {
-            return !dev.litextras.Edition.LEGIT && Cfg.bool("hopper.fastTransfer") && MinecraftClient.getInstance().getServer() != null;
+            return Cfg.bool("hopper.fastTransfer") && MinecraftClient.getInstance().getServer() != null;
         } catch (Throwable t) {
             return false;
         }

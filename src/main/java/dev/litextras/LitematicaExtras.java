@@ -101,7 +101,7 @@ public class LitematicaExtras implements ClientModInitializer {
             if (Hotkeys.isHold("toggleSimilar")) Actions.set("compare.similar.enabled", down, "msg.similar", false);
             else if (down) Actions.run("toggle_similar");
         });
-        if (!Edition.LEGIT) Hotkeys.register("toggleSeeThrough", down -> {
+        Hotkeys.register("toggleSeeThrough", down -> {
             if (Hotkeys.isHold("toggleSeeThrough")) {
                 if (!config.isSafeProfile()) Actions.set("seeThrough.active", down, "msg.seeThrough", false);
             } else if (down) Actions.run("toggle_seethrough");
@@ -147,7 +147,7 @@ public class LitematicaExtras implements ClientModInitializer {
             MinecraftClient mc = MinecraftClient.getInstance();
             mc.send(() -> mc.setScreen(new dev.litextras.gui.TutorialScreen(null)));
         });
-        if (!Edition.LEGIT) Hotkeys.register("toggleHighlight", down -> {
+        Hotkeys.register("toggleHighlight", down -> {
             if (!down) return;
             boolean on = !Cfg.bool("highlight.active");
             Cfg.manager().setPersistent("highlight.active", new com.google.gson.JsonPrimitive(on));
@@ -158,7 +158,7 @@ public class LitematicaExtras implements ClientModInitializer {
             dev.litextras.core.Counter.reset();
             ChatOut.info(Lang.get("counter.reset"));
         });
-        if (!Edition.LEGIT) Hotkeys.register("toggleTracers", down -> {
+        Hotkeys.register("toggleTracers", down -> {
             if (!down) return;
             boolean on = !Cfg.bool("tracers.active");
             Cfg.manager().setPersistent("tracers.active", new com.google.gson.JsonPrimitive(on));

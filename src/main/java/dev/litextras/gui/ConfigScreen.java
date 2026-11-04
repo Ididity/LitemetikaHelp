@@ -54,7 +54,7 @@ public class ConfigScreen extends Screen {
     private static java.util.List<Toggle> toggles() {
         if (!dev.litextras.Edition.LEGIT) return ALL_TOGGLES;
         java.util.List<Toggle> out = new java.util.ArrayList<>();
-        java.util.Set<String> hide = java.util.Set.of("tracers.active", "highlight.active", "seeThrough.active", "ai.enabled");
+        java.util.Set<String> hide = java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage");
         for (Toggle t : ALL_TOGGLES) if (!hide.contains(t.key())) out.add(t);
         return out;
     }
@@ -140,11 +140,9 @@ public class ConfigScreen extends Screen {
             dev.litextras.LitematicaExtras.setListScope(allScope ? "layer" : "all");
             clearAndInit();
         }).dimensions(left, by, colW, 20).build());
-        if (!dev.litextras.Edition.LEGIT) {
-            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.highlight")), b -> {
-                if (this.client != null) this.client.setScreen(new BlockPickerScreen(this));
-            }).dimensions(left + colW + gap, by, colW, 20).build());
-        }
+        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.highlight")), b -> {
+            if (this.client != null) this.client.setScreen(new BlockPickerScreen(this));
+        }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.openFolder")), b ->
                 Util.getOperatingSystem().open(Cfg.manager().dir().toFile())).dimensions(left, by, colW, 20).build());

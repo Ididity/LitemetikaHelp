@@ -31,7 +31,7 @@ public final class SeeThroughRenderer {
 
     private static boolean litematicaStateApplied = false;
 
-    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("seeThrough.active"); }
+    public static boolean active() { return Cfg.bool("seeThrough.active"); }
 
     public static boolean ownRendererActive() {
         String b = Cfg.str("seeThrough.backend");
