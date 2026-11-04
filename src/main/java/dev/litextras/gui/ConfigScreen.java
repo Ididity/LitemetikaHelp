@@ -26,7 +26,7 @@ public class ConfigScreen extends Screen {
 
     private record Toggle(String key, String langKey) {}
 
-    private static final List<Toggle> TOGGLES = List.of(
+    private static final List<Toggle> ALL_TOGGLES = List.of(
             new Toggle("tracers.active", "gui.tracers"),
             new Toggle("counter.enabled", "gui.counter"),
             new Toggle("hud.crosshairOk.enabled", "gui.crosshairOk"),
@@ -50,6 +50,15 @@ public class ConfigScreen extends Screen {
             new Toggle("ai.lockWorldToolsInMultiplayer", "gui.aiLock"),
             new Toggle("ai.showTokenUsage", "gui.aiTokens"));
 
+    /** In der Legit-Edition ESP/KI-Schalter ausblenden. */
+    private static java.util.List<Toggle> toggles() {
+        if (!dev.litextras.Edition.LEGIT) return ALL_TOGGLES;
+        java.util.List<Toggle> out = new java.util.ArrayList<>();
+        java.util.Set<String> hide = java.util.Set.of("tracers.active", "highlight.active", "seeThrough.active", "ai.enabled");
+        for (Toggle t : ALL_TOGGLES) if (!hide.contains(t.key())) out.add(t);
+        return out;
+    }
+
     private static final int PER_PAGE = 10;
 
     public ConfigScreen(Screen parent) {
@@ -63,6 +72,7 @@ public class ConfigScreen extends Screen {
         int left = this.width / 2 - colW - gap / 2;
         int top = 40;
         int from = page * PER_PAGE;
+        java.util.List<Toggle> TOGGLES = toggles();
         int to = Math.min(TOGGLES.size(), from + PER_PAGE);
         for (int i = from; i < to; i++) {
             Toggle t = TOGGLES.get(i);
@@ -79,7 +89,7 @@ public class ConfigScreen extends Screen {
             }).dimensions(x, y, colW, 20).build());
         }
         int by = top + 5 * 24 + 8;
-        int pages = (TOGGLES.size() + PER_PAGE - 1) / PER_PAGE;
+        int pages = (toggles().size() + PER_PAGE - 1) / PER_PAGE;
         if (pages > 1) {
             addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.page", "n", page + 1, "of", pages)), b -> {
                 page = (page + 1) % pages;
@@ -97,21 +107,23 @@ public class ConfigScreen extends Screen {
             clearAndInit();
         }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;
-        boolean boy = "junge".equals(Cfg.str("ai.persona"));
-        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.persona") + ": " + Lang.get(boy ? "gui.boy" : "gui.girl")), b -> {
-            Cfg.manager().setPersistent("ai.persona", new com.google.gson.JsonPrimitive(boy ? "maedchen" : "junge"));
-            dev.litextras.ai.AiService.resetSession();
-            dev.litextras.voice.VoiceManager.personaChanged();
-            clearAndInit();
-        }).dimensions(left, by, colW, 20).build());
-        String art = Cfg.str("ai.personality");
-        String artLabel = "derb".equals(art) ? "gui.crude" : "frech".equals(art) ? "gui.cheeky" : "gui.nice";
-        String next = "nett".equals(art) ? "frech" : "frech".equals(art) ? "derb" : "nett";
-        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.personality") + ": " + Lang.get(artLabel)), b -> {
-            Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(next));
-            clearAndInit();
-        }).dimensions(left + colW + gap, by, colW, 20).build());
-        by += 24;
+        if (!dev.litextras.Edition.LEGIT) {
+            boolean boy = "junge".equals(Cfg.str("ai.persona"));
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.persona") + ": " + Lang.get(boy ? "gui.boy" : "gui.girl")), b -> {
+                Cfg.manager().setPersistent("ai.persona", new com.google.gson.JsonPrimitive(boy ? "maedchen" : "junge"));
+                dev.litextras.ai.AiService.resetSession();
+                dev.litextras.voice.VoiceManager.personaChanged();
+                clearAndInit();
+            }).dimensions(left, by, colW, 20).build());
+            String art = Cfg.str("ai.personality");
+            String artLabel = "derb".equals(art) ? "gui.crude" : "frech".equals(art) ? "gui.cheeky" : "gui.nice";
+            String next = "nett".equals(art) ? "frech" : "frech".equals(art) ? "derb" : "nett";
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.personality") + ": " + Lang.get(artLabel)), b -> {
+                Cfg.manager().setPersistent("ai.personality", new com.google.gson.JsonPrimitive(next));
+                clearAndInit();
+            }).dimensions(left + colW + gap, by, colW, 20).build());
+            by += 24;
+        }
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.hotkeys")), b -> {
             if (this.client != null) this.client.setScreen(new HotkeyScreen(this));
         }).dimensions(left, by, colW, 20).build());
@@ -128,9 +140,11 @@ public class ConfigScreen extends Screen {
             dev.litextras.LitematicaExtras.setListScope(allScope ? "layer" : "all");
             clearAndInit();
         }).dimensions(left, by, colW, 20).build());
-        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.highlight")), b -> {
-            if (this.client != null) this.client.setScreen(new BlockPickerScreen(this));
-        }).dimensions(left + colW + gap, by, colW, 20).build());
+        if (!dev.litextras.Edition.LEGIT) {
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.highlight")), b -> {
+                if (this.client != null) this.client.setScreen(new BlockPickerScreen(this));
+            }).dimensions(left + colW + gap, by, colW, 20).build());
+        }
         by += 24;
         addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.openFolder")), b ->
                 Util.getOperatingSystem().open(Cfg.manager().dir().toFile())).dimensions(left, by, colW, 20).build());

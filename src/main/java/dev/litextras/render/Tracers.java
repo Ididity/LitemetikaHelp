@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 public final class Tracers {
     private Tracers() {}
 
-    public static boolean active() { return Cfg.bool("tracers.active"); }
+    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("tracers.active"); }
 
     public static void render(DrawContext ctx, float tickProgress) {
         if (!active()) return;

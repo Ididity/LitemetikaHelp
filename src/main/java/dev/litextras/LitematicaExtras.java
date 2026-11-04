@@ -48,7 +48,7 @@ public class LitematicaExtras implements ClientModInitializer {
 
         afterConfigChange(); // Signatur der Vergleichsregeln merken
         registerHotkeys();
-        AiService.init(); // eingebaute Lese-Tools registrieren (eigene Tools können danach ergänzt werden)
+        if (!Edition.LEGIT) AiService.init(); // eingebaute Lese-Tools (in der Legit-Edition ganz aus)
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> CommandRegistry.register(dispatcher));
 
@@ -78,7 +78,7 @@ public class LitematicaExtras implements ClientModInitializer {
             }
             for (String m : config.lastMessages()) ChatOut.warn(m);
             CommandRegistry.reportConflicts();
-            if (Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
+            if (!Edition.LEGIT && Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
                     && !(dev.litextras.voice.VoiceManager.ttsReady() && dev.litextras.voice.VoiceManager.sttReady())) {
                 dev.litextras.voice.VoiceManager.install(false);
             }
@@ -101,7 +101,7 @@ public class LitematicaExtras implements ClientModInitializer {
             if (Hotkeys.isHold("toggleSimilar")) Actions.set("compare.similar.enabled", down, "msg.similar", false);
             else if (down) Actions.run("toggle_similar");
         });
-        Hotkeys.register("toggleSeeThrough", down -> {
+        if (!Edition.LEGIT) Hotkeys.register("toggleSeeThrough", down -> {
             if (Hotkeys.isHold("toggleSeeThrough")) {
                 if (!config.isSafeProfile()) Actions.set("seeThrough.active", down, "msg.seeThrough", false);
             } else if (down) Actions.run("toggle_seethrough");
@@ -147,7 +147,7 @@ public class LitematicaExtras implements ClientModInitializer {
             MinecraftClient mc = MinecraftClient.getInstance();
             mc.send(() -> mc.setScreen(new dev.litextras.gui.TutorialScreen(null)));
         });
-        Hotkeys.register("toggleHighlight", down -> {
+        if (!Edition.LEGIT) Hotkeys.register("toggleHighlight", down -> {
             if (!down) return;
             boolean on = !Cfg.bool("highlight.active");
             Cfg.manager().setPersistent("highlight.active", new com.google.gson.JsonPrimitive(on));
@@ -158,14 +158,14 @@ public class LitematicaExtras implements ClientModInitializer {
             dev.litextras.core.Counter.reset();
             ChatOut.info(Lang.get("counter.reset"));
         });
-        Hotkeys.register("toggleTracers", down -> {
+        if (!Edition.LEGIT) Hotkeys.register("toggleTracers", down -> {
             if (!down) return;
             boolean on = !Cfg.bool("tracers.active");
             Cfg.manager().setPersistent("tracers.active", new com.google.gson.JsonPrimitive(on));
             ChatOut.info(Lang.get(on ? "tracers.nowOn" : "tracers.nowOff"));
         });
-        Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
-        Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
+        if (!Edition.LEGIT) Hotkeys.register("pushToTalk", dev.litextras.voice.VoiceManager::pushToTalk);
+        if (!Edition.LEGIT) Hotkeys.register("stopSpeaking", down -> { if (down) dev.litextras.voice.VoiceManager.stopSpeaking(); });
         Hotkeys.register("missingList", down -> {
             if (down) Actions.run(ErrorScanner.layer().restricting() ? "missing_layer" : "missing_near");
         });
