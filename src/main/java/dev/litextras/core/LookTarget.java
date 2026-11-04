@@ -51,7 +51,7 @@ public final class LookTarget {
     /** Jedes Bild aufrufbar (höchstens alle 15 ms), damit die Anzeige ohne Verzögerung dem Blick folgt. */
     public static void refreshNow(MinecraftClient mc) {
         long now = System.nanoTime();
-        if (now - lastRefreshNanos < 15_000_000L) return;
+        if (now - lastRefreshNanos < 5_000_000L) return;
         lastRefreshNanos = now;
         if (mc.player == null || mc.world == null) return;
         World schem = LitematicaBridge.schematicWorld();

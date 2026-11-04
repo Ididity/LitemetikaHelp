@@ -193,6 +193,24 @@ public final class ConfigManager {
             com.google.gson.JsonElement v = root.get("voice");
             if (v != null && v.isJsonObject()) v.getAsJsonObject().addProperty("sttModel", "small");
         }
+        // Version 11 -> 12: alles schneller erkennen (kürzere Intervalle).
+        if (fromVersion < 12) {
+            try {
+                JsonObject h = root.getAsJsonObject("hud");
+                if (h.has("layerList") && h.get("layerList").isJsonObject()) {
+                    JsonObject ll = h.getAsJsonObject("layerList");
+                    ll.addProperty("updateIntervalMs", 150);
+                    ll.addProperty("allUpdateIntervalMs", 400);
+                }
+            } catch (Exception ignored) {}
+            try {
+                JsonObject sc = root.getAsJsonObject("scan");
+                sc.addProperty("minIntervalMs", 60);
+                sc.addProperty("fullRescanSeconds", 5);
+            } catch (Exception ignored) {}
+            try { root.getAsJsonObject("seeThrough").addProperty("updateIntervalMs", 120); } catch (Exception ignored) {}
+            try { root.getAsJsonObject("highlight").addProperty("updateIntervalMs", 200); } catch (Exception ignored) {}
+        }
         // Version 9 -> 10: Zustandszeile (gepowert/ausgefahren/…) im Soll/Ist-HUD.
         if (fromVersion < 10) {
             try {

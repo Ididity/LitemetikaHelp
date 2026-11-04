@@ -20,7 +20,7 @@ import java.util.Map;
 public final class ConfigSpec {
     private ConfigSpec() {}
 
-    public static final int CONFIG_VERSION = 11;
+    public static final int CONFIG_VERSION = 12;
 
     public enum Type { BOOL, INT, DOUBLE, STRING, ENUM, COLOR, STRING_LIST, JSON }
 
@@ -240,12 +240,12 @@ public final class ConfigSpec {
         hudElement("layerList", "Feature 4: Fehlliste der aktuellen Ebene", true, "top_left", 4, 40, 12);
         enm("hud.layerList.scope", "layer", "Was die Liste zeigt: layer = nur die aktuelle Litematica-Ebene, all = die ganze Schematic (insgesamt).\n"
                 + "Umschalten: Hotkey (Standard Alt+B), /lx liste ebene|gesamt oder Knopf in den Einstellungen.", "layer", "all");
-        integer("hud.layerList.allUpdateIntervalMs", 1000, 200, 60000, "Neuberechnung im Modus 'insgesamt' (größer, weil mehr Blöcke).");
+        integer("hud.layerList.allUpdateIntervalMs", 400, 100, 60000, "Neuberechnung im Modus 'insgesamt' (größer, weil mehr Blöcke).");
         bool("litematica.autoRefreshMaterialList", true, "Litematicas eigene Materialliste automatisch neu zählen, wenn du in der Schematic Blöcke setzt oder abbaust.");
         integer("litematica.materialListRefreshMs", 1000, 250, 60000, "Wartezeit nach der letzten Blockänderung, bevor Litematicas Materialliste neu gezählt wird.");
         bool("hud.layerList.onlyInLayerMode", true, "Nur zeigen, wenn Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' steht.");
         enm("hud.layerList.sort", "shortfall", "Sortierung: shortfall (Fehlbetrag), amount (Menge), name", "shortfall", "amount", "name");
-        integer("hud.layerList.updateIntervalMs", 400, 100, 60000, "Gedrosselte Neuberechnung in Millisekunden.");
+        integer("hud.layerList.updateIntervalMs", 150, 50, 60000, "Gedrosselte Neuberechnung in Millisekunden.");
         bool("hud.layerList.includeWrongState", false, "Falsch gedrehte Blöcke als zusätzlichen Materialbedarf zählen (Standard aus: beim Abbauen bekommst du das Item zurück).");
         bool("hud.layerList.includeWrongType", true, "Falsche Blöcke mitzählen.");
         hudElement("status", "Kleine Statusanzeige (aktive Modi, Profil)", true, "top_right", -4, 4, 4);
@@ -303,8 +303,8 @@ public final class ConfigSpec {
         section("scan", "Hintergrund-Berechnung (läuft nie im Render-Thread)");
         integer("scan.nearRadius", 48, 8, 256, "Radius um den Spieler für 'Umgebung' (Durchsicht, /missing near).");
         integer("scan.maxBlocksPerScan", 3000000, 10000, 50000000, "Obergrenze geprüfter Positionen pro Durchlauf (Schutz vor Rucklern).");
-        integer("scan.minIntervalMs", 150, 50, 60000, "Mindestabstand zwischen zwei automatischen Scans.");
-        integer("scan.fullRescanSeconds", 10, 1, 600, "Zusätzlich spätestens nach so vielen Sekunden neu prüfen (falls eine Änderung nicht gemeldet wurde).");
+        integer("scan.minIntervalMs", 60, 20, 60000, "Mindestabstand zwischen zwei automatischen Scans.");
+        integer("scan.fullRescanSeconds", 5, 1, 600, "Zusätzlich spätestens nach so vielen Sekunden neu prüfen (falls eine Änderung nicht gemeldet wurde).");
 
         // =================================================================== FEATURE 5
         section("highlight", "Blöcke leuchten lassen (durch Wände). Auswahl im Menü: Alt+O -> 'Blöcke leuchten lassen …' oder /lx leuchten");
@@ -317,7 +317,7 @@ public final class ConfigSpec {
         bool("highlight.showCorrect", false, "Plan-Modus: auch schon richtig gesetzte Blöcke (grün) leuchten lassen.");
         integer("highlight.range", 48, 4, 128, "Reichweite in Blöcken.");
         integer("highlight.maxBoxes", 400, 1, 5000, "Höchstens so viele Kästen (die nächsten zuerst).");
-        integer("highlight.updateIntervalMs", 500, 100, 60000, "Wie oft neu gesucht wird.");
+        integer("highlight.updateIntervalMs", 200, 50, 60000, "Wie oft neu gesucht wird.");
         dbl("highlight.lineWidth", 1.5, 0.5, 6.0, "Linienstärke.");
         enm("highlight.style", "wire", "wire = Umrisslinien, box = 2D-Rahmen, marker = kleines Quadrat", "wire", "box", "marker");
         color("highlight.colorMissing", "#FF55AAFF", "Plan: fehlt");
@@ -364,7 +364,7 @@ public final class ConfigSpec {
         bool("seeThrough.showWrongType", true, "Falsche Blöcke zeigen.");
         bool("seeThrough.showWrongState", true, "Falsch ausgerichtete Blöcke zeigen.");
         bool("seeThrough.showExtra", false, "Überzählige Blöcke zeigen.");
-        integer("seeThrough.updateIntervalMs", 300, 100, 60000, "Wie oft die Fehlerliste neu berechnet wird.");
+        integer("seeThrough.updateIntervalMs", 120, 50, 60000, "Wie oft die Fehlerliste neu berechnet wird.");
         color("seeThrough.colorMissing", "#FF55AAFF", "Farbe fehlend");
         color("seeThrough.colorWrongType", "#FFFF5555", "Farbe falscher Block");
         color("seeThrough.colorWrongState", "#FFFFAA00", "Farbe falsch ausgerichtet");
