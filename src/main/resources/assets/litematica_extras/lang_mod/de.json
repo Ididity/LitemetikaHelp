@@ -310,5 +310,14 @@
   "help.height": "Höhen-Sperre: nur auf einer Y-Höhe oder nur in der Ebene (layer) bauen",
   "build.layerOn": "Höhen-Sperre folgt jetzt der Litematica-Ebene – nur dort baubar.",
   "build.layerHint": "Höhen-Sperre folgt der Ebene. Stell Litematica auf 'Einzelne Ebene' oder 'Ebenenbereich' (Y), sonst wirkt sie nicht.",
-  "highlight.modePlanOnly": "Modus: nur Plan-Fehler"
+  "highlight.modePlanOnly": "Modus: nur Plan-Fehler",
+  "trial.spOnly": "Geht nur im Einzelspieler.",
+  "trial.start": "Suche Trial-Spawner im Umkreis {r} …",
+  "trial.done": "{n} Trial-Spawner gelöscht, {breeze} Breeze-Spawner behalten.",
+  "fly.set": "Flug-Geschwindigkeit: x{faktor}",
+  "fly.off": "Eigene Flug-Geschwindigkeit aus.",
+  "fly.info": "Flug-Geschwindigkeit: {state}, x{faktor}",
+  "help.trial": "Trial-Spawner löschen (außer Breeze), nur Einzelspieler",
+  "help.flyspeed": "Flug-Geschwindigkeit einstellen",
+  "gui.flySpeed": "Flug-Speed"
 }

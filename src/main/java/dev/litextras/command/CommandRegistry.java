@@ -166,6 +166,21 @@ public final class CommandRegistry {
             mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null)));
             return 1;
         }));
+        sub(root, "trial", n -> n
+                .executes(c -> { dev.litextras.core.TrialSpawnerTool.clear(MinecraftClient.getInstance(), dev.litextras.config.Cfg.integer("trial.radius")); return 1; })
+                .then(argument("radius", com.mojang.brigadier.arguments.IntegerArgumentType.integer(4, 160))
+                        .executes(c -> { dev.litextras.core.TrialSpawnerTool.clear(MinecraftClient.getInstance(), com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "radius")); return 1; })));
+        sub(root, "flyspeed", n -> n
+                .executes(c -> { ChatOut.info(Lang.get("fly.info", "faktor", String.valueOf(dev.litextras.config.Cfg.dbl("fly.speed")), "state", Lang.get(dev.litextras.config.Cfg.bool("fly.speedEnabled") ? "msg.on" : "msg.off"))); return 1; })
+                .then(literal("aus").executes(c -> { dev.litextras.config.Cfg.manager().setPersistent("fly.speedEnabled", new com.google.gson.JsonPrimitive(false)); ChatOut.info(Lang.get("fly.off")); return 1; }))
+                .then(argument("faktor", com.mojang.brigadier.arguments.DoubleArgumentType.doubleArg(0.1, 20.0))
+                        .executes(c -> {
+                            double f = com.mojang.brigadier.arguments.DoubleArgumentType.getDouble(c, "faktor");
+                            dev.litextras.config.Cfg.manager().setPersistent("fly.speed", new com.google.gson.JsonPrimitive(f));
+                            dev.litextras.config.Cfg.manager().setPersistent("fly.speedEnabled", new com.google.gson.JsonPrimitive(true));
+                            ChatOut.info(Lang.get("fly.set", "faktor", String.valueOf(f)));
+                            return 1;
+                        })));
         sub(root, "height", n -> n
                 .executes(c -> { heightInfo(); return 1; })
                 .then(literal("hier").executes(c -> { heightHere(); return 1; }))
@@ -338,6 +353,8 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("replace").get(0) + " <von> <zu> – " + Lang.get("help.replace"));
         ChatOut.info("/" + p + " " + subNames("highlight").get(0) + " – " + Lang.get("help.highlight"));
         ChatOut.info("/" + p + " " + subNames("height").get(0) + " hier|<y>|aus – " + Lang.get("help.height"));
+        ChatOut.info("/" + p + " " + subNames("trial").get(0) + " [radius] – " + Lang.get("help.trial"));
+        ChatOut.info("/" + p + " " + subNames("flyspeed").get(0) + " <faktor>|aus – " + Lang.get("help.flyspeed"));
         ChatOut.info("/" + p + " " + subNames("counter").get(0) + " hier|reset|aus|wert <preis>|multi <faktor> – " + Lang.get("help.counter"));
         ChatOut.info("/" + p + " " + subNames("listscope").get(0) + " ebene|gesamt – " + Lang.get("help.listscope"));
         ChatOut.info("/" + p + " " + subNames("export").get(0) + " / " + subNames("import").get(0) + " – " + Lang.get("help.export"));

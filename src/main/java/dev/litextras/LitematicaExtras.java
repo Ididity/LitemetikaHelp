@@ -60,6 +60,7 @@ public class LitematicaExtras implements ClientModInitializer {
                 LookTarget.tick(mc);
                 HudRenderer.tick(mc);
                 dev.litextras.render.BlockHighlighter.tick(mc);
+                applyFlySpeed(mc);
                 ErrorScanner.tick(mc);
             } catch (Throwable t) {
                 debug("Tick-Fehler: " + t);
@@ -171,7 +172,17 @@ public class LitematicaExtras implements ClientModInitializer {
         });
     }
 
-    /** Materialliste: "layer" (aktuelle Ebene) oder "all" (ganze Schematic). */
+    /** Eigene Flug-Geschwindigkeit setzen (wirkt im Einzelspieler; auf Servern meist zurückgesetzt). */
+    private static void applyFlySpeed(MinecraftClient mc) {
+        try {
+            if (!Cfg.bool("fly.speedEnabled") || mc.player == null) return;
+            var ab = mc.player.getAbilities();
+            if (ab != null) ab.setFlySpeed(0.05f * (float) Cfg.dbl("fly.speed"));
+        } catch (Throwable ignored) {
+        }
+    }
+
+        /** Materialliste: "layer" (aktuelle Ebene) oder "all" (ganze Schematic). */
     public static void setListScope(String scope) {
         Cfg.manager().setPersistent("hud.layerList.scope", new com.google.gson.JsonPrimitive(scope));
         ErrorScanner.invalidateAll();

@@ -142,6 +142,8 @@ public final class ConfigSpec {
                   "highlight": ["leuchten", "highlight"],
                   "counter": ["zaehler", "counter"],
                   "height": ["hoehe", "height"],
+                  "trial": ["trial", "trialclear"],
+                  "flyspeed": ["flyspeed", "flugspeed"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
         list("commands.disabledSubcommands", "IDs von Unterbefehlen, die ausgeschaltet sein sollen, z. B. [\"import\"].");
@@ -349,6 +351,11 @@ public final class ConfigSpec {
         dbl("counter.sellMultiplier", 1.0, 0.0, 10000.0, "Verkaufs-Multiplikator (z. B. Sell-Multi-Event). Wird auf den Geldwert multipliziert. Setzen mit /lx zaehler multi <zahl>.");
         json("counter.itemValues", "{}", "Verkaufswert pro Item: { \"minecraft:diamond\": 100 }. Setzen im Spiel: Item in die Hand nehmen und /lx zaehler wert <preis>.");
         bool("counter.clearContainer", false, "NUR EINZELSPIELER: Behälter dauerhaft leeren und dabei alles zählen (wie der Carpet-Counter). Der Behälter läuft so nie voll und zählt auch bei geschlossener Tür. Auf Servern ohne Wirkung.");
+
+        section("fly", "Flug-Geschwindigkeit (wirkt vor allem im Einzelspieler; Server setzen die Geschwindigkeit oft zurück).");
+        bool("fly.speedEnabled", false, "Eigene Flug-Geschwindigkeit benutzen.");
+        dbl("fly.speed", 1.0, 0.1, 20.0, "Faktor auf die normale Flug-Geschwindigkeit (1.0 = normal, 2.0 = doppelt). Setzen mit /lx flyspeed <faktor>.");
+        integer("trial.radius", 64, 4, 160, "Umkreis (Blöcke) für /lx trial (Trial-Spawner löschen außer Breeze).");
 
         section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");
         bool("hopper.fastTransfer", false, "Schnelle Trichter: pro Zyklus mehrere Items bewegen und/oder kürzere Wartezeit.");

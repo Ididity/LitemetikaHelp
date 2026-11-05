@@ -256,5 +256,14 @@
   "help.height": "Height lock: build only at one Y, or only in the layer",
   "build.layerOn": "Height lock now follows the Litematica layer – build only there.",
   "build.layerHint": "Height lock follows the layer. Set Litematica to single layer or layer range (Y), otherwise it has no effect.",
-  "highlight.modePlanOnly": "Mode: plan errors only"
+  "highlight.modePlanOnly": "Mode: plan errors only",
+  "trial.spOnly": "Singleplayer only.",
+  "trial.start": "Scanning trial spawners within {r} …",
+  "trial.done": "Removed {n} trial spawners, kept {breeze} breeze spawners.",
+  "fly.set": "Fly speed: x{faktor}",
+  "fly.off": "Custom fly speed off.",
+  "fly.info": "Fly speed: {state}, x{faktor}",
+  "help.trial": "Delete trial spawners (except breeze), singleplayer only",
+  "help.flyspeed": "Set fly speed",
+  "gui.flySpeed": "Fly speed"
 }
