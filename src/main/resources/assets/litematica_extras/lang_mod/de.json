@@ -319,5 +319,6 @@
   "fly.info": "Flug-Geschwindigkeit: {state}, x{faktor}",
   "help.trial": "Trial-Spawner löschen (außer Breeze), nur Einzelspieler",
   "help.flyspeed": "Flug-Geschwindigkeit einstellen",
-  "gui.flySpeed": "Flug-Speed"
+  "gui.flySpeed": "Flug-Speed",
+  "edition.fullOnly": "Nur im Profil 'full' verfügbar (Profil mit Alt+P wechseln)."
 }

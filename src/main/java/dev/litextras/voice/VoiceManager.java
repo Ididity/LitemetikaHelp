@@ -274,6 +274,7 @@ public final class VoiceManager {
      * während die nächsten schon im Hintergrund entstehen.
      */
     public static void speak(String text) {
+        if (!dev.litextras.Edition.fullFeatures()) return;
         if (!Cfg.bool("voice.ttsEnabled") || text == null || text.isBlank()) return;
         if (!windows() || !ttsReady()) return;
         String clean = text.replaceAll("[*_#`>«»\\[\\]()]", " ").replaceAll("\\s+", " ").trim();
@@ -370,6 +371,7 @@ public final class VoiceManager {
     // ================================================================== Zuhören (Whisper)
     /** Hotkey gedrückt: Aufnahme starten. Losgelassen: auswerten und als KI-Frage stellen. */
     public static void pushToTalk(boolean down) {
+        if (!dev.litextras.Edition.fullFeatures()) return;
         if (!Cfg.bool("voice.sttEnabled")) return;
         if (down) startRecording();
         else stopRecordingAndAsk();

@@ -79,7 +79,7 @@ public class LitematicaExtras implements ClientModInitializer {
             }
             for (String m : config.lastMessages()) ChatOut.warn(m);
             CommandRegistry.reportConflicts();
-            if (!Edition.LEGIT && Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
+            if (Edition.fullFeatures() && Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
                     && !(dev.litextras.voice.VoiceManager.ttsReady() && dev.litextras.voice.VoiceManager.sttReady())) {
                 dev.litextras.voice.VoiceManager.install(false);
             }

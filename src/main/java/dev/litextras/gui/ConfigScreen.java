@@ -53,7 +53,7 @@ public class ConfigScreen extends Screen {
 
     /** In der Legit-Edition ESP/KI-Schalter ausblenden. */
     private static java.util.List<Toggle> toggles() {
-        if (!dev.litextras.Edition.LEGIT) return ALL_TOGGLES;
+        if (dev.litextras.Edition.fullFeatures()) return ALL_TOGGLES;
         java.util.List<Toggle> out = new java.util.ArrayList<>();
         java.util.Set<String> hide = java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage");
         for (Toggle t : ALL_TOGGLES) if (!hide.contains(t.key())) out.add(t);
@@ -108,7 +108,7 @@ public class ConfigScreen extends Screen {
             clearAndInit();
         }).dimensions(left + colW + gap, by, colW, 20).build());
         by += 24;
-        if (!dev.litextras.Edition.LEGIT) {
+        if (dev.litextras.Edition.fullFeatures()) {
             boolean boy = "junge".equals(Cfg.str("ai.persona"));
             addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.persona") + ": " + Lang.get(boy ? "gui.boy" : "gui.girl")), b -> {
                 Cfg.manager().setPersistent("ai.persona", new com.google.gson.JsonPrimitive(boy ? "maedchen" : "junge"));

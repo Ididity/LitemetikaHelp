@@ -53,7 +53,7 @@ public final class Tracers {
 
         // ---- Spieler / Monster (nur wo erlaubt)
         boolean players = Cfg.bool("tracers.players"), mobs = Cfg.bool("tracers.mobs");
-        if ((players || mobs) && !dev.litextras.Edition.LEGIT && BlockHighlighter.worldModeAllowed(mc)) {
+        if ((players || mobs) && dev.litextras.Edition.fullFeatures() && BlockHighlighter.worldModeAllowed(mc)) {
             int cP = Cfg.color("tracers.colorPlayer"), cM = Cfg.color("tracers.colorMob");
             for (Entity e : mc.world.getEntities()) {
                 if (drawn >= max) break;

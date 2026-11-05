@@ -513,13 +513,13 @@ public final class HudRenderer {
         lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("status.profile", "name", profile), n))));
         if (BlockComparator.similarEnabled()) lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("status.similarOn"), Cfg.color("colors.similar")))));
         if (SeeThroughRenderer.active()) lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("status.seeThroughOn"), Cfg.color("colors.warning")))));
-        if (!dev.litextras.Edition.LEGIT && Cfg.bool("ai.enabled") && AiService.busy()) lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("ai.thinking"), Cfg.color("colors.warning")))));
+        if (dev.litextras.Edition.fullFeatures() && Cfg.bool("ai.enabled") && AiService.busy()) lines.add(HudPanel.Line.text(List.of(new Seg(Lang.get("ai.thinking"), Cfg.color("colors.warning")))));
         return lines;
     }
 
     // ================================================================== Feature 6: KI-Antwort
     private static List<HudPanel.Line> aiLines(MinecraftClient mc) {
-        if (dev.litextras.Edition.LEGIT) return List.of();
+        if (!dev.litextras.Edition.fullFeatures()) return List.of();
         AiService.Answer a = AiService.lastHudAnswer();
         if (a == null) return List.of();
         if (System.currentTimeMillis() - a.time() > Cfg.integer("hud.aiAnswer.showSeconds") * 1000L) return List.of();

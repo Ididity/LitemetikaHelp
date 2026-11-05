@@ -352,6 +352,10 @@ public final class ConfigSpec {
         json("counter.itemValues", "{}", "Verkaufswert pro Item: { \"minecraft:diamond\": 100 }. Setzen im Spiel: Item in die Hand nehmen und /lx zaehler wert <preis>.");
         bool("counter.clearContainer", false, "NUR EINZELSPIELER: Behälter dauerhaft leeren und dabei alles zählen (wie der Carpet-Counter). Der Behälter läuft so nie voll und zählt auch bei geschlossener Tür. Auf Servern ohne Wirkung.");
 
+        section("edition", "Freischaltung der Nicht-Legit-Funktionen");
+        bool("edition.fullUnlocked", false, "Nur in der vollen Edition: KI/Sprache, freies Welt-Xray und Spieler-/Mob-Tracer freischalten.\n"
+                + "Standard aus -> die Mod verhält sich wie Legit und blendet diese Optionen aus. Zum Freischalten das Profil 'full' wählen (Hotkey Alt+P).");
+
         section("fly", "Flug-Geschwindigkeit (wirkt vor allem im Einzelspieler; Server setzen die Geschwindigkeit oft zurück).");
         bool("fly.speedEnabled", false, "Eigene Flug-Geschwindigkeit benutzen.");
         dbl("fly.speed", 1.0, 0.1, 20.0, "Faktor auf die normale Flug-Geschwindigkeit (1.0 = normal, 2.0 = doppelt). Setzen mit /lx flyspeed <faktor>.");

@@ -425,6 +425,9 @@ public final class ConfigManager {
         }
         writeProfileIfMissing("sicher", "Profil 'sicher': Spieler-/Umgebungs-Tools und Durchsicht-Modus sind AUS.\n"
                 + "Das wird vom Mod zusätzlich fest erzwungen, auch wenn hier etwas anderes steht.", safe);
+        writeProfileIfMissing("full", "Profil 'full': schaltet die Nicht-Legit-Funktionen frei (KI/Sprache, freies Welt-Xray, Spieler-/Mob-Tracer).\n"
+                + "Ohne dieses Profil verhält sich die Mod wie Legit und blendet diese Optionen aus.",
+                Map.of("edition.fullUnlocked", new JsonPrimitive(true)));
     }
 
     private void writeProfileIfMissing(String name, String comment, Map<String, JsonElement> values) {

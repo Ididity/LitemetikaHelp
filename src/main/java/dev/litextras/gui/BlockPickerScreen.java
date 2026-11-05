@@ -49,7 +49,7 @@ public class BlockPickerScreen extends Screen {
     public BlockPickerScreen(Screen parent) {
         super(Text.literal("Blöcke leuchten lassen"));
         this.parent = parent;
-        this.worldMode = !dev.litextras.Edition.LEGIT && "world".equals(Cfg.str("highlight.pickerMode"));
+        this.worldMode = dev.litextras.Edition.fullFeatures() && "world".equals(Cfg.str("highlight.pickerMode"));
     }
 
     private String key() { return worldMode ? "highlight.worldBlocks" : "highlight.planBlocks"; }
@@ -123,8 +123,8 @@ public class BlockPickerScreen extends Screen {
             Cfg.manager().setPersistent("highlight.active", new JsonPrimitive(!BlockHighlighter.active()));
             clearAndInit();
         }).dimensions(left, 22, colW, 20).build());
-        addDrawableChild(ButtonWidget.builder(Text.literal(dev.litextras.Edition.LEGIT ? Lang.get("highlight.modePlanOnly") : Lang.get(worldMode ? "highlight.modeWorld" : "highlight.modePlan")), b -> {
-            if (dev.litextras.Edition.LEGIT) return; // Legit: nur Plan-Fehler, kein Welt-Xray
+        addDrawableChild(ButtonWidget.builder(Text.literal(!dev.litextras.Edition.fullFeatures() ? Lang.get("highlight.modePlanOnly") : Lang.get(worldMode ? "highlight.modeWorld" : "highlight.modePlan")), b -> {
+            if (!dev.litextras.Edition.fullFeatures()) return; // nur im Full-Profil: freies Welt-Xray
             worldMode = !worldMode;
             Cfg.manager().setPersistent("highlight.pickerMode", new JsonPrimitive(worldMode ? "world" : "plan"));
             page = 0;

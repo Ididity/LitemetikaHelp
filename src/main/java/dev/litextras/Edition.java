@@ -26,4 +26,18 @@ public final class Edition {
     }
 
     public static String name() { return LEGIT ? "Legit" : "Voll"; }
+
+    /**
+     * Sind die Nicht-Legit-Funktionen (KI/Sprache, freies Welt-Xray, Spieler-/Mob-Tracer) freigeschaltet?
+     * Legit-Edition: nie. Volle Edition: nur wenn edition.fullUnlocked true ist (Profil "full").
+     * Sonst verhält sich auch die volle Mod wie Legit und die Optionen sind ausgeblendet.
+     */
+    public static boolean fullFeatures() {
+        if (LEGIT) return false;
+        try {
+            return dev.litextras.config.Cfg.bool("edition.fullUnlocked");
+        } catch (Throwable t) {
+            return false;
+        }
+    }
 }

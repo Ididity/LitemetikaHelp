@@ -164,6 +164,10 @@ public final class AiService {
     // ================================================================== Ablauf
     public static void ask(String question) {
         MinecraftClient mc = MinecraftClient.getInstance();
+        if (!dev.litextras.Edition.fullFeatures()) {
+            ChatOut.warn(Lang.get("edition.fullOnly"));
+            return;
+        }
         if (!Cfg.bool("ai.enabled")) {
             ChatOut.warn(Lang.get("ai.disabled"));
             return;
