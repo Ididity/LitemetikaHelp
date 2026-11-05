@@ -53,7 +53,7 @@ public final class CommandRegistry {
         // ---- Präfix-Befehl mit Unterbefehlen
         if (Cfg.bool("commands.root.enabled")) {
             for (String name : Cfg.list("commands.root.names")) {
-                LiteralArgumentBuilder<FabricClientCommandSource> root = literal(name).executes(c -> { help(); return 1; });
+                LiteralArgumentBuilder<FabricClientCommandSource> root = literal(name).executes(c -> { Actions.run("open_config"); return 1; }); // /lx ohne Zusatz -> Einstellungen
                 addSubcommands(root);
                 add(d, name, root);
             }
