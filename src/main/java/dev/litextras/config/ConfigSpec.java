@@ -355,7 +355,7 @@ public final class ConfigSpec {
         section("fly", "Flug-Geschwindigkeit (wirkt vor allem im Einzelspieler; Server setzen die Geschwindigkeit oft zurück).");
         bool("fly.speedEnabled", false, "Eigene Flug-Geschwindigkeit benutzen.");
         dbl("fly.speed", 1.0, 0.1, 20.0, "Faktor auf die normale Flug-Geschwindigkeit (1.0 = normal, 2.0 = doppelt). Setzen mit /lx flyspeed <faktor>.");
-        integer("trial.radius", 64, 4, 160, "Umkreis (Blöcke) für /lx trial (Trial-Spawner löschen außer Breeze).");
+        integer("trial.radius", 64, 4, 2000, "Umkreis (Blöcke) für /lx trial (Trial-Spawner löschen außer Breeze). Wirkt nur in geladenen Chunks – größer als deine Render-/Simulationsdistanz bringt nichts.");
 
         section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");
         bool("hopper.fastTransfer", false, "Schnelle Trichter: pro Zyklus mehrere Items bewegen und/oder kürzere Wartezeit.");

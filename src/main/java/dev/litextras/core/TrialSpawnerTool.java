@@ -25,7 +25,7 @@ public final class TrialSpawnerTool {
         }
         final BlockPos center = mc.player.getBlockPos();
         final var dimKey = mc.world.getRegistryKey();
-        final int r = Math.max(4, Math.min(160, radius));
+        final int r = Math.max(4, Math.min(2000, radius));
         ChatOut.info(Lang.get("trial.start", "r", String.valueOf(r)));
         server.execute(() -> {
             int removed = 0, breeze = 0;

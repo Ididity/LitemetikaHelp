@@ -168,7 +168,7 @@ public final class CommandRegistry {
         }));
         sub(root, "trial", n -> n
                 .executes(c -> { dev.litextras.core.TrialSpawnerTool.clear(MinecraftClient.getInstance(), dev.litextras.config.Cfg.integer("trial.radius")); return 1; })
-                .then(argument("radius", com.mojang.brigadier.arguments.IntegerArgumentType.integer(4, 160))
+                .then(argument("radius", com.mojang.brigadier.arguments.IntegerArgumentType.integer(4, 2000))
                         .executes(c -> { dev.litextras.core.TrialSpawnerTool.clear(MinecraftClient.getInstance(), com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "radius")); return 1; })));
         sub(root, "flyspeed", n -> n
                 .executes(c -> { ChatOut.info(Lang.get("fly.info", "faktor", String.valueOf(dev.litextras.config.Cfg.dbl("fly.speed")), "state", Lang.get(dev.litextras.config.Cfg.bool("fly.speedEnabled") ? "msg.on" : "msg.off"))); return 1; })
