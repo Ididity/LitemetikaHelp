@@ -320,5 +320,8 @@
   "help.trial": "Trial-Spawner löschen (außer Breeze), nur Einzelspieler",
   "help.flyspeed": "Flug-Geschwindigkeit einstellen",
   "gui.flySpeed": "Flug-Speed",
-  "edition.fullOnly": "Nur im Profil 'full' verfügbar (Profil mit Alt+P wechseln)."
+  "edition.fullOnly": "Nur im Profil 'full' verfügbar (Profil mit Alt+P wechseln).",
+  "breeze.on": "Breeze-Spawner-Marker an (nur Einzelspieler).",
+  "breeze.off": "Breeze-Spawner-Marker aus.",
+  "gui.breeze": "Breeze-Spawner-Marker"
 }

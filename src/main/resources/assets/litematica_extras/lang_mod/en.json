@@ -266,5 +266,8 @@
   "help.trial": "Delete trial spawners (except breeze), singleplayer only",
   "help.flyspeed": "Set fly speed",
   "gui.flySpeed": "Fly speed",
-  "edition.fullOnly": "Only available in the 'full' profile (switch with Alt+P)."
+  "edition.fullOnly": "Only available in the 'full' profile (switch with Alt+P).",
+  "breeze.on": "Breeze spawner marker on (singleplayer).",
+  "breeze.off": "Breeze spawner marker off.",
+  "gui.breeze": "Breeze spawner marker"
 }

@@ -30,6 +30,7 @@ public class ConfigScreen extends Screen {
             new Toggle("tracers.active", "gui.tracers"),
             new Toggle("counter.enabled", "gui.counter"),
             new Toggle("fly.speedEnabled", "gui.flySpeed"),
+            new Toggle("highlight.breezeSpawner", "gui.breeze"),
             new Toggle("hud.crosshairOk.enabled", "gui.crosshairOk"),
             new Toggle("build.onlyCorrectPlacement", "gui.onlyCorrect"),
             new Toggle("build.onlyAtHeight", "gui.onlyHeight"),

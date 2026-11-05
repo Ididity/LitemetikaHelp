@@ -60,6 +60,7 @@ public class LitematicaExtras implements ClientModInitializer {
                 LookTarget.tick(mc);
                 HudRenderer.tick(mc);
                 dev.litextras.render.BlockHighlighter.tick(mc);
+                dev.litextras.render.BreezeMarker.tick(mc);
                 applyFlySpeed(mc);
                 ErrorScanner.tick(mc);
             } catch (Throwable t) {
@@ -158,6 +159,12 @@ public class LitematicaExtras implements ClientModInitializer {
             if (!down) return;
             dev.litextras.core.Counter.reset();
             ChatOut.info(Lang.get("counter.reset"));
+        });
+        Hotkeys.register("toggleBreeze", down -> {
+            if (!down) return;
+            boolean on = !Cfg.bool("highlight.breezeSpawner");
+            Cfg.manager().setPersistent("highlight.breezeSpawner", new com.google.gson.JsonPrimitive(on));
+            ChatOut.info(Lang.get(on ? "breeze.on" : "breeze.off"));
         });
         Hotkeys.register("toggleTracers", down -> {
             if (!down) return;

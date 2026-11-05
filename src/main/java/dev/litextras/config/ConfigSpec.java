@@ -179,6 +179,7 @@ public final class ConfigSpec {
         hotkey("toggleOnlyCorrect", "LEFT_ALT+N", "toggle", "Platz-Sperre (nur richtige Blöcke setzen) an/aus");
         hotkey("openTutorial", "LEFT_ALT+I", "toggle", "Tutorial / Hilfe öffnen");
         hotkey("toggleOnlyHeight", "LEFT_ALT+Y", "toggle", "Höhen-Sperre (nur auf einer Y-Höhe setzen) an/aus");
+        hotkey("toggleBreeze", "LEFT_ALT+C", "toggle", "Breeze-Trial-Spawner-Marker an/aus");
         hotkey("toggleTracers", "LEFT_ALT+T", "toggle", "Tracer an/aus");
         hotkey("counterReset", "LEFT_ALT+Z", "toggle", "Durchsatz-Zähler zurücksetzen");
         hotkey("stopSpeaking", "LEFT_ALT+X", "toggle", "Sprachausgabe sofort stoppen");
@@ -343,6 +344,9 @@ public final class ConfigSpec {
         color("highlight.colorWrong", "#FFFF5555", "Plan: falsch");
         color("highlight.colorCorrect", "#FF55FF55", "Plan: richtig");
         color("highlight.colorWorld", "#FFFFFF55", "Welt-Modus (Einzelspieler)");
+        bool("highlight.breezeSpawner", false, "Breeze-Trial-Spawner markieren, wenn du in ihrer Aktivierungsreichweite bist (nur Einzelspieler). Umschalten mit Hotkey (Standard Alt+C).");
+        integer("highlight.breezeRange", 24, 8, 64, "Suchradius für Breeze-Spawner (Blöcke).");
+        color("highlight.breezeColor", "#FF55FFFF", "Farbe der Breeze-Spawner-Markierung.");
 
         section("counter", "Durchsatz-Zähler (wie Carpet): zählt, was in einen Behälter geht, und rechnet auf pro Stunde hoch.\n"
                 + "Festlegen: Behälter anschauen und /lx zaehler hier. Zählt, solange der Behälter geöffnet ist (Client kann\n"
