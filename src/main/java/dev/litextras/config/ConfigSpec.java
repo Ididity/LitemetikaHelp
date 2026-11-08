@@ -230,6 +230,8 @@ public final class ConfigSpec {
         bool("crosshair.bowIndicator", false, "CartPvP: Zeichen im Fadenkreuz, wenn dein gespannter Bogen beim Loslassen einen Pfeil schießen würde. Gelb = spannt, Grün = voll aufgezogen.");
         str("crosshair.bowSymbol", "▲", "Das Zeichen für die Bogen-Anzeige.");
         integer("crosshair.bowOffsetY", -14, -100, 100, "Abstand über/unter dem Fadenkreuz (negativ = darüber).");
+        bool("bow.autoRelease", false, "CartPvP (nur Profil 'full'): Bogen automatisch loslassen, sobald er geladen ist. Hältst du Rechtsklick, feuert er dann immer wieder.");
+        dbl("bow.autoReleaseAt", 1.0, 0.1, 1.0, "Ab welcher Spannung automatisch losgelassen wird (1.0 = voll aufgezogen, 0.1 = sobald ein Pfeil rausgeht).");
         bool("hud.crosshairOk.enabled", false, "Kleines Zeichen direkt unterm Fadenkreuz, wenn der Block an der Platzier-Stelle RICHTIG sitzen würde.");
         bool("hud.crosshairOk.includeSimilar", false, "Auch bei nur ähnlichen (akzeptierten) Blöcken anzeigen. Standard: nur exakt richtig.");
         str("hud.crosshairOk.text", "✔", "Das Zeichen (z. B. ✔ oder 'ok').");

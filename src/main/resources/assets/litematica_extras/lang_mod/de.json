@@ -325,5 +325,6 @@
   "breeze.off": "Breeze-Spawner-Marker aus.",
   "gui.breeze": "Breeze-Spawner-Marker",
   "gui.skip": "Überspringen",
-  "gui.bowIndicator": "Bogen-Anzeige (CartPvP)"
+  "gui.bowIndicator": "Bogen-Anzeige (CartPvP)",
+  "gui.autoBow": "Auto-Bogen (CartPvP)"
 }

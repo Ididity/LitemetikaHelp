@@ -33,6 +33,7 @@ public class ConfigScreen extends Screen {
             new Toggle("highlight.breezeSpawner", "gui.breeze"),
             new Toggle("hud.crosshairOk.enabled", "gui.crosshairOk"),
             new Toggle("crosshair.bowIndicator", "gui.bowIndicator"),
+            new Toggle("bow.autoRelease", "gui.autoBow"),
             new Toggle("build.onlyCorrectPlacement", "gui.onlyCorrect"),
             new Toggle("build.onlyAtHeight", "gui.onlyHeight"),
             new Toggle("counter.clearContainer", "gui.counterClear"),
@@ -57,7 +58,7 @@ public class ConfigScreen extends Screen {
     private static java.util.List<Toggle> toggles() {
         if (dev.litextras.Edition.fullFeatures()) return ALL_TOGGLES;
         java.util.List<Toggle> out = new java.util.ArrayList<>();
-        java.util.Set<String> hide = java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage");
+        java.util.Set<String> hide = java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage", "bow.autoRelease");
         for (Toggle t : ALL_TOGGLES) if (!hide.contains(t.key())) out.add(t);
         return out;
     }

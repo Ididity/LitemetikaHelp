@@ -271,5 +271,6 @@
   "breeze.off": "Breeze spawner marker off.",
   "gui.breeze": "Breeze spawner marker",
   "gui.skip": "Skip",
-  "gui.bowIndicator": "Bow indicator (CartPvP)"
+  "gui.bowIndicator": "Bow indicator (CartPvP)",
+  "gui.autoBow": "Auto bow (CartPvP)"
 }

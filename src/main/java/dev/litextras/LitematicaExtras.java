@@ -63,6 +63,7 @@ public class LitematicaExtras implements ClientModInitializer {
                 dev.litextras.render.BlockHighlighter.tick(mc);
                 dev.litextras.render.BreezeMarker.tick(mc);
                 applyFlySpeed(mc);
+                autoBow(mc);
                 if (tutorialPending && mc.player != null && mc.currentScreen == null) {
                     tutorialPending = false;
                     Cfg.manager().setPersistent("tutorial.shown", new com.google.gson.JsonPrimitive(true));
@@ -184,6 +185,20 @@ public class LitematicaExtras implements ClientModInitializer {
         Hotkeys.register("missingList", down -> {
             if (down) Actions.run(ErrorScanner.layer().restricting() ? "missing_layer" : "missing_near");
         });
+    }
+
+    /** CartPvP: Bogen automatisch loslassen, sobald geladen (nur Profil 'full'). */
+    private static void autoBow(MinecraftClient mc) {
+        try {
+            if (!Edition.fullFeatures() || !Cfg.bool("bow.autoRelease")) return;
+            if (mc.player == null || mc.interactionManager == null || !mc.player.isUsingItem()) return;
+            net.minecraft.item.ItemStack active = mc.player.getActiveItem();
+            if (active == null || !(active.getItem() instanceof net.minecraft.item.BowItem)) return;
+            if (mc.player.getProjectileType(active).isEmpty()) return;
+            float progress = net.minecraft.item.BowItem.getPullProgress(mc.player.getItemUseTime());
+            if (progress >= (float) Cfg.dbl("bow.autoReleaseAt")) mc.interactionManager.stopUsingItem(mc.player);
+        } catch (Throwable ignored) {
+        }
     }
 
     /** Eigene Flug-Geschwindigkeit setzen (wirkt im Einzelspieler; auf Servern meist zurückgesetzt). */
