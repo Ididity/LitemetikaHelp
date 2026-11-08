@@ -323,5 +323,6 @@
   "edition.fullOnly": "Nur im Profil 'full' verfügbar (Profil mit Alt+P wechseln).",
   "breeze.on": "Breeze-Spawner-Marker an (nur Einzelspieler).",
   "breeze.off": "Breeze-Spawner-Marker aus.",
-  "gui.breeze": "Breeze-Spawner-Marker"
+  "gui.breeze": "Breeze-Spawner-Marker",
+  "gui.skip": "Überspringen"
 }

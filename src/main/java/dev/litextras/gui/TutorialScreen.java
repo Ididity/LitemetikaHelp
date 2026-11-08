@@ -16,14 +16,20 @@ import java.util.List;
  */
 public class TutorialScreen extends Screen {
     private final Screen parent;
+    private final boolean firstRun;
     private int scroll = 0;
     private List<Line> lines = List.of();
 
     private record Line(String text, int color, boolean head) {}
 
     public TutorialScreen(Screen parent) {
+        this(parent, false);
+    }
+
+    public TutorialScreen(Screen parent, boolean firstRun) {
         super(Text.literal("Litematica Extras – " + Lang.get("gui.tutorial")));
         this.parent = parent;
+        this.firstRun = firstRun;
     }
 
     private static String key(String id) {
@@ -34,6 +40,11 @@ public class TutorialScreen extends Screen {
     private void build() {
         List<Line> l = new ArrayList<>();
         int head = 0xFFFFFF55, txt = 0xFFCCCCCC, key = 0xFF55FFFF;
+        if (firstRun) {
+            l.add(new Line("Hi! Ich bin dein kleiner Helfer und zeig dir, was diese Mod alles kann.", 0xFF9AE6FF, true));
+            l.add(new Line("Lies es in Ruhe durch – oder klick unten auf \"Überspringen\". Später jederzeit mit " + key("openTutorial") + ".", txt, false));
+            l.add(new Line("", txt, false));
+        }
         l.add(new Line("Litematica Extras – was alles geht", head, true));
         l.add(new Line("Alle Tasten sind frei belegbar: Einstellungen (" + key("openConfig") + ") -> \"Tasten belegen\".", txt, false));
         l.add(new Line("", txt, false));
@@ -99,8 +110,35 @@ public class TutorialScreen extends Screen {
     @Override
     protected void init() {
         build();
-        addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.done")), b -> close())
-                .dimensions(this.width / 2 - 60, this.height - 26, 120, 20).build());
+        if (firstRun) {
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.skip")), b -> close())
+                    .dimensions(this.width / 2 - 125, this.height - 26, 120, 20).build());
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.done")), b -> close())
+                    .dimensions(this.width / 2 + 5, this.height - 26, 120, 20).build());
+        } else {
+            addDrawableChild(ButtonWidget.builder(Text.literal(Lang.get("gui.done")), b -> close())
+                    .dimensions(this.width / 2 - 60, this.height - 26, 120, 20).build());
+        }
+    }
+
+    /** Kleines blockiges Helfer-Männchen (eigenes Design, mit Pixeln gezeichnet). */
+    private static void mascot(DrawContext ctx, int x, int y, int s) {
+        int skin = 0xFFE0A070, hair = 0xFF5A3A22, shirt = 0xFF3C8CE0, pants = 0xFF34404F, eye = 0xFF202020;
+        // Beine
+        ctx.fill(x + 1 * s, y + 7 * s, x + 3 * s, y + 9 * s, pants);
+        ctx.fill(x + 4 * s, y + 7 * s, x + 6 * s, y + 9 * s, pants);
+        // Körper
+        ctx.fill(x + 1 * s, y + 4 * s, x + 6 * s, y + 7 * s, shirt);
+        // Arme
+        ctx.fill(x, y + 4 * s, x + 1 * s, y + 7 * s, skin);
+        ctx.fill(x + 6 * s, y + 4 * s, x + 7 * s, y + 7 * s, skin);
+        // Kopf
+        ctx.fill(x + 1 * s, y, x + 6 * s, y + 4 * s, skin);
+        // Haare oben
+        ctx.fill(x + 1 * s, y, x + 6 * s, y + 1 * s, hair);
+        // Augen
+        ctx.fill(x + 2 * s, y + 2 * s, x + 3 * s, y + 3 * s, eye);
+        ctx.fill(x + 4 * s, y + 2 * s, x + 5 * s, y + 3 * s, eye);
     }
 
     private int maxScroll() {
@@ -119,6 +157,7 @@ public class TutorialScreen extends Screen {
     @Override
     public void render(DrawContext ctx, int mouseX, int mouseY, float delta) {
         super.render(ctx, mouseX, mouseY, delta);
+        mascot(ctx, 10, 6, 2);
         ctx.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 10, 0xFFFFFFFF);
         int x = this.width / 2 - 230;
         int y = 30 - scroll;

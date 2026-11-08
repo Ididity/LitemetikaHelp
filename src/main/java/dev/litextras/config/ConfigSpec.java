@@ -111,6 +111,7 @@ public final class ConfigSpec {
         // =================================================================== ALLGEMEIN
         section("general", "Allgemeine Einstellungen");
         enm("general.language", "de", "Sprache aller Texte des Mods (de oder en). Eigene Texte: config/litematica_extras/lang/<sprache>.json", "de", "en");
+        bool("tutorial.shown", false, "Wurde das Start-Tutorial schon einmal automatisch gezeigt? (wird nach dem ersten Mal auf true gesetzt)");
         bool("general.startupMessage", true, "Beim Betreten einer Welt kurz den Status des Mods im Chat (nur lokal) anzeigen.");
         bool("general.debugLog", false, "Ausführlichere Log-Ausgaben (nie mit API-Key).");
 

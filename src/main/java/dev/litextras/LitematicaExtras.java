@@ -32,6 +32,7 @@ import java.util.List;
  * Rein clientseitig: kein Server-Code, keine Pakete, keine Eingriffe in die Spielmechanik.
  */
 public class LitematicaExtras implements ClientModInitializer {
+    private static boolean tutorialPending = false;
     public static final String MOD_ID = "litematica_extras";
     public static final Logger LOG = LoggerFactory.getLogger("LitematicaExtras");
 
@@ -62,6 +63,11 @@ public class LitematicaExtras implements ClientModInitializer {
                 dev.litextras.render.BlockHighlighter.tick(mc);
                 dev.litextras.render.BreezeMarker.tick(mc);
                 applyFlySpeed(mc);
+                if (tutorialPending && mc.player != null && mc.currentScreen == null) {
+                    tutorialPending = false;
+                    Cfg.manager().setPersistent("tutorial.shown", new com.google.gson.JsonPrimitive(true));
+                    mc.setScreen(new dev.litextras.gui.TutorialScreen(null, true));
+                }
                 ErrorScanner.tick(mc);
             } catch (Throwable t) {
                 debug("Tick-Fehler: " + t);
@@ -80,6 +86,7 @@ public class LitematicaExtras implements ClientModInitializer {
             }
             for (String m : config.lastMessages()) ChatOut.warn(m);
             CommandRegistry.reportConflicts();
+            if (!Cfg.bool("tutorial.shown")) tutorialPending = true;
             if (Edition.fullFeatures() && Cfg.bool("voice.autoInstall") && (Cfg.bool("voice.ttsEnabled") || Cfg.bool("voice.sttEnabled"))
                     && !(dev.litextras.voice.VoiceManager.ttsReady() && dev.litextras.voice.VoiceManager.sttReady())) {
                 dev.litextras.voice.VoiceManager.install(false);
