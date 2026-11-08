@@ -65,6 +65,7 @@ public final class HudRenderer {
             if (HudPanel.enabled("aiAnswer")) HudPanel.draw(ctx, "aiAnswer", aiLines(mc));
             if (HudPanel.enabled("counter")) HudPanel.draw(ctx, "counter", counterLines());
             if (Cfg.bool("hud.crosshairOk.enabled")) crosshairOk(ctx);
+            if (Cfg.bool("crosshair.bowIndicator")) bowIndicator(ctx);
         } catch (Throwable t) {
             // HUD darf das Spiel nie abstürzen lassen
             dev.litextras.LitematicaExtras.debug("HUD-Fehler: " + t);
@@ -422,6 +423,25 @@ public final class HudRenderer {
     }
 
     // ================================================================== Status
+    // ================================================================== Bogen-Anzeige im Fadenkreuz (CartPvP)
+    private static void bowIndicator(DrawContext ctx) {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        if (mc.player == null || !mc.player.isUsingItem()) return;
+        net.minecraft.item.ItemStack active = mc.player.getActiveItem();
+        if (active == null || !(active.getItem() instanceof net.minecraft.item.BowItem)) return;
+        // Nur zeigen, wenn beim Loslassen wirklich ein Pfeil rausgeht (Munition vorhanden).
+        net.minecraft.item.ItemStack ammo = mc.player.getProjectileType(active);
+        if (ammo == null || ammo.isEmpty()) return;
+        float progress = net.minecraft.item.BowItem.getPullProgress(mc.player.getItemUseTime());
+        if (progress <= 0) return;
+        int full = Cfg.color("colors.correct"), part = Cfg.color("colors.warning");
+        int col = progress >= 1.0f ? full : part;
+        String sym = Cfg.str("crosshair.bowSymbol");
+        int off = Cfg.integer("crosshair.bowOffsetY");
+        int sw = ctx.getScaledWindowWidth(), sh = ctx.getScaledWindowHeight();
+        ctx.drawCenteredTextWithShadow(mc.textRenderer, net.minecraft.text.Text.literal(sym), sw / 2, sh / 2 + off, col);
+    }
+
     // ================================================================== Kleines Zeichen unterm Fadenkreuz
     private static void crosshairOk(DrawContext ctx) {
         LookTarget.Preview pv = LookTarget.preview();

@@ -324,5 +324,6 @@
   "breeze.on": "Breeze-Spawner-Marker an (nur Einzelspieler).",
   "breeze.off": "Breeze-Spawner-Marker aus.",
   "gui.breeze": "Breeze-Spawner-Marker",
-  "gui.skip": "Überspringen"
+  "gui.skip": "Überspringen",
+  "gui.bowIndicator": "Bogen-Anzeige (CartPvP)"
 }

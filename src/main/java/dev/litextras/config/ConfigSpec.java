@@ -227,6 +227,9 @@ public final class ConfigSpec {
         section("hud", "HUD-Grundeinstellungen");
         bool("hud.enabled", true, "Gesamtes HUD des Mods.");
         bool("hud.textShadow", true, "Text mit Schatten.");
+        bool("crosshair.bowIndicator", false, "CartPvP: Zeichen im Fadenkreuz, wenn dein gespannter Bogen beim Loslassen einen Pfeil schießen würde. Gelb = spannt, Grün = voll aufgezogen.");
+        str("crosshair.bowSymbol", "▲", "Das Zeichen für die Bogen-Anzeige.");
+        integer("crosshair.bowOffsetY", -14, -100, 100, "Abstand über/unter dem Fadenkreuz (negativ = darüber).");
         bool("hud.crosshairOk.enabled", false, "Kleines Zeichen direkt unterm Fadenkreuz, wenn der Block an der Platzier-Stelle RICHTIG sitzen würde.");
         bool("hud.crosshairOk.includeSimilar", false, "Auch bei nur ähnlichen (akzeptierten) Blöcken anzeigen. Standard: nur exakt richtig.");
         str("hud.crosshairOk.text", "✔", "Das Zeichen (z. B. ✔ oder 'ok').");
