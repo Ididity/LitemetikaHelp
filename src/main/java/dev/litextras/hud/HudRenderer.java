@@ -433,7 +433,8 @@ public final class HudRenderer {
         net.minecraft.item.ItemStack ammo = mc.player.getProjectileType(active);
         if (ammo == null || ammo.isEmpty()) return;
         float progress = net.minecraft.item.BowItem.getPullProgress(mc.player.getItemUseTime());
-        if (progress <= 0) return;
+        // Vanilla: unter 0.1 Spannung geht beim Loslassen KEIN Pfeil raus. Erst ab da das Zeichen zeigen.
+        if (progress < 0.1f) return;
         int full = Cfg.color("colors.correct"), part = Cfg.color("colors.warning");
         int col = progress >= 1.0f ? full : part;
         String sym = Cfg.str("crosshair.bowSymbol");
