@@ -47,7 +47,7 @@ public final class BlockHighlighter {
         return t;
     });
 
-    public static boolean active() { return Cfg.bool("highlight.active"); }
+    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("highlight.active"); }
 
     /**
      * Welt-Modus: in Einzelspieler-Welten immer, auf Servern nur, wenn deren Adresse in

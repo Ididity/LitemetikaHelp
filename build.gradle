@@ -10,8 +10,8 @@ version = project.mod_version
 group = project.maven_group
 def legit = (project.findProperty('legit')?.toString() == 'true')
 def editionId = legit ? 'legit' : 'full'
-def modDisplayName = legit ? 'Litematica Extras Legit' : 'Litematica Extras'
-base { archivesName = legit ? (project.archives_base_name + '-legit') : project.archives_base_name }
+def modDisplayName = legit ? 'HugoEssentials' : 'Litematica Extras'
+base { archivesName = legit ? 'hugoessentials' : project.archives_base_name }
 
 // ---------------------------------------------------------------------------
 // Automatische Versionsauflösung ("auto" in gradle.properties)

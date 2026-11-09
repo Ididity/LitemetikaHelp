@@ -59,7 +59,7 @@ public abstract class PlacementGuardMixin {
                 }
             }
 
-            if (!Cfg.bool("build.onlyCorrectPlacement")) return;
+            if (dev.litextras.Edition.LEGIT || !Cfg.bool("build.onlyCorrectPlacement")) return; // Platz-Sperre nicht in HugoEssentials
             LookTarget.Preview pv = LookTarget.preview();
             if (pv == null || pv.result() == null) return; // nicht Teil des Plans -> normal bauen
             boolean ok = Cfg.bool("build.onlyCorrectIncludeSimilar")

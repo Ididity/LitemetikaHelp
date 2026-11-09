@@ -285,6 +285,7 @@ public final class HudRenderer {
 
     /** Optional: automatisch auf den passenden Hotbar-Slot wechseln (wie Mausrad – nur Client-Auswahl). */
     private static void handleAutoSwitch(MinecraftClient mc) {
+        if (dev.litextras.Edition.LEGIT) return; // in HugoEssentials kein Auto-Switch
         if (!Cfg.bool("hud.neededItem.autoSwitch") || mc.player == null || mc.currentScreen != null) return;
         // Während die Angriffstaste gedrückt ist (Abbauen), nie wechseln.
         if (mc.options != null && mc.options.attackKey.isPressed()) { autoSwitchPos = null; return; }
