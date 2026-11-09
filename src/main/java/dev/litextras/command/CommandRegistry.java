@@ -166,6 +166,10 @@ public final class CommandRegistry {
             mc.send(() -> mc.setScreen(new dev.litextras.gui.HudEditorScreen(null)));
             return 1;
         }));
+        sub(root, "fillunder", n -> n
+                .executes(c -> { dev.litextras.core.FillUnderTool.run(MinecraftClient.getInstance(), dev.litextras.config.Cfg.integer("fillunder.radius")); return 1; })
+                .then(argument("radius", com.mojang.brigadier.arguments.IntegerArgumentType.integer(2, 256))
+                        .executes(c -> { dev.litextras.core.FillUnderTool.run(MinecraftClient.getInstance(), com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(c, "radius")); return 1; })));
         sub(root, "trial", n -> n
                 .executes(c -> { dev.litextras.core.TrialSpawnerTool.clear(MinecraftClient.getInstance(), dev.litextras.config.Cfg.integer("trial.radius")); return 1; })
                 .then(argument("radius", com.mojang.brigadier.arguments.IntegerArgumentType.integer(4, 2000))
@@ -354,6 +358,7 @@ public final class CommandRegistry {
         ChatOut.info("/" + p + " " + subNames("highlight").get(0) + " – " + Lang.get("help.highlight"));
         ChatOut.info("/" + p + " " + subNames("height").get(0) + " hier|<y>|aus – " + Lang.get("help.height"));
         ChatOut.info("/" + p + " " + subNames("trial").get(0) + " [radius] – " + Lang.get("help.trial"));
+        ChatOut.info("/" + p + " " + subNames("fillunder").get(0) + " [radius] – " + Lang.get("help.fillunder"));
         ChatOut.info("/" + p + " " + subNames("flyspeed").get(0) + " <faktor>|aus – " + Lang.get("help.flyspeed"));
         ChatOut.info("/" + p + " " + subNames("counter").get(0) + " hier|reset|aus|wert <preis>|multi <faktor> – " + Lang.get("help.counter"));
         ChatOut.info("/" + p + " " + subNames("listscope").get(0) + " ebene|gesamt – " + Lang.get("help.listscope"));

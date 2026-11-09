@@ -326,5 +326,10 @@
   "gui.breeze": "Breeze-Spawner-Marker",
   "gui.skip": "Überspringen",
   "gui.bowIndicator": "Bogen-Anzeige (CartPvP)",
-  "gui.autoBow": "Auto-Bogen (CartPvP)"
+  "gui.autoBow": "Auto-Bogen (CartPvP)",
+  "fillunder.spOnly": "Geht nur im Einzelspieler.",
+  "fillunder.lookAt": "Schau den Blocktyp an, unter den gesetzt werden soll, und gib den Befehl erneut ein.",
+  "fillunder.start": "Setze {block}-Unterlagen im Umkreis {r} …",
+  "fillunder.done": "{n} Smooth Stone gesetzt.",
+  "help.fillunder": "Unter den angeschauten Blocktyp Smooth Stone setzen (Einzelspieler)"
 }

@@ -272,5 +272,10 @@
   "gui.breeze": "Breeze spawner marker",
   "gui.skip": "Skip",
   "gui.bowIndicator": "Bow indicator (CartPvP)",
-  "gui.autoBow": "Auto bow (CartPvP)"
+  "gui.autoBow": "Auto bow (CartPvP)",
+  "fillunder.spOnly": "Singleplayer only.",
+  "fillunder.lookAt": "Look at the block type to fill under, then run the command again.",
+  "fillunder.start": "Filling under {block} within {r} …",
+  "fillunder.done": "Placed {n} smooth stone.",
+  "help.fillunder": "Place smooth stone under the looked-at block type (singleplayer)"
 }

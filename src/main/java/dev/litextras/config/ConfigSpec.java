@@ -144,6 +144,7 @@ public final class ConfigSpec {
                   "counter": ["zaehler", "counter"],
                   "height": ["hoehe", "height"],
                   "trial": ["trial", "trialclear"],
+                  "fillunder": ["unterfuellen", "fillunder"],
                   "flyspeed": ["flyspeed", "flugspeed"],
                   "help": ["help", "hilfe"]
                 }""", "Unterbefehle des Präfix-Befehls: interne ID -> Liste von Namen (erster = Hauptname).");
@@ -369,6 +370,8 @@ public final class ConfigSpec {
         section("fly", "Flug-Geschwindigkeit (wirkt vor allem im Einzelspieler; Server setzen die Geschwindigkeit oft zurück).");
         bool("fly.speedEnabled", false, "Eigene Flug-Geschwindigkeit benutzen.");
         dbl("fly.speed", 1.0, 0.1, 20.0, "Faktor auf die normale Flug-Geschwindigkeit (1.0 = normal, 2.0 = doppelt). Setzen mit /lx flyspeed <faktor>.");
+        str("fillunder.block", "minecraft:smooth_stone", "Welcher Block unter die Zielblöcke gesetzt wird (/lx unterfuellen).");
+        integer("fillunder.radius", 32, 2, 256, "Umkreis (Blöcke) für /lx unterfuellen.");
         integer("trial.radius", 64, 4, 2000, "Umkreis (Blöcke) für /lx trial (Trial-Spawner löschen außer Breeze). Wirkt nur in geladenen Chunks – größer als deine Render-/Simulationsdistanz bringt nichts.");
 
         section("hopper", "Schnellere Trichter – NUR im Einzelspieler (dein Spiel ist dort selbst der Server). Auf Servern ohne Wirkung.");
