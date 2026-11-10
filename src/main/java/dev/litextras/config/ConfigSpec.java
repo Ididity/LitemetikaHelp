@@ -379,6 +379,13 @@ public final class ConfigSpec {
         integer("hopper.itemsPerTransfer", 10, 1, 64, "Wie viele Items ein Trichter pro Zyklus bewegt (Vanilla = 1). 10 = sichtbarer Stapel-Sprung. Dupe-sicher.");
         integer("hopper.transferCooldown", 8, 0, 8, "Wartezeit in Ticks zwischen zwei Zyklen. Vanilla = 8. Kleiner = noch schneller (2 ≈ doppelt so oft, 0 = jeden Tick).");
 
+        section("cobweb", "CartPvP (nur Profil 'full'): Gegner im Spinnennetz – der Teil der Hitbox außerhalb des Netzes wird markiert.");
+        bool("cobweb.esp", false, "An/Aus. Zeigt durch Wände den aus dem Netz herausragenden Teil der Hitbox.");
+        bool("cobweb.players", true, "Spieler markieren.");
+        bool("cobweb.mobs", false, "Monster/Tiere markieren.");
+        integer("cobweb.range", 48, 4, 128, "Reichweite in Blöcken.");
+        color("cobweb.color", "#FF3C78FF", "Farbe (Standard Blau).");
+
         section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
         bool("tracers.active", false, "Tracer an/aus.");
         bool("tracers.blocks", true, "Linien zu leuchtenden Blöcken (Blöcke leuchten lassen muss an sein).");

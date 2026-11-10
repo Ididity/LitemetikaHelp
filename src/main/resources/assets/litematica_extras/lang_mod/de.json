@@ -331,5 +331,6 @@
   "fillunder.lookAt": "Schau den Blocktyp an, unter den gesetzt werden soll, und gib den Befehl erneut ein.",
   "fillunder.start": "Setze {block}-Unterlagen im Umkreis {r} …",
   "fillunder.done": "{n} Smooth Stone gesetzt.",
-  "help.fillunder": "Unter den angeschauten Blocktyp Smooth Stone setzen (Einzelspieler)"
+  "help.fillunder": "Unter den angeschauten Blocktyp Smooth Stone setzen (Einzelspieler)",
+  "gui.cobweb": "Cobweb-Hitbox (CartPvP)"
 }

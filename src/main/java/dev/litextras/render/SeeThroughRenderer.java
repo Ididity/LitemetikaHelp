@@ -143,6 +143,20 @@ public final class SeeThroughRenderer {
     }
 
     /** Linie als gedrehtes, dünnes Rechteck (DrawContext respektiert die 2D-Matrix). */
+    /** Beliebige Box (Weltkoordinaten) als Drahtgitter durch Wände zeichnen. */
+    static void drawAabb(DrawContext ctx, Projector pr, double x0, double y0, double z0,
+                         double x1, double y1, double z1, int color, float lw) {
+        float[][] s = new float[8][];
+        for (int i = 0; i < 8; i++) {
+            double cx = CORNERS[i][0] == 0 ? x0 : x1;
+            double cy = CORNERS[i][1] == 0 ? y0 : y1;
+            double cz = CORNERS[i][2] == 0 ? z0 : z1;
+            s[i] = pr.project(cx, cy, cz);
+            if (s[i] == null) return; // teilweise hinter der Kamera
+        }
+        for (int[] e : EDGES) line(ctx, s[e[0]][0], s[e[0]][1], s[e[1]][0], s[e[1]][1], lw, color);
+    }
+
     static void line(DrawContext ctx, float x1, float y1, float x2, float y2, float w, int color) {
         float dx = x2 - x1, dy = y2 - y1;
         float len = (float) Math.sqrt(dx * dx + dy * dy);
