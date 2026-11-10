@@ -386,6 +386,13 @@ public final class ConfigSpec {
         integer("cobweb.range", 48, 4, 128, "Reichweite in Blöcken.");
         color("cobweb.color", "#FF3C78FF", "Farbe (Standard Blau).");
 
+        section("shield", "CartPvP (nur Profil 'full'): Gegner, der mit Schild blockt – die ungedeckte Seite der Hitbox wird markiert.");
+        bool("shield.esp", false, "An/Aus. Zeigt durch Wände die vom Schild NICHT gedeckte Seite der Hitbox.");
+        bool("shield.players", true, "Spieler markieren.");
+        bool("shield.mobs", false, "Monster markieren.");
+        integer("shield.range", 48, 4, 128, "Reichweite in Blöcken.");
+        color("shield.color", "#FF3C78FF", "Farbe (Standard Blau).");
+
         section("tracers", "Tracer: Linien von der Bildschirmmitte zu Zielen (Hotkey Standard Alt+T)");
         bool("tracers.active", false, "Tracer an/aus.");
         bool("tracers.blocks", true, "Linien zu leuchtenden Blöcken (Blöcke leuchten lassen muss an sein).");

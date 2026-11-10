@@ -278,5 +278,6 @@
   "fillunder.start": "Filling under {block} within {r} …",
   "fillunder.done": "Placed {n} smooth stone.",
   "help.fillunder": "Place smooth stone under the looked-at block type (singleplayer)",
-  "gui.cobweb": "Cobweb hitbox (CartPvP)"
+  "gui.cobweb": "Cobweb hitbox (CartPvP)",
+  "gui.shield": "Shield gap (CartPvP)"
 }
