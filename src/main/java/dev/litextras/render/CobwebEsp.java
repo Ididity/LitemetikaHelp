@@ -40,8 +40,9 @@ public final class CobwebEsp {
             if (lp.squaredDistanceTo(eye) > range2) continue;
             Box b = e.getBoundingBox();
             if (b == null) continue;
-            Vec3d cur = e.getPos();
-            double ox = lp.x - cur.x, oy = lp.y - cur.y, oz = lp.z - cur.z;
+            // Aktuelle (nicht interpolierte) Position aus der Box ableiten (mapping-unabhängig, kein getPos nötig).
+            double curX = (b.minX + b.maxX) / 2.0, curY = b.minY, curZ = (b.minZ + b.maxZ) / 2.0;
+            double ox = lp.x - curX, oy = lp.y - curY, oz = lp.z - curZ;
             double minX = b.minX + ox, minY = b.minY + oy, minZ = b.minZ + oz;
             double maxX = b.maxX + ox, maxY = b.maxY + oy, maxZ = b.maxZ + oz;
 
