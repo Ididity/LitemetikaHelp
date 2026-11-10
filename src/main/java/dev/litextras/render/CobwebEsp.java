@@ -19,7 +19,7 @@ public final class CobwebEsp {
     private CobwebEsp() {}
 
     public static void render(DrawContext ctx, float tickProgress) {
-        if (!dev.litextras.Edition.fullFeatures() || !Cfg.bool("cobweb.esp")) return;
+        if ((!dev.litextras.Edition.fullFeatures() && !dev.litextras.Edition.LEGIT) || !Cfg.bool("cobweb.esp")) return;
         MinecraftClient mc = MinecraftClient.getInstance();
         Entity cam = mc.getCameraEntity();
         if (cam == null || mc.world == null || mc.player == null) return;

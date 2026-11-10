@@ -60,8 +60,9 @@ public class ConfigScreen extends Screen {
     private static java.util.List<Toggle> toggles() {
         if (dev.litextras.Edition.fullFeatures()) return ALL_TOGGLES;
         java.util.List<Toggle> out = new java.util.ArrayList<>();
-        java.util.Set<String> hide = new java.util.HashSet<>(java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage", "bow.autoRelease", "cobweb.esp", "shield.esp"));
+        java.util.Set<String> hide = new java.util.HashSet<>(java.util.Set.of("ai.enabled", "ai.lockWorldToolsInMultiplayer", "ai.showTokenUsage", "bow.autoRelease"));
         if (dev.litextras.Edition.LEGIT) hide.addAll(java.util.Set.of("seeThrough.active", "highlight.active", "tracers.active", "build.onlyCorrectPlacement"));
+        else hide.addAll(java.util.Set.of("cobweb.esp", "shield.esp")); // volle Edition: nur im Profil full
         for (Toggle t : ALL_TOGGLES) if (!hide.contains(t.key())) out.add(t);
         return out;
     }
