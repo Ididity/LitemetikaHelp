@@ -17,7 +17,7 @@ public final class ShieldEsp {
     private ShieldEsp() {}
 
     public static void render(DrawContext ctx, float tickProgress) {
-        if ((!dev.litextras.Edition.fullFeatures() && !dev.litextras.Edition.LEGIT) || !Cfg.bool("shield.esp")) return;
+        if (!dev.litextras.Edition.fullFeatures() || !Cfg.bool("shield.esp")) return;
         MinecraftClient mc = MinecraftClient.getInstance();
         Entity cam = mc.getCameraEntity();
         if (cam == null || mc.world == null || mc.player == null) return;

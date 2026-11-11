@@ -405,7 +405,7 @@ public final class ConfigSpec {
         color("tracers.colorMob", "#FFFFAA00", "Farbe Monster");
 
         section("seeThrough", "Feature 5: Fehler durch Blöcke hindurch sehen");
-        bool("seeThrough.active", false, "Modus beim Start aktiv (umschalten per Hotkey).");
+        bool("seeThrough.active", true, "Modus beim Start aktiv (umschalten per Hotkey).");
         enm("seeThrough.backend", "own", "own = eigener Renderer (nur Fehler, mit Reichweite/Fade/Limit), litematica = Litematicas eigene\n"
                 + "'Overlay durch Blöcke'-Option umschalten, both = beides.", "own", "litematica", "both");
         integer("seeThrough.range", 48, 4, 256, "Reichweite in Blöcken.");

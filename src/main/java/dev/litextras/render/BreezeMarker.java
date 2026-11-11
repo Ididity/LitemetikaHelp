@@ -42,7 +42,7 @@ public final class BreezeMarker {
         return t;
     });
 
-    public static boolean active() { return Cfg.bool("highlight.breezeSpawner"); }
+    public static boolean active() { return !dev.litextras.Edition.LEGIT && Cfg.bool("highlight.breezeSpawner"); }
 
     public static void tick(MinecraftClient mc) {
         if (!active() || mc.getServer() == null || mc.player == null || mc.world == null) {
